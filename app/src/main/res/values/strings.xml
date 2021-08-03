@@ -2,4 +2,9 @@
     <string name="app_name">Movie-App-Compose</string>
     <string name="title_activity_splash_screen">SplashScreen</string>
     <string name="title_activity_login">Login</string>
+    <string name="overview">Overview</string>
+    <string name="movie">Movie</string>
+    <string name="search">Search</string>
+    <string name="tv">Tv</string>
+    <string name="account">Account</string>
 </resources>

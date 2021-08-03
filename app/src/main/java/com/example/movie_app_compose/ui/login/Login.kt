@@ -68,7 +68,7 @@ fun LoginContent(modifier: Modifier = Modifier) {
             value = vUsername,
             name = "Username",
             modifier = modifier.constrainAs(etUsername) {
-                top.linkTo(logo.bottom, 64.dp)
+                top.linkTo(logo.bottom, 32.dp)
                 start.linkTo(logo.start)
                 end.linkTo(logo.end)
                 bottom.linkTo(etPassword.top, 8.dp)
