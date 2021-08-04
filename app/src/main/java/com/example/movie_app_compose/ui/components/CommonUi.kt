@@ -1,5 +1,7 @@
 package com.example.movie_app_compose.ui.components
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -13,6 +15,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import com.example.movie_app_compose.ui.theme.DarkBlue900
 import com.example.movie_app_compose.ui.theme.Green500
 import com.example.movie_app_compose.ui.theme.Green700
 
@@ -23,7 +28,7 @@ fun OutlinedTextFieldComponent(
     passwordVisualTransform: Boolean = false,
     keyboardOptionsType: KeyboardType = KeyboardType.Text,
     modifier: Modifier = Modifier,
-    updateValue : (String) -> Unit = {}
+    updateValue: (String) -> Unit = {}
 ) {
     OutlinedTextField(
         value = value,
@@ -67,12 +72,12 @@ fun ButtonComponent(
 
 @Composable
 fun TextComponent(
-    value : String = "",
-    modifier : Modifier = Modifier,
-    fontWeight : FontWeight = FontWeight.Normal,
-    color : Color = Color.White,
-    style : TextStyle = MaterialTheme.typography.body2
-){
+    value: String = "",
+    modifier: Modifier = Modifier,
+    fontWeight: FontWeight = FontWeight.Normal,
+    color: Color = Color.White,
+    style: TextStyle = MaterialTheme.typography.body2
+) {
     Text(
         text = value,
         modifier = modifier,
@@ -82,4 +87,34 @@ fun TextComponent(
         style = style,
         overflow = TextOverflow.Ellipsis
     )
+}
+
+@Composable
+fun CircularProgressIndicatorComponent(
+    animatedProgress: Float = 0.1f,
+    modifier: Modifier = Modifier
+) {
+    ConstraintLayout(modifier = modifier) {
+        val (tvProgress, CPIndicator) = createRefs()
+        Surface(
+            modifier = modifier.constrainAs(CPIndicator) {}, color = DarkBlue900,
+            shape = CircleShape
+        ) {
+            CircularProgressIndicator(
+                progress = animatedProgress, strokeWidth = 3.dp,
+                modifier = modifier
+            )
+        }
+
+        TextComponent(
+            value = "78%", modifier = modifier
+                .constrainAs(tvProgress) {
+                    centerVerticallyTo(CPIndicator)
+                    centerHorizontallyTo(CPIndicator)
+                }
+                .padding(16.dp),
+            style = MaterialTheme.typography.caption,
+            fontWeight = FontWeight.Bold
+        )
+    }
 }
