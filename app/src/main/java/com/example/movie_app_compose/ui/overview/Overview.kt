@@ -27,7 +27,7 @@ fun OverviewBody(modifier: Modifier = Modifier, scrollState : ScrollState) {
                 .fillMaxWidth()
                 .fillMaxHeight()
         ) {
-            val (tvWelcome, lzRow) = createRefs()
+            val (tvWelcome, lzRow, tvPopular, lzRowPopular) = createRefs()
             Text(
                 buildAnnotatedString {
                     withStyle(style = SpanStyle(fontSize = 24.sp)) {
@@ -43,9 +43,37 @@ fun OverviewBody(modifier: Modifier = Modifier, scrollState : ScrollState) {
                     width = Dimension.preferredWrapContent
                 }
             )
+
             LazyRow(
                 modifier = modifier.constrainAs(lzRow) {
                     top.linkTo(tvWelcome.bottom, 8.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                },
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp)
+            ) {
+                items(4) {
+                    LazyRowItem()
+                }
+            }
+
+            Text(
+                buildAnnotatedString {
+                    withStyle(style = SpanStyle(fontSize = 20.sp)) {
+                        append("Popular People")
+                    }
+                },
+                modifier = modifier.constrainAs(tvPopular) {
+                    top.linkTo(lzRow.bottom, 16.dp)
+                    start.linkTo(parent.start, 16.dp)
+                    width = Dimension.preferredWrapContent
+                }
+            )
+
+            LazyRow(
+                modifier = modifier.constrainAs(lzRowPopular) {
+                    top.linkTo(tvPopular.bottom, 8.dp)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
