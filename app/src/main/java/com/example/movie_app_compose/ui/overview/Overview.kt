@@ -19,6 +19,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.example.movie_app_compose.ui.components.LazyRowCommonItem
 import com.example.movie_app_compose.ui.components.LazyRowItem
+import com.example.movie_app_compose.ui.components.LazyRowLandscapeItem
 import com.example.movie_app_compose.ui.components.LazyRowPopularItem
 import com.example.movie_app_compose.ui.theme.Green500
 import com.example.movie_app_compose.ui.theme.Green600
@@ -135,7 +136,7 @@ fun OverviewBody(modifier: Modifier = Modifier, scrollState: ScrollState) {
                 contentPadding = PaddingValues(horizontal = 16.dp)
             ) {
                 items(4) {
-                    LazyRowCommonItem()
+                    LazyRowLandscapeItem()
                 }
             }
 
