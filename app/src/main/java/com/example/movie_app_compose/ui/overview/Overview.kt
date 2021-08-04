@@ -17,25 +17,38 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import com.example.movie_app_compose.ui.components.LazyRowCommonItem
 import com.example.movie_app_compose.ui.components.LazyRowItem
 import com.example.movie_app_compose.ui.components.LazyRowPopularItem
+import com.example.movie_app_compose.ui.theme.Green500
+import com.example.movie_app_compose.ui.theme.Green600
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 
 @Composable
-fun OverviewBody(modifier: Modifier = Modifier, scrollState : ScrollState) {
-    Column(modifier = modifier.verticalScroll(scrollState)) {
+fun OverviewBody(modifier: Modifier = Modifier, scrollState: ScrollState) {
+    Column(
+        modifier = modifier
+            .verticalScroll(scrollState)
+            .fillMaxHeight()
+    ) {
         ConstraintLayout(
             modifier = modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
         ) {
-            val (tvWelcome, lzRow, tvPopular, lzRowPopular) = createRefs()
+            val (tvWelcome, lzRow, tvPopular, lzRowPopular, tvMovies, lzRowMovies, spacer) = createRefs()
             Text(
                 buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontSize = 24.sp,fontWeight = FontWeight.Bold)) {
+                    withStyle(
+                        style = SpanStyle(
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Green500
+                        )
+                    ) {
                         append("Trending\n")
                     }
-                    withStyle(style = SpanStyle(fontSize = 11.sp)) {
+                    withStyle(style = SpanStyle(fontSize = 11.sp, color = Green600)) {
                         append("Millions of movies, Tv Shows and people to discover")
                     }
                 },
@@ -62,7 +75,13 @@ fun OverviewBody(modifier: Modifier = Modifier, scrollState : ScrollState) {
 
             Text(
                 buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontSize = 20.sp,fontWeight = FontWeight.Bold)) {
+                    withStyle(
+                        style = SpanStyle(
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Green500
+                        )
+                    ) {
                         append("Popular People")
                     }
                 },
@@ -86,6 +105,45 @@ fun OverviewBody(modifier: Modifier = Modifier, scrollState : ScrollState) {
                     LazyRowPopularItem()
                 }
             }
+
+            Text(
+                buildAnnotatedString {
+                    withStyle(
+                        style = SpanStyle(
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Green500
+                        )
+                    ) {
+                        append("Upcoming")
+                    }
+                },
+                modifier = modifier.constrainAs(tvMovies) {
+                    top.linkTo(lzRowPopular.bottom, 16.dp)
+                    start.linkTo(parent.start, 16.dp)
+                    width = Dimension.preferredWrapContent
+                }
+            )
+
+            LazyRow(
+                modifier = modifier.constrainAs(lzRowMovies) {
+                    top.linkTo(tvMovies.bottom, 8.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                },
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp)
+            ) {
+                items(4) {
+                    LazyRowCommonItem()
+                }
+            }
+
+            Spacer(modifier = modifier
+                .width(16.dp)
+                .constrainAs(spacer) {
+                    top.linkTo(lzRowMovies.bottom, margin = 16.dp)
+                })
         }
     }
 }
