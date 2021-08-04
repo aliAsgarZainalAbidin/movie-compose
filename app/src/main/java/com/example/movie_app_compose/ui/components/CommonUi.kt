@@ -6,14 +6,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.movie_app_compose.ui.theme.Green500
 import com.example.movie_app_compose.ui.theme.Green700
 
-@Preview
 @Composable
 fun OutlinedTextFieldComponent(
     value: String = "",
@@ -44,7 +46,6 @@ fun OutlinedTextFieldComponent(
     )
 }
 
-@Preview
 @Composable
 fun ButtonComponent(
     title: String = "Button",
@@ -62,4 +63,23 @@ fun ButtonComponent(
     ) {
         Text(text = title, style = MaterialTheme.typography.button, color = Color.White)
     }
+}
+
+@Composable
+fun TextComponent(
+    value : String = "",
+    modifier : Modifier = Modifier,
+    fontWeight : FontWeight = FontWeight.Normal,
+    color : Color = Color.White,
+    style : TextStyle = MaterialTheme.typography.body2
+){
+    Text(
+        text = value,
+        modifier = modifier,
+        fontWeight = fontWeight,
+        color = color,
+        maxLines = 1,
+        style = style,
+        overflow = TextOverflow.Ellipsis
+    )
 }

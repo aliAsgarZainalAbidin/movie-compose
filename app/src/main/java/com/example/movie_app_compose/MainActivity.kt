@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -24,6 +25,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.movie_app_compose.ui.overview.OverviewBody
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 
 
@@ -61,6 +63,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun MainUI() {
         val navController = rememberNavController()
+        val scrollState = rememberScrollState()
 
         Scaffold(bottomBar = {
             BottomNavigation {
@@ -93,7 +96,7 @@ class MainActivity : ComponentActivity() {
                 modifier = Modifier.padding(it)
             ){
                 composable(Screen.Overview.route) {
-                    Text("Text 1")
+                    OverviewBody(scrollState = scrollState)
                 }
                 composable(Screen.Movie.route) {
                     Text(text = "Text 2")
