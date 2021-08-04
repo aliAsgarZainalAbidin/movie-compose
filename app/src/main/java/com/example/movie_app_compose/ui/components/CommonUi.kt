@@ -13,6 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -76,7 +77,8 @@ fun TextComponent(
     modifier: Modifier = Modifier,
     fontWeight: FontWeight = FontWeight.Normal,
     color: Color = Color.White,
-    style: TextStyle = MaterialTheme.typography.body2
+    style: TextStyle = MaterialTheme.typography.body2,
+    textAlign: TextAlign = TextAlign.Start
 ) {
     Text(
         text = value,
@@ -85,7 +87,8 @@ fun TextComponent(
         color = color,
         maxLines = 1,
         style = style,
-        overflow = TextOverflow.Ellipsis
+        overflow = TextOverflow.Ellipsis,
+        textAlign = textAlign
     )
 }
 
@@ -117,4 +120,9 @@ fun CircularProgressIndicatorComponent(
             fontWeight = FontWeight.Bold
         )
     }
+}
+
+@Composable
+fun CirclePhotoProfile(){
+
 }

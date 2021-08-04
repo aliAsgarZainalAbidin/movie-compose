@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -17,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.example.movie_app_compose.ui.components.LazyRowItem
+import com.example.movie_app_compose.ui.components.LazyRowPopularItem
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 
 @Composable
@@ -30,7 +32,7 @@ fun OverviewBody(modifier: Modifier = Modifier, scrollState : ScrollState) {
             val (tvWelcome, lzRow, tvPopular, lzRowPopular) = createRefs()
             Text(
                 buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontSize = 24.sp)) {
+                    withStyle(style = SpanStyle(fontSize = 24.sp,fontWeight = FontWeight.Bold)) {
                         append("Trending\n")
                     }
                     withStyle(style = SpanStyle(fontSize = 11.sp)) {
@@ -60,7 +62,7 @@ fun OverviewBody(modifier: Modifier = Modifier, scrollState : ScrollState) {
 
             Text(
                 buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontSize = 20.sp)) {
+                    withStyle(style = SpanStyle(fontSize = 20.sp,fontWeight = FontWeight.Bold)) {
                         append("Popular People")
                     }
                 },
@@ -81,7 +83,7 @@ fun OverviewBody(modifier: Modifier = Modifier, scrollState : ScrollState) {
                 contentPadding = PaddingValues(horizontal = 16.dp)
             ) {
                 items(4) {
-                    LazyRowItem()
+                    LazyRowPopularItem()
                 }
             }
         }
