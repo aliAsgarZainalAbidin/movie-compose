@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.*
@@ -25,6 +26,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.movie_app_compose.ui.movie.Movie
 import com.example.movie_app_compose.ui.overview.OverviewBody
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 
@@ -63,7 +65,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun MainUI() {
         val navController = rememberNavController()
-        val scrollState = rememberScrollState()
+        var scrollState : ScrollState
 
         Scaffold(bottomBar = {
             BottomNavigation {
@@ -84,7 +86,7 @@ class MainActivity : ComponentActivity() {
                                     saveState = true
                                 }
                                 launchSingleTop = true
-                                restoreState = true
+                                restoreState = false
                             }
                         })
                 }
@@ -96,10 +98,12 @@ class MainActivity : ComponentActivity() {
                 modifier = Modifier.padding(it)
             ){
                 composable(Screen.Overview.route) {
+                    scrollState = rememberScrollState()
                     OverviewBody(scrollState = scrollState)
                 }
                 composable(Screen.Movie.route) {
-                    Text(text = "Text 2")
+                    scrollState = rememberScrollState()
+                    Movie(scrollState = scrollState)
                 }
 //                composable(Screen.Search.route) {
 //                    Text(text = "Text 3")
