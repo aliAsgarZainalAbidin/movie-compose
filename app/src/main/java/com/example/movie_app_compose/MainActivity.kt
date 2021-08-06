@@ -29,14 +29,16 @@ import androidx.navigation.compose.rememberNavController
 import com.example.movie_app_compose.ui.movie.Movie
 import com.example.movie_app_compose.ui.overview.OverviewBody
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
+import com.example.movie_app_compose.ui.tv.Tv
 
 
 //API = 84d705c351638de4d76dad39089aa221
 
-sealed class Screen(val route: String, @StringRes val resId: Int,@DrawableRes val iconId: Int ) {
+sealed class Screen(val route: String, @StringRes val resId: Int, @DrawableRes val iconId: Int) {
     object Overview : Screen("overview", R.string.overview, R.drawable.ic_baseline_home_24)
     object Movie : Screen("movie", R.string.movie, R.drawable.ic_baseline_movie_24)
-//    object Search : Screen("search", R.string.search, R.drawable.ic_baseline_search_24)
+
+    //    object Search : Screen("search", R.string.search, R.drawable.ic_baseline_search_24)
     object Tv : Screen("tv", R.string.tv, R.drawable.ic_baseline_tv_24)
     object Account : Screen("account", R.string.account, R.drawable.ic_baseline_person_24)
 }
@@ -65,7 +67,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun MainUI() {
         val navController = rememberNavController()
-        var scrollState : ScrollState
+        var scrollState: ScrollState
 
         Scaffold(bottomBar = {
             BottomNavigation {
@@ -96,7 +98,7 @@ class MainActivity : ComponentActivity() {
                 navController = navController,
                 startDestination = Screen.Overview.route,
                 modifier = Modifier.padding(it)
-            ){
+            ) {
                 composable(Screen.Overview.route) {
                     scrollState = rememberScrollState()
                     OverviewBody(scrollState = scrollState)
@@ -108,10 +110,11 @@ class MainActivity : ComponentActivity() {
 //                composable(Screen.Search.route) {
 //                    Text(text = "Text 3")
 //                }
-                composable(Screen.Tv.route){
-                    Text(text = "Text 4")
+                composable(Screen.Tv.route) {
+                    scrollState = rememberScrollState()
+                    Tv(scrollState = scrollState)
                 }
-                composable(Screen.Account.route){
+                composable(Screen.Account.route) {
                     Text(text = "Text 5")
                 }
             }
