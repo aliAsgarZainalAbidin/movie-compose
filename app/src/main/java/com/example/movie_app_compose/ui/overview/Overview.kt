@@ -46,19 +46,16 @@ fun OverviewBody(modifier: Modifier = Modifier, scrollState: ScrollState) {
                 buildAnnotatedString {
                     withStyle(
                         style = SpanStyle(
-                            fontSize = 24.sp,
+                            fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             color = Green500
                         )
                     ) {
-                        append("Trending\n")
-                    }
-                    withStyle(style = SpanStyle(fontSize = 11.sp, color = Green600)) {
-                        append("Millions of movies, Tv Shows and people to discover")
+                        append("Trending")
                     }
                 },
                 modifier = modifier.constrainAs(tvWelcome) {
-                    top.linkTo(parent.top, 16.dp)
+                    top.linkTo(lzRowPopular.bottom, 16.dp)
                     start.linkTo(parent.start, 16.dp)
                     width = Dimension.preferredWrapContent
                 }
@@ -87,11 +84,14 @@ fun OverviewBody(modifier: Modifier = Modifier, scrollState: ScrollState) {
                             color = Green500
                         )
                     ) {
-                        append("Popular People")
+                        append("Popular People\n")
+                    }
+                    withStyle(style = SpanStyle(fontSize = 11.sp, color = Green600)) {
+                        append("Millions of movies, Tv Shows and people to discover")
                     }
                 },
                 modifier = modifier.constrainAs(tvPopular) {
-                    top.linkTo(lzRow.bottom, 16.dp)
+                    top.linkTo(parent.top, 16.dp)
                     start.linkTo(parent.start, 16.dp)
                     width = Dimension.preferredWrapContent
                 }
@@ -124,7 +124,7 @@ fun OverviewBody(modifier: Modifier = Modifier, scrollState: ScrollState) {
                     }
                 },
                 modifier = modifier.constrainAs(tvMovies) {
-                    top.linkTo(lzRowPopular.bottom, 16.dp)
+                    top.linkTo(lzRow.bottom, 16.dp)
                     start.linkTo(parent.start, 16.dp)
                     width = Dimension.preferredWrapContent
                 }
