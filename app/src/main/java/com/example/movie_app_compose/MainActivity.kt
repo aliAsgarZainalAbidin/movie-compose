@@ -28,6 +28,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.movie_app_compose.ui.movie.Movie
 import com.example.movie_app_compose.ui.overview.OverviewBody
+import com.example.movie_app_compose.ui.save.SaveMenu
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 import com.example.movie_app_compose.ui.tv.Tv
 
@@ -40,7 +41,7 @@ sealed class Screen(val route: String, @StringRes val resId: Int, @DrawableRes v
 
     //    object Search : Screen("search", R.string.search, R.drawable.ic_baseline_search_24)
     object Tv : Screen("tv", R.string.tv, R.drawable.ic_baseline_tv_24)
-    object Account : Screen("account", R.string.account, R.drawable.ic_baseline_person_24)
+    object Save : Screen("save", R.string.save, R.drawable.ic_baseline_save_alt_24)
 }
 
 val items = listOf(
@@ -48,7 +49,7 @@ val items = listOf(
     Screen.Movie,
 //    Screen.Search,
     Screen.Tv,
-    Screen.Account
+    Screen.Save
 )
 
 class MainActivity : ComponentActivity() {
@@ -114,8 +115,8 @@ class MainActivity : ComponentActivity() {
                     scrollState = rememberScrollState()
                     Tv(scrollState = scrollState)
                 }
-                composable(Screen.Account.route) {
-                    Text(text = "Text 5")
+                composable(Screen.Save.route) {
+                    SaveMenu()
                 }
             }
         }
