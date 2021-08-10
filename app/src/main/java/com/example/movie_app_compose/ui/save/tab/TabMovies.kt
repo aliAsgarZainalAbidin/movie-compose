@@ -29,7 +29,7 @@ val topics = listOf(
 
 @Composable
 fun TabMovies() {
-    LazyColumn(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.SpaceBetween) {
+    LazyColumn(modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)) {
         items(4) {
             LazyColumnItem()
         }
@@ -66,7 +66,7 @@ fun Chip(modifier: Modifier = Modifier, text: String) {
 @Composable
 fun PreviewTabMovies() {
     MovieAppComposeTheme {
-        androidx.compose.material.Surface(color = DarkBlue900) {
+        Surface(color = DarkBlue900) {
             TabMovies()
         }
     }

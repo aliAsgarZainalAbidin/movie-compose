@@ -16,6 +16,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.movie_app_compose.ui.components.TextComponent
 import com.example.movie_app_compose.ui.movie.Movie
 import com.example.movie_app_compose.ui.overview.OverviewBody
+import com.example.movie_app_compose.ui.save.tab.TabMovies
+import com.example.movie_app_compose.ui.save.tab.TabTvShow
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 
 @Composable
@@ -38,12 +40,10 @@ fun SaveMenu(modifier: Modifier = Modifier) {
         }
         when (state) {
             0 -> {
-                scrollState = rememberScrollState()
-                OverviewBody(scrollState = scrollState)
+                TabMovies()
             }
             1 -> {
-                scrollState = rememberScrollState()
-                Movie(scrollState = scrollState)
+                TabTvShow()
             }
         }
     }
