@@ -14,7 +14,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -87,14 +89,37 @@ fun TextComponent(
     fontWeight: FontWeight = FontWeight.Normal,
     color: Color = Color.White,
     style: TextStyle = MaterialTheme.typography.body2,
-    textAlign: TextAlign = TextAlign.Start
+    textAlign: TextAlign = TextAlign.Start,
+    maxLines: Int = 1
 ) {
     Text(
         text = value,
         modifier = modifier,
         fontWeight = fontWeight,
         color = color,
-        maxLines = 1,
+        maxLines = maxLines,
+        style = style,
+        overflow = TextOverflow.Ellipsis,
+        textAlign = textAlign
+    )
+}
+
+@Composable
+fun TextComponent(
+    value: AnnotatedString = buildAnnotatedString { },
+    modifier: Modifier = Modifier,
+    fontWeight: FontWeight = FontWeight.Normal,
+    color: Color = Color.White,
+    style: TextStyle = MaterialTheme.typography.body2,
+    textAlign: TextAlign = TextAlign.Start,
+    maxLines: Int = 1
+) {
+    Text(
+        text = value,
+        modifier = modifier,
+        fontWeight = fontWeight,
+        color = color,
+        maxLines = maxLines,
         style = style,
         overflow = TextOverflow.Ellipsis,
         textAlign = textAlign
@@ -136,7 +161,7 @@ fun Chip(modifier: Modifier = Modifier, text: String) {
     Card(
         modifier = modifier,
         border = BorderStroke(
-            color = Color.Black,
+            color = Green500,
             width = Dp.Hairline
         ),
         shape = RoundedCornerShape(8.dp)
@@ -147,11 +172,14 @@ fun Chip(modifier: Modifier = Modifier, text: String) {
         ) {
             Box(
                 modifier = Modifier
-                    .size(16.dp, 16.dp)
-                    .background(color = MaterialTheme.colors.secondary)
+                    .size(8.dp, 8.dp)
+                    .background(color = Green500)
             )
             Spacer(Modifier.width(4.dp))
-            Text(text = text)
+            TextComponent(
+                value = text,
+                style = MaterialTheme.typography.overline
+            )
         }
     }
 }
@@ -201,7 +229,8 @@ fun GridLayout(
             .coerceIn(constraints.minHeight.rangeTo(constraints.maxHeight))
 
         val heightC = rowHeights.maxOrNull()
-            ?.coerceIn(constraints.minHeight.rangeTo(constraints.maxHeight)) ?: constraints.minHeight
+            ?.coerceIn(constraints.minHeight.rangeTo(constraints.maxHeight))
+            ?: constraints.minHeight
 
         // Y of each row, based on the height accumulation of previous rows
         val rowX = IntArray(rows) { 0 }
