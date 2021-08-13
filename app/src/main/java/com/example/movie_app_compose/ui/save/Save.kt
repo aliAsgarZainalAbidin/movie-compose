@@ -13,6 +13,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.movie_app_compose.ui.components.TextComponent
 import com.example.movie_app_compose.ui.movie.Movie
 import com.example.movie_app_compose.ui.overview.OverviewBody
@@ -21,7 +23,7 @@ import com.example.movie_app_compose.ui.save.tab.TabTvShow
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 
 @Composable
-fun SaveMenu(modifier: Modifier = Modifier) {
+fun SaveMenu(modifier: Modifier = Modifier, navController: NavController) {
     var scrollState : ScrollState
     var state by remember { mutableStateOf(0) }
     val titles = listOf<String>("Movies", "Tv Shows")
@@ -30,17 +32,17 @@ fun SaveMenu(modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxHeight()
     ) {
-        TabRow(selectedTabIndex = state) {
+        TabRow(selectedTabIndex = state, tabs =  {
             titles.forEachIndexed { index, s ->
                 Tab(
                     text = { TextComponent(value = s) },
                     selected = state == index,
                     onClick = { state = index })
             }
-        }
+        })
         when (state) {
             0 -> {
-                TabMovies()
+                TabMovies(navController)
             }
             1 -> {
                 TabTvShow()
@@ -53,6 +55,6 @@ fun SaveMenu(modifier: Modifier = Modifier) {
 @Composable
 fun PreviewSaveMenu() {
     MovieAppComposeTheme {
-        SaveMenu()
+        SaveMenu(navController = rememberNavController())
     }
 }

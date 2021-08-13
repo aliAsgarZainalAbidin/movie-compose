@@ -2,6 +2,7 @@ package com.example.movie_app_compose.ui.save.tab
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,8 +17,12 @@ import androidx.compose.ui.graphics.BlendMode.Companion.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.movie_app_compose.navigation.MainNavigation
 import com.example.movie_app_compose.ui.components.GridLayout
 import com.example.movie_app_compose.ui.components.LazyColumnItem
+import com.example.movie_app_compose.ui.detail.Detail
 import com.example.movie_app_compose.ui.theme.DarkBlue900
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 
@@ -28,35 +33,12 @@ val topics = listOf(
 )
 
 @Composable
-fun TabMovies() {
+fun TabMovies(navController: NavController) {
     LazyColumn(modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)) {
         items(4) {
-            LazyColumnItem()
-        }
-    }
-}
-
-@Composable
-fun Chip(modifier: Modifier = Modifier, text: String) {
-    Card(
-        modifier = modifier,
-        border = BorderStroke(
-            color = androidx.compose.ui.graphics.Color.Black,
-            width = Dp.Hairline
-        ),
-        shape = RoundedCornerShape(8.dp)
-    ) {
-        Row(
-            modifier = Modifier.padding(start = 8.dp, top = 4.dp, end = 8.dp, bottom = 4.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(16.dp, 16.dp)
-                    .background(color = MaterialTheme.colors.secondary)
-            )
-            Spacer(Modifier.width(4.dp))
-            Text(text = text)
+            LazyColumnItem(modifier = Modifier.clickable {
+                navController.navigate(MainNavigation.Detail.router)
+            })
         }
     }
 }
@@ -67,7 +49,7 @@ fun Chip(modifier: Modifier = Modifier, text: String) {
 fun PreviewTabMovies() {
     MovieAppComposeTheme {
         Surface(color = DarkBlue900) {
-            TabMovies()
+            TabMovies(navController = rememberNavController())
         }
     }
 }

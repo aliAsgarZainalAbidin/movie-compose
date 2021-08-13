@@ -124,6 +124,34 @@ fun Detail(modifier: Modifier = Modifier) {
                             color = Grey
                         )
                     }
+                    Spacer(modifier = modifier.height(4.dp))
+                    Row {
+                        TextComponent(
+                            value = "Adult : ",
+                            modifier = modifier,
+                            style = MaterialTheme.typography.caption
+                        )
+                        TextComponent(
+                            value = "NO",
+                            modifier = modifier,
+                            style = MaterialTheme.typography.caption,
+                            color = Grey
+                        )
+                    }
+                    Spacer(modifier = modifier.height(4.dp))
+                    Row {
+                        TextComponent(
+                            value = "Language : ",
+                            modifier = modifier,
+                            style = MaterialTheme.typography.caption
+                        )
+                        TextComponent(
+                            value = "EN",
+                            modifier = modifier,
+                            style = MaterialTheme.typography.caption,
+                            color = Grey
+                        )
+                    }
                     Spacer(modifier = modifier.height(8.dp))
                     LazyRow {
                         items(3) {

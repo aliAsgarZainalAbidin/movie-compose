@@ -4,6 +4,7 @@
     <string name="title_activity_login">Login</string>
     <string name="overview">Overview</string>
     <string name="movie">Movie</string>
+    <string name="tabmovies">TabMovies</string>
     <string name="search">Search</string>
     <string name="tv">Tv</string>
     <string name="save">Save</string>
