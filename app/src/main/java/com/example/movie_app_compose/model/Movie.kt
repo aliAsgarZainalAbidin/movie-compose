@@ -14,7 +14,7 @@ data class Movie(
     var backdropPath : String? = "",
 
     @field:SerializedName("genre_ids")
-    var genreIds : List<Int>? = listOf(),
+    var genreIds : List<Genre>? = listOf(),
 
     @field:SerializedName("vote_counts")
     var voteCounts : Int? = -1,
