@@ -1,13 +1,59 @@
 package com.example.movie_app_compose.model
 
+import com.google.gson.annotations.SerializedName
+
 data class People(
-    var adult: Boolean,
-    var gender: Int,
-    var id: Int,
-    var known_for: List<KnownFor>,
-    var known_for_department: String,
-    var name: String,
-    var popularity: Float,
-    var profile_path: String
+    @field:SerializedName("adult")
+    var adult: Boolean? = false,
+
+    @field:SerializedName("gender")
+    var gender: Int? = -1,
+
+    @field:SerializedName("id")
+    var id: Int? = -1,
+
+    @field:SerializedName("know_for")
+    var known_for: List<KnownFor>? = listOf(),
+
+    @field:SerializedName("known_for_department")
+    var known_for_department: String? = "",
+
+    @field:SerializedName("name")
+    var name: String? = "",
+
+    @field:SerializedName("popularity")
+    var popularity: Float? = 0f,
+
+    @field:SerializedName("profile_path")
+    var profile_path: String? = ""
 )
 
+
+//"adult":false,
+//"gender":1,
+//"id":169337,
+//"known_for":[
+//{
+//    "backdrop_path":"/3IIBf6VlwEyKAX4cN2XCM1gKdgM.jpg",
+//    "first_air_date":"2005-03-27",
+//    "genre_ids":[
+//    18
+//    ],
+//    "id":1416,
+//    "media_type":"tv",
+//    "name":"Grey's Anatomy",
+//    "origin_country":[
+//    "US"
+//    ],
+//    "original_language":"en",
+//    "original_name":"Grey's Anatomy",
+//    "overview":"Follows the personal and professional lives of a group of doctors at Seattle’s Grey Sloan Memorial Hospital.",
+//    "poster_path":"/clnyhPqj1SNgpAdeSS6a6fwE6Bo.jpg",
+//    "vote_average":8.2,
+//    "vote_count":6478
+//}
+//],
+//"known_for_department":"Acting",
+//"name":"Katherine LaNasa",
+//"popularity":254.422,
+//"profile_path":"/a1T5Smn7sCEtV8NHvTa5WaxgOML.jpg"
