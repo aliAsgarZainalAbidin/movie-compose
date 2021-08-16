@@ -1,22 +1,53 @@
 package com.example.movie_app_compose.model
 
+import com.google.gson.annotations.SerializedName
+
 
 data class Movie(
-    var releaseDate : String,
-    var adult : Boolean,
-    var backdropPath : String,
-    var genreIds : List<Int>,
-    var voteCounts : Int,
-    var originalLanguage : String,
-    var originalTitle : String,
-    var posterPath : String,
-    var video : Boolean,
-    var id : Int,
-    var voteAvarage : Double,
-    var title : String,
-    var overview : String,
-    var popularity : Double,
-    var mediaType : String
+    @field:SerializedName("release_date")
+    var releaseDate : String? = "",
+
+    @field:SerializedName("adult")
+    var adult : Boolean? = false,
+
+    @field:SerializedName("backdrop_path")
+    var backdropPath : String? = "",
+
+    @field:SerializedName("genre_ids")
+    var genreIds : List<Int>? = listOf(),
+
+    @field:SerializedName("vote_counts")
+    var voteCounts : Int? = -1,
+
+    @field:SerializedName("original_language")
+    var originalLanguage : String? = "",
+
+    @field:SerializedName("original_title")
+    var originalTitle : String? = "",
+
+    @field:SerializedName("poster_path")
+    var posterPath : String? = "",
+
+    @field:SerializedName("video")
+    var video : Boolean? = false,
+
+    @field:SerializedName("id")
+    var id : Int? = -1,
+
+    @field:SerializedName("vote_avarage")
+    var voteAvarage : Double? = 0.0,
+
+    @field:SerializedName("title")
+    var title : String? = "",
+
+    @field:SerializedName("overview")
+    var overview : String? = "",
+
+    @field:SerializedName("popularity")
+    var popularity : Double? = 0.0,
+
+    @field:SerializedName("mediaType")
+    var mediaType : String? = ""
 )
 
 
