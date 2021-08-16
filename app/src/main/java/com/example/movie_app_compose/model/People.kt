@@ -1,29 +1,40 @@
 package com.example.movie_app_compose.model
 
+import androidx.room.ColumnInfo
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 data class People(
+    @ColumnInfo(name = "adult")
     @field:SerializedName("adult")
     var adult: Boolean? = false,
 
+    @ColumnInfo(name = "gender")
     @field:SerializedName("gender")
     var gender: Int? = -1,
 
+    @PrimaryKey
+    @ColumnInfo(name = "id")
     @field:SerializedName("id")
     var id: Int? = -1,
 
-    @field:SerializedName("know_for")
+    @ColumnInfo(name = "known_for")
+    @field:SerializedName("known_for")
     var known_for: List<KnownFor>? = listOf(),
 
+    @ColumnInfo(name = "known_for_department")
     @field:SerializedName("known_for_department")
     var known_for_department: String? = "",
 
+    @ColumnInfo(name = "name")
     @field:SerializedName("name")
     var name: String? = "",
 
+    @ColumnInfo(name = "popularity")
     @field:SerializedName("popularity")
     var popularity: Float? = 0f,
 
+    @ColumnInfo(name = "profile_path")
     @field:SerializedName("profile_path")
     var profile_path: String? = ""
 )

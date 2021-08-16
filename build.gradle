@@ -4,6 +4,7 @@ buildscript {
         compose_version = '1.0.0'
         versions_retrofit = '2.6.1'
         versions_okhttp = '4.2.2'
+        room_version = "2.3.0"
     }
     repositories {
         google()

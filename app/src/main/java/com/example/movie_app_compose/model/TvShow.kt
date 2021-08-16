@@ -1,32 +1,47 @@
 package com.example.movie_app_compose.model
 
+import androidx.room.ColumnInfo
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 
 data class TvShow(
+    @ColumnInfo(name = "backdrop_path")
     @field:SerializedName("backdrop_path")
-    var backdropPath : String? = "",
+    var backdropPath: String? = "",
 
+    @ColumnInfo(name = "first_air_date")
     @field:SerializedName("first_air_date")
-    var firstAirDate : String? = "",
+    var firstAirDate: String? = "",
 
+    @ColumnInfo(name = "genres")
     @field:SerializedName("genres")
-    var genres : List<Genre> = listOf(),
+    var genres: List<Genre> = listOf(),
 
+    @ColumnInfo(name = "original_language")
     @field:SerializedName("original_language")
-    var language : String? = "",
+    var language: String? = "",
 
+    @ColumnInfo(name = "overview")
     @field:SerializedName("overview")
-    var overview : String? = "",
+    var overview: String? = "",
 
+    @ColumnInfo(name = "popularity")
     @field:SerializedName("popularity")
-    var popularity : Double? = 0.0,
+    var popularity: Double? = 0.0,
 
+    @ColumnInfo(name = "poster_path")
     @field:SerializedName("poster_path")
-    var posterPath : String? = "",
+    var posterPath: String? = "",
 
+    @ColumnInfo(name = "name")
     @field:SerializedName("name")
-    var name : String? = ""
+    var name: String? = "",
+
+    @PrimaryKey
+    @ColumnInfo(name = "id")
+    @field:SerializedName("id")
+    var id: Int? = -1
 )
 
 //"backdrop_path":"/g0W42JhKllNj7v0vOOpZCwyrRwN.jpg",
