@@ -27,6 +27,7 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
     private var sessionId: String = ""
     private var isLogin: Boolean = false
     private lateinit var mutableLiveDataPeople: MutableLiveData<List<People>>
+    private lateinit var people: ArrayList<People>
 
     fun createRequestToken(context: Context): String {
         val result = apiInterface.createRequestToken(BuildConfig.API)
@@ -94,10 +95,7 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
 
     fun requestAllPeople() {
         mutableLiveDataPeople = MutableLiveData()
-        var listPerson = ArrayList<People>()
-//        CoroutineScope(Dispatchers.IO).launch {
-//            listPerson = appDatabase.PersonDao().getAllPerson() as ArrayList<People>
-//        }
+        people = arrayListOf()
         val remoteListPerson = ArrayList<People>()
         val result = apiInterface.getPopularPerson(API)
         Log.d(TAG, "getAllPerson: ${result}")
@@ -107,10 +105,21 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
                     val dataSource = response.body()
                     for (data in dataSource?.results!!) {
                         remoteListPerson.add(data)
-                        Log.d(TAG, "onResponse: data $data")
                     }
-                    mutableLiveDataPeople.postValue(remoteListPerson)
-                    Log.d(TAG, "onResponse: Succe${remoteListPerson.size}")
+
+                    CoroutineScope(Dispatchers.IO).launch {
+                        people.addAll(appDatabase.PersonDao().getAllPerson())
+                        if (people == remoteListPerson){
+                            // Autosort database membuat block code ini tidak pernah running
+                            Log.d(TAG, "onResponse: OPSI 1")
+                            mutableLiveDataPeople.postValue(people)
+                        } else {
+                            Log.d(TAG, "onResponse: OPSI 2")
+                            appDatabase.PersonDao().insertAll(remoteListPerson)
+                            mutableLiveDataPeople.postValue(remoteListPerson)
+                        }
+                    }
+
                 } else {
                     Log.d(TAG, "onResponse: fail${response.body()}")
                 }
@@ -121,17 +130,10 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
             }
 
         })
-//        return if (listPerson.equals(remoteListPerson)) {
-//            Log.d(TAG, "getAllPerson: 1=>${MutableLiveData(listPerson).value}")
-//            MutableLiveData(listPerson)
-//        } else {
-//            appDatabase.PersonDao().insertAll(remoteListPerson)
-//            CoroutineScope(Dispatchers.IO).launch {
-//                listPerson = appDatabase.PersonDao().getAllPerson() as ArrayList<People>
-//                Log.d(TAG, "getAllPerson: 2=>${MutableLiveData(listPerson).value}")
-//            }
-//            MutableLiveData(listPerson)
-//        }
+    }
+
+    fun getALL(){
+        Log.d(TAG, "getALL: ${people.size}")
     }
 
     fun getAllPeople(): LiveData<List<People>> {

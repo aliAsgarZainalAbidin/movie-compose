@@ -82,6 +82,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07"
 
     implementation "io.coil-kt:coil-compose:$coil"
+    implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
 
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"

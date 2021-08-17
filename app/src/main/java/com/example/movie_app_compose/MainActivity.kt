@@ -33,6 +33,7 @@ import com.example.movie_app_compose.ui.save.SaveMenu
 import com.example.movie_app_compose.ui.splash.SplashScreenContent
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 import com.example.movie_app_compose.ui.tv.Tv
+import com.facebook.stetho.Stetho
 
 val items = listOf(
     Screen.Overview,
@@ -51,6 +52,8 @@ class MainActivity : ComponentActivity() {
                     ParentNavigation()
                 }
             }
+
+            Stetho.initializeWithDefaults(this);
         }
     }
 }

@@ -4,9 +4,13 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import java.util.*
 
 @Entity
 data class People(
+    @field:SerializedName("date")
+    var date: Date? = null,
+
     @ColumnInfo(name = "adult")
     @field:SerializedName("adult")
     var adult: Boolean? = false,
@@ -14,6 +18,7 @@ data class People(
     @ColumnInfo(name = "gender")
     @field:SerializedName("gender")
     var gender: Int? = -1,
+
 
     @PrimaryKey
     @ColumnInfo(name = "id")

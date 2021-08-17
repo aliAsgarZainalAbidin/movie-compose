@@ -12,6 +12,8 @@ class OverviewViewModel : ViewModel() {
 
     fun getPopularPeople():LiveData<List<People>>{
         repositor.requestAllPeople()
-        return repositor.getAllPeople()
+        val data = repositor.getAllPeople()
+        Log.d(TAG, "getPopularPeople: ${data.value}")
+        return data
     }
 }
