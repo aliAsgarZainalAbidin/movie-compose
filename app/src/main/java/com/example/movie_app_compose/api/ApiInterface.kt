@@ -1,5 +1,6 @@
 package com.example.movie_app_compose.api
 
+import com.example.movie_app_compose.model.Movie
 import com.example.movie_app_compose.model.People
 import com.example.movie_app_compose.model.RequestWrapper
 import com.example.movie_app_compose.model.Root
@@ -32,4 +33,10 @@ interface ApiInterface {
         @Query("page")
         page : String = "1"
     ) : Call<Root<People>>
+
+    @GET("trending/movie/week")
+    fun getTrendingMovies(
+        @Query("api_key")
+        apiKey: String = ""
+    ) : Call<Root<Movie>>
 }
