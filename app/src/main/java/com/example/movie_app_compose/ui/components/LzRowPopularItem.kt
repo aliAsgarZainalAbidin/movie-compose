@@ -21,6 +21,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import coil.compose.rememberImagePainter
+import com.example.movie_app_compose.BuildConfig
 import com.example.movie_app_compose.R
 import com.example.movie_app_compose.model.People
 import com.example.movie_app_compose.ui.theme.Green500
@@ -40,7 +42,9 @@ fun LazyRowPopularItem(modifier: Modifier = Modifier, people: People) {
                 .height(80.dp), shape = CircleShape
         ) {
             Image(
-                painter = painterResource(id = R.drawable.example_photo_profile),
+                painter = rememberImagePainter(
+                    data = "${BuildConfig.BASE_IMAGE_URL}${people.profile_path}"
+                ),
                 contentDescription = null,
                 contentScale = ContentScale.Crop
             )

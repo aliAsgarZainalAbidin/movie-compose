@@ -24,6 +24,7 @@ android {
         debug {
             buildConfigField "String", "API", "\"84d705c351638de4d76dad39089aa221\""
             buildConfigField "String", "BASE_URL", "\"https://api.themoviedb.org/3/\""
+            buildConfigField "String", "BASE_IMAGE_URL", "\"https://image.tmdb.org/t/p/w500/\""
             buildConfigField "String", "BASE_URL_V4", "\"https://api.themoviedb.org/4/\""
             buildConfigField "String", "WEB_BASE_URL", "\"https://www.themoviedb.org/authenticate/\""
             buildConfigField "String", "TAG", "\"MOVIE-APP-COMPOSE\""
