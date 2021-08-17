@@ -119,7 +119,7 @@ fun OverviewBody(modifier: Modifier = Modifier, scrollState: ScrollState) {
                 contentPadding = PaddingValues(horizontal = 16.dp)
             ) {
                 items(listPeople.value?.size ?: 0) { index ->
-                    listPeople?.value?.let {
+                    listPeople.value?.let {
                         LazyRowPopularItem(people = it.get(index = index))
                     }
                 }
