@@ -2,14 +2,14 @@ package com.example.movie_app_compose.model
 
 import com.google.gson.annotations.SerializedName
 
-data class Root(
+data class Root<T>(
     @field:SerializedName("page")
     var page : Int? = 0,
 
-    @field:SerializedName("result")
-    var results: List<Any>? = listOf(),
+    @field:SerializedName("results")
+    var results: ArrayList<T>? = arrayListOf(),
 
-    @field:SerializedName("total_page")
+    @field:SerializedName("total_pages")
     var total_pages : Int? = 0,
 
     @field:SerializedName("total_results")

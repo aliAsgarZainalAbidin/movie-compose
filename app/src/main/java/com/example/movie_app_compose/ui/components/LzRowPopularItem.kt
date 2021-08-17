@@ -22,12 +22,13 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.example.movie_app_compose.R
+import com.example.movie_app_compose.model.People
 import com.example.movie_app_compose.ui.theme.Green500
 import com.example.movie_app_compose.ui.theme.Green800
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 
 @Composable
-fun LazyRowPopularItem(modifier: Modifier = Modifier) {
+fun LazyRowPopularItem(modifier: Modifier = Modifier, people: People) {
     Column(modifier = modifier.width(IntrinsicSize.Min)) {
 //        val (surface, text) = createRefs()
         Surface(
@@ -46,7 +47,7 @@ fun LazyRowPopularItem(modifier: Modifier = Modifier) {
         }
 
         TextComponent(
-            value = "Peter Becon Asasds",
+            value = "${people.name}",
             modifier = modifier.fillMaxWidth(),
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.caption,
@@ -59,6 +60,6 @@ fun LazyRowPopularItem(modifier: Modifier = Modifier) {
 @Composable
 fun PreviewLazyRowPopularItem() {
     MovieAppComposeTheme {
-        LazyRowPopularItem()
+        LazyRowPopularItem(people = People())
     }
 }

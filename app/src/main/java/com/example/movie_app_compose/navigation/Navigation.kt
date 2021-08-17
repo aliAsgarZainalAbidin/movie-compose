@@ -9,6 +9,7 @@ sealed class Navigation(val router : String) {
     object Detail : Navigation("detail")
     object SplashScreen : Navigation("splashscreen")
     object Activity : Navigation("mainactivity")
+    object Login : Navigation("login")
 }
 
 
