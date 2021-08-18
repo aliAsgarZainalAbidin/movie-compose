@@ -8,8 +8,6 @@ import java.util.*
 
 @Entity
 data class People(
-    @field:SerializedName("date")
-    var date: Date? = null,
 
     @ColumnInfo(name = "adult")
     @field:SerializedName("adult")

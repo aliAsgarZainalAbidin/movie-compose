@@ -126,14 +126,14 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
             }
 
             override fun onFailure(call: Call<Root<People>>, t: Throwable) {
-                Log.d(TAG, "onFailure: err ${t}")
+                Log.d(TAG, "onFailure: $t")
+                CoroutineScope(Dispatchers.IO).launch {
+                    people.addAll(appDatabase.PersonDao().getAllPerson())
+                    mutableLiveDataPeople.postValue(people)
+                }
             }
 
         })
-    }
-
-    fun getALL(){
-        Log.d(TAG, "getALL: ${people.size}")
     }
 
     fun getAllPeople(): LiveData<List<People>> {
