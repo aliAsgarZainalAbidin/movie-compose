@@ -24,6 +24,10 @@ data class KnownFor(
     @field:SerializedName("id")
     var id: Int? = 0,
 
+    @ColumnInfo(name = "id_people")
+    @field:SerializedName("id_people")
+    var id_people: Int? = 0,
+
     @ColumnInfo(name = "media_type")
     @field:SerializedName("media_type")
     var media_type: String? = "",

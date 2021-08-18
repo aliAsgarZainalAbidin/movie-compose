@@ -40,6 +40,7 @@ fun OverviewBody(modifier: Modifier = Modifier, scrollState: ScrollState) {
 
     var listPeople = overviewViewModel.getPopularPeople().observeAsState()
     var listTrending = overviewViewModel.getTrendingMovies().observeAsState()
+    var listOnTheAir = overviewViewModel.getOnTheAir().observeAsState()
 
     Column(
         modifier = modifier
@@ -154,8 +155,8 @@ fun OverviewBody(modifier: Modifier = Modifier, scrollState: ScrollState) {
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(horizontal = 16.dp)
             ) {
-                items(4) {
-                    LazyRowLandscapeItem()
+                items(listOnTheAir.value?.size ?: 0) {index ->
+                    LazyRowLandscapeItem(onTheAir = listOnTheAir.value?.get(index))
                 }
             }
 

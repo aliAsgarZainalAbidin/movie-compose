@@ -10,8 +10,8 @@ import com.example.movie_app_compose.model.entity.Trending
 @Dao
 interface TrendingDao {
     @Query(value = "SELECT * FROM Trending")
-    fun getTrending():List<Movie>
+    fun getTrending():List<Trending>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(list: List<Movie>)
+    fun insertAll(list: List<Trending>)
 }

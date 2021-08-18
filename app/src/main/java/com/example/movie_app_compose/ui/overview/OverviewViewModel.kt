@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import com.example.movie_app_compose.BuildConfig.TAG
 import com.example.movie_app_compose.data.Repository
 import com.example.movie_app_compose.model.Movie
+import com.example.movie_app_compose.model.TvShow
+import com.example.movie_app_compose.model.entity.OnTheAir
 import com.example.movie_app_compose.model.entity.People
 import com.example.movie_app_compose.model.entity.Trending
 
@@ -19,8 +21,13 @@ class OverviewViewModel : ViewModel() {
         return data
     }
 
-    fun getTrendingMovies():LiveData<List<Movie>>{
+    fun getTrendingMovies():LiveData<List<Trending>>{
         repositor.requestTrendingMovie()
         return repositor.getTrending()
+    }
+
+    fun getOnTheAir():LiveData<List<OnTheAir>>{
+        repositor.requestOnTheAir()
+        return repositor.getOnTheAir()
     }
 }

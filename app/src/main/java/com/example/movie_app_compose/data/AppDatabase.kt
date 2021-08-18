@@ -5,9 +5,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.example.movie_app_compose.data.dao.OnTheAirDao
 import com.example.movie_app_compose.data.dao.PersonDao
 import com.example.movie_app_compose.data.dao.TrendingDao
 import com.example.movie_app_compose.model.*
+import com.example.movie_app_compose.model.entity.OnTheAir
 import com.example.movie_app_compose.model.entity.People
 import com.example.movie_app_compose.model.entity.Trending
 
@@ -18,7 +20,8 @@ import com.example.movie_app_compose.model.entity.Trending
         KnownFor::class,
         Movie::class,
         TvShow::class,
-        Trending::class
+        Trending::class,
+        OnTheAir::class
     ), version = 1,
     exportSchema = false
 )
@@ -26,6 +29,7 @@ import com.example.movie_app_compose.model.entity.Trending
 abstract class AppDatabase : RoomDatabase() {
     abstract fun PersonDao(): PersonDao
     abstract fun TrendingDao(): TrendingDao
+    abstract fun OnTheAirDao(): OnTheAirDao
 
     companion object {
         @Volatile

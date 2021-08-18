@@ -30,7 +30,7 @@ import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 import com.example.movie_app_compose.ui.theme.*
 
 @Composable
-fun LazyRowItem(modifier: Modifier = Modifier, movie: Movie? = null) {
+fun LazyRowItem(modifier: Modifier = Modifier, movie: Trending? = null) {
     ConstraintLayout {
         val (tvTitle, tvReleaseDate, rating, surfaceImage) = createRefs()
         Surface(
@@ -124,6 +124,6 @@ fun LazyRowItem(modifier: Modifier = Modifier, movie: Movie? = null) {
 @Composable
 fun PreviewLazyRowItem() {
     MovieAppComposeTheme {
-        LazyRowItem(movie = Movie())
+        LazyRowItem(movie = Trending())
     }
 }

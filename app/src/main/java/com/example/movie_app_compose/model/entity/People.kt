@@ -17,7 +17,6 @@ data class People(
     @field:SerializedName("gender")
     var gender: Int? = -1,
 
-
     @PrimaryKey
     @ColumnInfo(name = "id")
     @field:SerializedName("id")

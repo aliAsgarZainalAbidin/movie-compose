@@ -22,12 +22,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import coil.compose.rememberImagePainter
+import com.example.movie_app_compose.BuildConfig
 import com.example.movie_app_compose.R
+import com.example.movie_app_compose.model.TvShow
+import com.example.movie_app_compose.model.entity.OnTheAir
 import com.example.movie_app_compose.ui.theme.DarkBlue900
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 
 @Composable
-fun LazyRowLandscapeItem(modifier: Modifier = Modifier) {
+fun LazyRowLandscapeItem(modifier: Modifier = Modifier, onTheAir: OnTheAir? = null) {
     ConstraintLayout(modifier = modifier) {
         val (tvTitle, tvReleaseDate, rating, surfaceImage) = createRefs()
 
@@ -37,7 +41,9 @@ fun LazyRowLandscapeItem(modifier: Modifier = Modifier) {
                 top.linkTo(parent.top)
             }) {
             Image(
-                painter = painterResource(id = R.drawable.landscape),
+                painter = rememberImagePainter(
+                    data = "${BuildConfig.BASE_IMAGE_URL}${onTheAir?.backdropPath}"
+                ),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = modifier
@@ -47,7 +53,7 @@ fun LazyRowLandscapeItem(modifier: Modifier = Modifier) {
         }
 
         TextComponent(
-            "Fast and Furios Nine asdasdasd asdasdas as",
+            "${onTheAir?.name}",
             style = MaterialTheme.typography.subtitle1,
             fontWeight = FontWeight.Bold,
             modifier = modifier
@@ -59,7 +65,7 @@ fun LazyRowLandscapeItem(modifier: Modifier = Modifier) {
         )
 
         TextComponent(
-            "19-08-2021",
+            "${onTheAir?.firstAirDate}",
             style = MaterialTheme.typography.caption,
             modifier = modifier
                 .constrainAs(tvReleaseDate) {
@@ -68,7 +74,7 @@ fun LazyRowLandscapeItem(modifier: Modifier = Modifier) {
                 }
         )
 
-        val progress by remember { mutableStateOf(0.78f) }
+        val progress by remember { mutableStateOf(onTheAir?.voteAverage?.div(10)?.toFloat() ?: 0f) }
         val animatedProgress by animateFloatAsState(
             targetValue = progress,
             animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec

@@ -14,6 +14,8 @@ import com.example.movie_app_compose.model.Movie
 import com.example.movie_app_compose.model.entity.People
 import com.example.movie_app_compose.model.RequestWrapper
 import com.example.movie_app_compose.model.Root
+import com.example.movie_app_compose.model.TvShow
+import com.example.movie_app_compose.model.entity.OnTheAir
 import com.example.movie_app_compose.model.entity.Trending
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +29,8 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
     private var sessionId: String = ""
     private var isLogin: Boolean = false
     private lateinit var mutableLiveDataPeople: MutableLiveData<List<People>>
-    private lateinit var mLiveDataTrendingMovie: MutableLiveData<List<Movie>>
+    private lateinit var mLiveDataTrendingMovie: MutableLiveData<List<Trending>>
+    private lateinit var mOnTheAir: MutableLiveData<List<OnTheAir>>
     private lateinit var people: ArrayList<People>
 
     fun createRequestToken(context: Context): String {
@@ -143,13 +146,13 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
 
     fun requestTrendingMovie() {
         mLiveDataTrendingMovie = MutableLiveData()
-        var movies = ArrayList<Movie>()
-        var remoteMovies = ArrayList<Movie>()
+        var movies = ArrayList<Trending>()
+        var remoteMovies = ArrayList<Trending>()
         val result = apiInterface.getTrendingMovies(API)
-        result.enqueue(object : Callback<Root<Movie>> {
+        result.enqueue(object : Callback<Root<Trending>> {
             override fun onResponse(
-                call: Call<Root<Movie>>,
-                response: Response<Root<Movie>>
+                call: Call<Root<Trending>>,
+                response: Response<Root<Trending>>
             ) {
                 if (response.isSuccessful) {
                     val data = response.body()
@@ -163,7 +166,7 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
                 }
             }
 
-            override fun onFailure(call: Call<Root<Movie>>, t: Throwable) {
+            override fun onFailure(call: Call<Root<Trending>>, t: Throwable) {
                 Log.d(TAG, "onFailure: $t")
                 CoroutineScope(Dispatchers.IO).launch {
                     movies.addAll(appDatabase.TrendingDao().getTrending())
@@ -174,8 +177,45 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
         })
     }
 
-    fun getTrending():LiveData<List<Movie>>{
+    fun getTrending(): LiveData<List<Trending>> {
         return mLiveDataTrendingMovie
+    }
+
+    fun requestOnTheAir() {
+        mOnTheAir = MutableLiveData()
+        var tvShow = ArrayList<OnTheAir>()
+        var remoteTvShow = ArrayList<OnTheAir>()
+        val result = apiInterface.getOnTheAir(API)
+        result.enqueue(object : Callback<Root<OnTheAir>> {
+            override fun onResponse(
+                call: Call<Root<OnTheAir>>,
+                response: Response<Root<OnTheAir>>
+            ) {
+                if (response.isSuccessful) {
+                    val data = response.body()
+                    data?.results?.let { remoteTvShow.addAll(it) }
+                    CoroutineScope(Dispatchers.IO).launch {
+                        appDatabase.OnTheAirDao().insertAll(remoteTvShow)
+                        mOnTheAir.postValue(remoteTvShow)
+                    }
+                } else {
+                    Log.d(TAG, "onResponse: $response")
+                }
+            }
+
+            override fun onFailure(call: Call<Root<OnTheAir>>, t: Throwable) {
+                Log.d(TAG, "onFailure: $t")
+                CoroutineScope(Dispatchers.IO).launch {
+                    tvShow.addAll(appDatabase.OnTheAirDao().getAllOnTheAir())
+                    mOnTheAir.postValue(tvShow)
+                }
+            }
+
+        })
+    }
+
+    fun getOnTheAir(): LiveData<List<OnTheAir>> {
+        return mOnTheAir
     }
 
 }

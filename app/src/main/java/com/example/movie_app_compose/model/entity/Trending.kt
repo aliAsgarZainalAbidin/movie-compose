@@ -22,7 +22,7 @@ data class Trending(
 
     @ColumnInfo(name = "genre_ids")
     @field:SerializedName("genre_ids")
-    var genreIds : List<Genre>? = listOf(),
+    var genreIds : List<Int>? = listOf(),
 
     @ColumnInfo(name = "vote_count")
     @field:SerializedName("vote_count")
