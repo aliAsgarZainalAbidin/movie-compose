@@ -39,6 +39,7 @@ fun OverviewBody(modifier: Modifier = Modifier, scrollState: ScrollState) {
     overviewViewModel.repositor = Repository(restApi, AppDatabase.getDatabase(LocalContext.current))
 
     var listPeople = overviewViewModel.getPopularPeople().observeAsState()
+    var listTrending = overviewViewModel.getTrendingMovies().observeAsState()
 
     Column(
         modifier = modifier
@@ -82,8 +83,8 @@ fun OverviewBody(modifier: Modifier = Modifier, scrollState: ScrollState) {
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(horizontal = 16.dp)
             ) {
-                items(4) {
-                    LazyRowItem()
+                items(listTrending.value?.size ?: 0) { index ->
+                    listTrending.value?.get(index)?.let { LazyRowItem(movie = it) }
                 }
             }
 

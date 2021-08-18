@@ -1,11 +1,11 @@
 package com.example.movie_app_compose.api
 
 import com.example.movie_app_compose.model.Movie
-import com.example.movie_app_compose.model.People
+import com.example.movie_app_compose.model.entity.People
 import com.example.movie_app_compose.model.RequestWrapper
 import com.example.movie_app_compose.model.Root
+import com.example.movie_app_compose.model.entity.Trending
 import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.http.*
 
 interface ApiInterface {

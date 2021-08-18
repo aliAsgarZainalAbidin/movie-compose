@@ -1,11 +1,10 @@
 package com.example.movie_app_compose.data.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.movie_app_compose.model.People
+import com.example.movie_app_compose.model.entity.People
 
 @Dao
 interface PersonDao {

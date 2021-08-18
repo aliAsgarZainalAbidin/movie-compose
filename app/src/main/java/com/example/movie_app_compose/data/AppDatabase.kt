@@ -6,7 +6,10 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.movie_app_compose.data.dao.PersonDao
+import com.example.movie_app_compose.data.dao.TrendingDao
 import com.example.movie_app_compose.model.*
+import com.example.movie_app_compose.model.entity.People
+import com.example.movie_app_compose.model.entity.Trending
 
 @Database(
     entities = arrayOf(
@@ -14,13 +17,15 @@ import com.example.movie_app_compose.model.*
         Genre::class,
         KnownFor::class,
         Movie::class,
-        TvShow::class
+        TvShow::class,
+        Trending::class
     ), version = 1,
     exportSchema = false
 )
 @TypeConverters(value = arrayOf(Converters::class))
 abstract class AppDatabase : RoomDatabase() {
     abstract fun PersonDao(): PersonDao
+    abstract fun TrendingDao(): TrendingDao
 
     companion object {
         @Volatile

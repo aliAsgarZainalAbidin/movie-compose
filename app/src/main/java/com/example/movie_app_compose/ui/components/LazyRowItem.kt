@@ -21,12 +21,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import coil.compose.rememberImagePainter
+import com.example.movie_app_compose.BuildConfig
 import com.example.movie_app_compose.R
+import com.example.movie_app_compose.model.Movie
+import com.example.movie_app_compose.model.entity.Trending
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 import com.example.movie_app_compose.ui.theme.*
 
 @Composable
-fun LazyRowItem(modifier: Modifier = Modifier) {
+fun LazyRowItem(modifier: Modifier = Modifier, movie: Movie? = null) {
     ConstraintLayout {
         val (tvTitle, tvReleaseDate, rating, surfaceImage) = createRefs()
         Surface(
@@ -38,7 +42,9 @@ fun LazyRowItem(modifier: Modifier = Modifier) {
                 }
         ) {
             Image(
-                painter = painterResource(R.drawable.sample_foto),
+                painter = rememberImagePainter(
+                    data = "${BuildConfig.BASE_IMAGE_URL}${movie?.posterPath}"
+                ),
                 contentDescription = null,
                 modifier = modifier
                     .width(184.dp)
@@ -48,7 +54,7 @@ fun LazyRowItem(modifier: Modifier = Modifier) {
         }
 
         TextComponent(
-            "Fast and Furios Nine asdasdasd asdasdas as",
+            "${movie?.title}",
             style = MaterialTheme.typography.subtitle1,
             fontWeight = FontWeight.Bold,
             modifier = modifier
@@ -60,7 +66,7 @@ fun LazyRowItem(modifier: Modifier = Modifier) {
         )
 
         TextComponent(
-            "19-08-2021",
+            "${movie?.releaseDate}",
             style = MaterialTheme.typography.caption,
             modifier = modifier
                 .constrainAs(tvReleaseDate) {
@@ -69,7 +75,7 @@ fun LazyRowItem(modifier: Modifier = Modifier) {
                 }
         )
 
-        val progress by remember { mutableStateOf(0.78f) }
+        val progress by remember { mutableStateOf(movie?.voteAvarage?.div(10)?.toFloat() ?: 0f) }
         val animatedProgress by animateFloatAsState(
             targetValue = progress,
             animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
@@ -118,6 +124,6 @@ fun LazyRowItem(modifier: Modifier = Modifier) {
 @Composable
 fun PreviewLazyRowItem() {
     MovieAppComposeTheme {
-        LazyRowItem()
+        LazyRowItem(movie = Movie())
     }
 }

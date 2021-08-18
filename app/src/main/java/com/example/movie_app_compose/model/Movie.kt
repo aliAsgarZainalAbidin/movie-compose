@@ -22,10 +22,10 @@ data class Movie(
 
     @ColumnInfo(name = "genre_ids")
     @field:SerializedName("genre_ids")
-    var genreIds : List<Genre>? = listOf(),
+    var genreIds : List<Int>? = listOf(),
 
-    @ColumnInfo(name = "vote_counts")
-    @field:SerializedName("vote_counts")
+    @ColumnInfo(name = "vote_count")
+    @field:SerializedName("vote_count")
     var voteCounts : Int? = -1,
 
     @ColumnInfo(name = "original_language")
@@ -49,8 +49,8 @@ data class Movie(
     @field:SerializedName("id")
     var id : Int? = -1,
 
-    @ColumnInfo(name = "vote_avarage")
-    @field:SerializedName("vote_avarage")
+    @ColumnInfo(name = "vote_average")
+    @field:SerializedName("vote_average")
     var voteAvarage : Double? = 0.0,
 
     @ColumnInfo(name = "title")
@@ -66,7 +66,7 @@ data class Movie(
     var popularity : Double? = 0.0,
 
     @ColumnInfo(name = "mediaType")
-    @field:SerializedName("mediaType")
+    @field:SerializedName("media_type")
     var mediaType : String? = ""
 )
 

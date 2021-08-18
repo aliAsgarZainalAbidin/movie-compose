@@ -1,10 +1,10 @@
-package com.example.movie_app_compose.model
+package com.example.movie_app_compose.model.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.movie_app_compose.model.KnownFor
 import com.google.gson.annotations.SerializedName
-import java.util.*
 
 @Entity
 data class People(

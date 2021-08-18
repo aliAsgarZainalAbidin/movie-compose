@@ -1,20 +1,20 @@
 package com.example.movie_app_compose.data
 
-import android.app.Person
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.movie_app_compose.BuildConfig
 import com.example.movie_app_compose.BuildConfig.API
 import com.example.movie_app_compose.BuildConfig.TAG
 import com.example.movie_app_compose.api.ApiInterface
-import com.example.movie_app_compose.model.People
+import com.example.movie_app_compose.model.Movie
+import com.example.movie_app_compose.model.entity.People
 import com.example.movie_app_compose.model.RequestWrapper
 import com.example.movie_app_compose.model.Root
+import com.example.movie_app_compose.model.entity.Trending
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,6 +27,7 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
     private var sessionId: String = ""
     private var isLogin: Boolean = false
     private lateinit var mutableLiveDataPeople: MutableLiveData<List<People>>
+    private lateinit var mLiveDataTrendingMovie: MutableLiveData<List<Movie>>
     private lateinit var people: ArrayList<People>
 
     fun createRequestToken(context: Context): String {
@@ -109,7 +110,7 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
 
                     CoroutineScope(Dispatchers.IO).launch {
                         people.addAll(appDatabase.PersonDao().getAllPerson())
-                        if (people == remoteListPerson){
+                        if (people == remoteListPerson) {
                             // Autosort database membuat block code ini tidak pernah running
                             Log.d(TAG, "onResponse: OPSI 1")
                             mutableLiveDataPeople.postValue(people)
@@ -138,6 +139,43 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
 
     fun getAllPeople(): LiveData<List<People>> {
         return mutableLiveDataPeople
+    }
+
+    fun requestTrendingMovie() {
+        mLiveDataTrendingMovie = MutableLiveData()
+        var movies = ArrayList<Movie>()
+        var remoteMovies = ArrayList<Movie>()
+        val result = apiInterface.getTrendingMovies(API)
+        result.enqueue(object : Callback<Root<Movie>> {
+            override fun onResponse(
+                call: Call<Root<Movie>>,
+                response: Response<Root<Movie>>
+            ) {
+                if (response.isSuccessful) {
+                    val data = response.body()
+                    data?.results?.let { remoteMovies.addAll(it) }
+                    CoroutineScope(Dispatchers.IO).launch {
+                        appDatabase.TrendingDao().insertAll(remoteMovies)
+                        mLiveDataTrendingMovie.postValue(remoteMovies)
+                    }
+                } else {
+                    Log.d(TAG, "onResponse: Failed $response")
+                }
+            }
+
+            override fun onFailure(call: Call<Root<Movie>>, t: Throwable) {
+                Log.d(TAG, "onFailure: $t")
+                CoroutineScope(Dispatchers.IO).launch {
+                    movies.addAll(appDatabase.TrendingDao().getTrending())
+                    mLiveDataTrendingMovie.postValue(movies)
+                }
+            }
+
+        })
+    }
+
+    fun getTrending():LiveData<List<Movie>>{
+        return mLiveDataTrendingMovie
     }
 
 }
