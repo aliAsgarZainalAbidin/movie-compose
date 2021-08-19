@@ -86,8 +86,8 @@ fun Movie(modifier: Modifier = Modifier, scrollState: ScrollState) {
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(horizontal = 16.dp)
             ) {
-                items(4) {
-                    LazyRowItem()
+                items(listNowPlaying.value?.size ?: 0) { index ->
+                    listNowPlaying.value?.get(index)?.let { LazyRowItem(movie = it) }
                 }
             }
 
