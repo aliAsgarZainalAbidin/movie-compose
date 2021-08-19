@@ -4,12 +4,12 @@ import androidx.room.ColumnInfo
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
-abstract class TvShow : BaseModel() {
-    abstract override var voteAverage : Float?
-    abstract override var backdropPath: String?
-    abstract override var firstAirDate: String?
-    abstract override var posterPath: String?
-    abstract override var name: String?
+abstract class TvShow {
+    abstract var voteAverage : Float?
+    abstract var backdropPath: String?
+    abstract var firstAirDate: String?
+    abstract var posterPath: String?
+    abstract var name: String?
     abstract var genres: List<Int>
     abstract var language: String?
     abstract var overview: String?

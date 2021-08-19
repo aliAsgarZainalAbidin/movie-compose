@@ -26,7 +26,7 @@ import com.example.movie_app_compose.ui.theme.*
 import com.example.movie_app_compose.util.Movie
 
 @Composable
-fun LazyRowItem(modifier: Modifier = Modifier, movie: Movie? = null) {
+fun LazyRowItem(modifier: Modifier = Modifier, imageUrl : String = "", title : String = "", date : String = "", voteAverage : Float = 0f ) {
     ConstraintLayout {
         val (tvTitle, tvReleaseDate, rating, surfaceImage) = createRefs()
         Surface(
@@ -38,9 +38,7 @@ fun LazyRowItem(modifier: Modifier = Modifier, movie: Movie? = null) {
                 }
         ) {
             Image(
-                painter = rememberImagePainter(
-                    data = "${BuildConfig.BASE_IMAGE_URL}${movie?.posterPath}"
-                ),
+                painter = rememberImagePainter(data = imageUrl),
                 contentDescription = null,
                 modifier = modifier
                     .width(184.dp)
@@ -50,7 +48,7 @@ fun LazyRowItem(modifier: Modifier = Modifier, movie: Movie? = null) {
         }
 
         TextComponent(
-            "${movie?.title}",
+            title,
             style = MaterialTheme.typography.subtitle1,
             fontWeight = FontWeight.Bold,
             modifier = modifier
@@ -62,7 +60,7 @@ fun LazyRowItem(modifier: Modifier = Modifier, movie: Movie? = null) {
         )
 
         TextComponent(
-            "${movie?.releaseDate}",
+            date,
             style = MaterialTheme.typography.caption,
             modifier = modifier
                 .constrainAs(tvReleaseDate) {
@@ -71,7 +69,7 @@ fun LazyRowItem(modifier: Modifier = Modifier, movie: Movie? = null) {
                 }
         )
 
-        val progress by remember { mutableStateOf(movie?.voteAverage?.div(10)?.toFloat() ?: 0f) }
+        val progress by remember { mutableStateOf(voteAverage.div(10)) }
         val animatedProgress by animateFloatAsState(
             targetValue = progress,
             animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
@@ -120,6 +118,6 @@ fun LazyRowItem(modifier: Modifier = Modifier, movie: Movie? = null) {
 @Composable
 fun PreviewLazyRowItem() {
     MovieAppComposeTheme {
-        LazyRowItem(movie = Trending())
+        LazyRowItem()
     }
 }

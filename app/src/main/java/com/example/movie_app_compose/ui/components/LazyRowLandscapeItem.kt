@@ -22,34 +22,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.rememberImagePainter
-import com.example.movie_app_compose.BuildConfig
-import com.example.movie_app_compose.data.entity.OnTheAir
 import com.example.movie_app_compose.ui.theme.DarkBlue900
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
-import com.example.movie_app_compose.util.BaseModel
-import com.example.movie_app_compose.util.Movie
-import com.example.movie_app_compose.util.TvShow
 
 @Composable
-fun LazyRowLandscapeItem(modifier: Modifier = Modifier, data: BaseModel? = null) {
-    val title: String
-    val date: String
-
-    when (data) {
-        is Movie -> {
-            title = data.title.toString()
-            date = data.releaseDate.toString()
-        }
-        is TvShow -> {
-            title = data.name.toString()
-            date = data.firstAirDate.toString()
-        }
-        else -> {
-            title = ""
-            date = ""
-        }
-    }
-
+fun LazyRowLandscapeItem(
+    modifier: Modifier = Modifier,
+    imageUrl: String = "",
+    title: String = "",
+    date: String = "",
+    voteAverage: Float = 0f
+) {
     ConstraintLayout(modifier = modifier) {
         val (tvTitle, tvReleaseDate, rating, surfaceImage) = createRefs()
 
@@ -60,7 +43,7 @@ fun LazyRowLandscapeItem(modifier: Modifier = Modifier, data: BaseModel? = null)
             }) {
             Image(
                 painter = rememberImagePainter(
-                    data = "${BuildConfig.BASE_IMAGE_URL}${data?.backdropPath}"
+                    data = imageUrl
                 ),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
@@ -92,7 +75,7 @@ fun LazyRowLandscapeItem(modifier: Modifier = Modifier, data: BaseModel? = null)
                 }
         )
 
-        val progress by remember { mutableStateOf(data?.voteAverage?.div(10)?.toFloat() ?: 0f) }
+        val progress by remember { mutableStateOf(voteAverage.div(10)) }
         val animatedProgress by animateFloatAsState(
             targetValue = progress,
             animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec

@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.movie_app_compose.BuildConfig
 import com.example.movie_app_compose.api.ApiFactory
 import com.example.movie_app_compose.data.AppDatabase
 import com.example.movie_app_compose.data.Repository
@@ -85,7 +86,17 @@ fun OverviewBody(modifier: Modifier = Modifier, scrollState: ScrollState) {
                 contentPadding = PaddingValues(horizontal = 16.dp)
             ) {
                 items(listTrending.value?.size ?: 0) { index ->
-                    listTrending.value?.get(index)?.let { LazyRowItem(movie = it) }
+                    val data = listTrending.value?.get(index)
+                    val title = data?.title ?: ""
+                    val imageUrl = "${BuildConfig.BASE_IMAGE_URL}${data?.posterPath}"
+                    val date = data?.releaseDate ?: ""
+                    val voteAverage = data?.voteAverage ?: 0f
+                    LazyRowItem(
+                        imageUrl = imageUrl,
+                        title = title,
+                        date = date,
+                        voteAverage = voteAverage
+                    )
                 }
             }
 
@@ -155,8 +166,18 @@ fun OverviewBody(modifier: Modifier = Modifier, scrollState: ScrollState) {
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(horizontal = 16.dp)
             ) {
-                items(listOnTheAir.value?.size ?: 0) {index ->
-                    LazyRowLandscapeItem(data = listOnTheAir.value?.get(index))
+                items(listOnTheAir.value?.size ?: 0) { index ->
+                    val data = listOnTheAir.value?.get(index)
+                    val title = data?.name ?: ""
+                    val imageUrl = "${BuildConfig.BASE_IMAGE_URL}${data?.backdropPath}"
+                    val date = data?.firstAirDate ?: ""
+                    val voteAverage = data?.voteAverage ?: 0f
+                    LazyRowLandscapeItem(
+                        imageUrl = imageUrl,
+                        title = title,
+                        date = date,
+                        voteAverage = voteAverage
+                    )
                 }
             }
 

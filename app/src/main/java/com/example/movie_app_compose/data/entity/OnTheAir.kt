@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName
 data class OnTheAir(
     @ColumnInfo(name = "vote_average")
     @field:SerializedName("vote_average")
-    override var voteAverage : Float? = 0.0f,
+    override var voteAverage: Float? = 0.0f,
 
     @ColumnInfo(name = "backdrop_path")
     @field:SerializedName("backdrop_path")
@@ -48,7 +48,4 @@ data class OnTheAir(
     @ColumnInfo(name = "id")
     @field:SerializedName("id")
     override var id: Int? = -1,
-
-    override var releaseDate: String? = "",
-    override var title: String? = ""
 ) : TvShow()

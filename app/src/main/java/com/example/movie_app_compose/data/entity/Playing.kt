@@ -68,7 +68,4 @@ data class Playing(
     @ColumnInfo(name = "mediaType")
     @field:SerializedName("media_type")
     override var mediaType: String? = "",
-
-    override var name: String?,
-    override var firstAirDate: String?
 ) : Movie()

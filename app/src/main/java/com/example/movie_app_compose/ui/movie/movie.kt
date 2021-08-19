@@ -23,6 +23,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.dynamicanimation.animation.FlingAnimation
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.movie_app_compose.BuildConfig
 import com.example.movie_app_compose.api.ApiFactory
 import com.example.movie_app_compose.data.AppDatabase
 import com.example.movie_app_compose.data.Repository
@@ -87,7 +88,17 @@ fun Movie(modifier: Modifier = Modifier, scrollState: ScrollState) {
                 contentPadding = PaddingValues(horizontal = 16.dp)
             ) {
                 items(listNowPlaying.value?.size ?: 0) { index ->
-                    listNowPlaying.value?.get(index)?.let { LazyRowItem(movie = it) }
+                    val data = listNowPlaying.value?.get(index)
+                    val title = data?.title ?: ""
+                    val imageUrl = "${BuildConfig.BASE_IMAGE_URL}${data?.posterPath}"
+                    val date = data?.releaseDate ?: ""
+                    val voteAverage = data?.voteAverage ?: 0f
+                    LazyRowItem(
+                        imageUrl = imageUrl,
+                        title = title,
+                        date = date,
+                        voteAverage = voteAverage
+                    )
                 }
             }
 
