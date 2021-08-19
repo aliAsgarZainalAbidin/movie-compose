@@ -14,23 +14,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import coil.compose.rememberImagePainter
 import com.example.movie_app_compose.BuildConfig
-import com.example.movie_app_compose.R
-import com.example.movie_app_compose.model.Movie
-import com.example.movie_app_compose.model.entity.Trending
+import com.example.movie_app_compose.data.entity.Trending
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 import com.example.movie_app_compose.ui.theme.*
+import com.example.movie_app_compose.util.Movie
 
 @Composable
-fun LazyRowItem(modifier: Modifier = Modifier, movie: Trending? = null) {
+fun LazyRowItem(modifier: Modifier = Modifier, movie: Movie? = null) {
     ConstraintLayout {
         val (tvTitle, tvReleaseDate, rating, surfaceImage) = createRefs()
         Surface(

@@ -35,7 +35,7 @@ import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 @Composable
 fun OverviewBody(modifier: Modifier = Modifier, scrollState: ScrollState) {
     val restApi by lazy { ApiFactory.create() }
-    var overviewViewModel: OverviewViewModel = viewModel()
+    val overviewViewModel: OverviewViewModel = viewModel()
     overviewViewModel.repositor = Repository(restApi, AppDatabase.getDatabase(LocalContext.current))
 
     var listPeople = overviewViewModel.getPopularPeople().observeAsState()

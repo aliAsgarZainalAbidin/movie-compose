@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.movie_app_compose.model.entity.OnTheAir
+import com.example.movie_app_compose.data.entity.OnTheAir
 
 @Dao
 interface OnTheAirDao {

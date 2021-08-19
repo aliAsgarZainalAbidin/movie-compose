@@ -9,7 +9,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -20,6 +22,10 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.dynamicanimation.animation.FlingAnimation
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.movie_app_compose.api.ApiFactory
+import com.example.movie_app_compose.data.AppDatabase
+import com.example.movie_app_compose.data.Repository
 import com.example.movie_app_compose.ui.components.LazyRowCommonItem
 import com.example.movie_app_compose.ui.components.LazyRowItem
 import com.example.movie_app_compose.ui.components.LazyRowLandscapeItem
@@ -29,7 +35,18 @@ import com.example.movie_app_compose.ui.theme.Green600
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 
 @Composable
-fun Movie(modifier: Modifier = Modifier, scrollState : ScrollState) {
+fun Movie(modifier: Modifier = Modifier, scrollState: ScrollState) {
+    val restApi by lazy { ApiFactory.create() }
+    val movieViewModel: MovieViewModel = viewModel()
+    movieViewModel.repository = Repository(
+        apiInterface = restApi,
+        appDatabase = AppDatabase.getDatabase(
+            LocalContext.current
+        )
+    )
+
+    val listNowPlaying = movieViewModel.getPlayingMovies().observeAsState()
+
     Column(
         modifier = modifier
             .verticalScroll(scrollState)

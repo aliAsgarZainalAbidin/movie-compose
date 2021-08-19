@@ -5,11 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.movie_app_compose.BuildConfig.TAG
 import com.example.movie_app_compose.data.Repository
-import com.example.movie_app_compose.model.Movie
-import com.example.movie_app_compose.model.TvShow
-import com.example.movie_app_compose.model.entity.OnTheAir
-import com.example.movie_app_compose.model.entity.People
-import com.example.movie_app_compose.model.entity.Trending
+import com.example.movie_app_compose.data.entity.OnTheAir
+import com.example.movie_app_compose.data.entity.People
+import com.example.movie_app_compose.data.entity.Trending
 
 class OverviewViewModel : ViewModel() {
     lateinit var repositor : Repository
