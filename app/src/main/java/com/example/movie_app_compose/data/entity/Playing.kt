@@ -38,7 +38,7 @@ data class Playing(
 
     @ColumnInfo(name = "poster_path")
     @field:SerializedName("poster_path")
-    override var posterPath: String = "",
+    override var posterPath: String? = "",
 
     @ColumnInfo(name = "video")
     @field:SerializedName("video")
@@ -51,7 +51,7 @@ data class Playing(
 
     @ColumnInfo(name = "vote_average")
     @field:SerializedName("vote_average")
-    override var voteAvarage: Float? = 0.0f,
+    override var voteAverage: Float? = 0.0f,
 
     @ColumnInfo(name = "title")
     @field:SerializedName("title")
@@ -67,5 +67,8 @@ data class Playing(
 
     @ColumnInfo(name = "mediaType")
     @field:SerializedName("media_type")
-    override var mediaType: String? = ""
+    override var mediaType: String? = "",
+
+    override var name: String?,
+    override var firstAirDate: String?
 ) : Movie()

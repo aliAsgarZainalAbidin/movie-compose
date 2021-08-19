@@ -26,9 +26,30 @@ import com.example.movie_app_compose.BuildConfig
 import com.example.movie_app_compose.data.entity.OnTheAir
 import com.example.movie_app_compose.ui.theme.DarkBlue900
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
+import com.example.movie_app_compose.util.BaseModel
+import com.example.movie_app_compose.util.Movie
+import com.example.movie_app_compose.util.TvShow
 
 @Composable
-fun LazyRowLandscapeItem(modifier: Modifier = Modifier, onTheAir: OnTheAir? = null) {
+fun LazyRowLandscapeItem(modifier: Modifier = Modifier, data: BaseModel? = null) {
+    val title: String
+    val date: String
+
+    when (data) {
+        is Movie -> {
+            title = data.title.toString()
+            date = data.releaseDate.toString()
+        }
+        is TvShow -> {
+            title = data.name.toString()
+            date = data.firstAirDate.toString()
+        }
+        else -> {
+            title = ""
+            date = ""
+        }
+    }
+
     ConstraintLayout(modifier = modifier) {
         val (tvTitle, tvReleaseDate, rating, surfaceImage) = createRefs()
 
@@ -39,7 +60,7 @@ fun LazyRowLandscapeItem(modifier: Modifier = Modifier, onTheAir: OnTheAir? = nu
             }) {
             Image(
                 painter = rememberImagePainter(
-                    data = "${BuildConfig.BASE_IMAGE_URL}${onTheAir?.backdropPath}"
+                    data = "${BuildConfig.BASE_IMAGE_URL}${data?.backdropPath}"
                 ),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
@@ -50,7 +71,7 @@ fun LazyRowLandscapeItem(modifier: Modifier = Modifier, onTheAir: OnTheAir? = nu
         }
 
         TextComponent(
-            "${onTheAir?.name}",
+            title,
             style = MaterialTheme.typography.subtitle1,
             fontWeight = FontWeight.Bold,
             modifier = modifier
@@ -62,7 +83,7 @@ fun LazyRowLandscapeItem(modifier: Modifier = Modifier, onTheAir: OnTheAir? = nu
         )
 
         TextComponent(
-            "${onTheAir?.firstAirDate}",
+            date,
             style = MaterialTheme.typography.caption,
             modifier = modifier
                 .constrainAs(tvReleaseDate) {
@@ -71,7 +92,7 @@ fun LazyRowLandscapeItem(modifier: Modifier = Modifier, onTheAir: OnTheAir? = nu
                 }
         )
 
-        val progress by remember { mutableStateOf(onTheAir?.voteAverage?.div(10)?.toFloat() ?: 0f) }
+        val progress by remember { mutableStateOf(data?.voteAverage?.div(10)?.toFloat() ?: 0f) }
         val animatedProgress by animateFloatAsState(
             targetValue = progress,
             animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec

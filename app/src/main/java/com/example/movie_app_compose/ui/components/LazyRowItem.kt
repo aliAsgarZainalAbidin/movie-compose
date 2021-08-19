@@ -71,7 +71,7 @@ fun LazyRowItem(modifier: Modifier = Modifier, movie: Movie? = null) {
                 }
         )
 
-        val progress by remember { mutableStateOf(movie?.voteAvarage?.div(10)?.toFloat() ?: 0f) }
+        val progress by remember { mutableStateOf(movie?.voteAverage?.div(10)?.toFloat() ?: 0f) }
         val animatedProgress by animateFloatAsState(
             targetValue = progress,
             animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec

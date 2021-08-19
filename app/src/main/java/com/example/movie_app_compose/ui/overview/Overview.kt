@@ -156,7 +156,7 @@ fun OverviewBody(modifier: Modifier = Modifier, scrollState: ScrollState) {
                 contentPadding = PaddingValues(horizontal = 16.dp)
             ) {
                 items(listOnTheAir.value?.size ?: 0) {index ->
-                    LazyRowLandscapeItem(onTheAir = listOnTheAir.value?.get(index))
+                    LazyRowLandscapeItem(data = listOnTheAir.value?.get(index))
                 }
             }
 
