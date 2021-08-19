@@ -57,4 +57,9 @@ interface ApiInterface {
         apiKey: String = ""
     ) : Call<Root<Upcoming>>
 
+    @GET("movie/popular")
+    fun getPopularMovies(
+        @Query("api_key")
+        apiKey: String = ""
+    ) : Call<Root<PopularMovies>>
 }

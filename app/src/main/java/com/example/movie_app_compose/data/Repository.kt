@@ -30,6 +30,7 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
     private lateinit var mOnTheAir: MutableLiveData<List<OnTheAir>>
     private lateinit var mPlaying: MutableLiveData<List<Playing>>
     private lateinit var mUpcoming: MutableLiveData<List<Upcoming>>
+    private lateinit var mPopularMovies: MutableLiveData<List<PopularMovies>>
     private lateinit var people: ArrayList<People>
 
     fun createRequestToken(context: Context): String {
@@ -285,5 +286,42 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
 
     fun getUpcomingMovies(): LiveData<List<Upcoming>> {
         return mUpcoming
+    }
+
+    fun requestPopularMovies(){
+        mPopularMovies = MutableLiveData()
+        val popularMovies = ArrayList<PopularMovies>()
+        val remotePopularMovies = ArrayList<PopularMovies>()
+        val result = apiInterface.getPopularMovies(API)
+        result.enqueue(object : Callback<Root<PopularMovies>>{
+            override fun onResponse(
+                call: Call<Root<PopularMovies>>,
+                response: Response<Root<PopularMovies>>
+            ) {
+                if (response.isSuccessful){
+                    val data = response.body()
+                    data?.results?.let { remotePopularMovies.addAll(it) }
+                    CoroutineScope(Dispatchers.IO).launch {
+                        appDatabase.PopularMoviesDao().insertAll(remotePopularMovies)
+                        mPopularMovies.postValue(remotePopularMovies)
+                    }
+                } else {
+                    Log.d(TAG, "onResponse: $response")
+                }
+            }
+
+            override fun onFailure(call: Call<Root<PopularMovies>>, t: Throwable) {
+                Log.d(TAG, "onFailure: $t")
+                CoroutineScope(Dispatchers.IO).launch {
+                    popularMovies.addAll(appDatabase.PopularMoviesDao().getPopularMovies())
+                    mPopularMovies.postValue(popularMovies)
+                }
+            }
+
+        })
+    }
+
+    fun getPopularMovies(): LiveData<List<PopularMovies>>{
+        return mPopularMovies
     }
 }

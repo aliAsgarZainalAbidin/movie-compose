@@ -22,12 +22,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import coil.compose.rememberImagePainter
 import com.example.movie_app_compose.R
 import com.example.movie_app_compose.ui.theme.DarkBlue900
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 
 @Composable
-fun LazyRowCommonItem(modifier: Modifier = Modifier) {
+fun LazyRowCommonItem(
+    modifier: Modifier = Modifier,
+    imageUrl: String = "",
+    title: String = "",
+    date: String = "",
+    voteAverage: Float = 0f
+) {
     ConstraintLayout {
         val (tvTitle, tvReleaseDate, rating, surfaceImage) = createRefs()
         Surface(
@@ -39,7 +46,9 @@ fun LazyRowCommonItem(modifier: Modifier = Modifier) {
                 }
         ) {
             Image(
-                painter = painterResource(R.drawable.sample_foto),
+                painter = rememberImagePainter(
+                    data = imageUrl
+                ),
                 contentDescription = null,
                 modifier = modifier
                     .width(123.dp)
@@ -49,7 +58,7 @@ fun LazyRowCommonItem(modifier: Modifier = Modifier) {
         }
 
         TextComponent(
-            "Fast and Furios Nine asdasdasd asdasdas as",
+            title,
             style = MaterialTheme.typography.subtitle1,
             fontWeight = FontWeight.Bold,
             modifier = modifier
@@ -61,7 +70,7 @@ fun LazyRowCommonItem(modifier: Modifier = Modifier) {
         )
 
         TextComponent(
-            "19-08-2021",
+            date,
             style = MaterialTheme.typography.caption,
             modifier = modifier
                 .constrainAs(tvReleaseDate) {
@@ -70,7 +79,7 @@ fun LazyRowCommonItem(modifier: Modifier = Modifier) {
                 }
         )
 
-        val progress by remember { mutableStateOf(0.78f) }
+        val progress by remember { mutableStateOf(voteAverage.div(10)) }
         val animatedProgress by animateFloatAsState(
             targetValue = progress,
             animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec

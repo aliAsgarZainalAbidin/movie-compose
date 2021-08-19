@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.movie_app_compose.data.Repository
 import com.example.movie_app_compose.data.entity.Playing
+import com.example.movie_app_compose.data.entity.PopularMovies
 import com.example.movie_app_compose.data.entity.Upcoming
 
 class MovieViewModel : ViewModel() {
@@ -17,5 +18,10 @@ class MovieViewModel : ViewModel() {
     fun getUpcomingMovies(): LiveData<List<Upcoming>>{
         repository.requestUpcoming()
         return repository.getUpcomingMovies()
+    }
+
+    fun getPopularMovies():LiveData<List<PopularMovies>>{
+        repository.requestPopularMovies()
+        return repository.getPopularMovies()
     }
 }
