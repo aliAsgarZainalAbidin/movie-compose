@@ -1,11 +1,8 @@
 package com.example.movie_app_compose.api
 
-import com.example.movie_app_compose.data.entity.People
+import com.example.movie_app_compose.data.entity.*
 import com.example.movie_app_compose.model.RequestWrapper
 import com.example.movie_app_compose.model.Root
-import com.example.movie_app_compose.data.entity.OnTheAir
-import com.example.movie_app_compose.data.entity.Playing
-import com.example.movie_app_compose.data.entity.Trending
 import com.example.movie_app_compose.util.Movie
 import retrofit2.Call
 import retrofit2.http.*
@@ -53,4 +50,11 @@ interface ApiInterface {
         @Query("api_key")
         apiKey: String = ""
     ) : Call<Root<Playing>>
+
+    @GET("movie/upcoming")
+    fun getUpcoming(
+        @Query("api_key")
+        apiKey: String = ""
+    ) : Call<Root<Upcoming>>
+
 }

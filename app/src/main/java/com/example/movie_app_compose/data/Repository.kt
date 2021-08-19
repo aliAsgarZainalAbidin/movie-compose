@@ -10,12 +10,9 @@ import com.example.movie_app_compose.BuildConfig
 import com.example.movie_app_compose.BuildConfig.API
 import com.example.movie_app_compose.BuildConfig.TAG
 import com.example.movie_app_compose.api.ApiInterface
-import com.example.movie_app_compose.data.entity.People
+import com.example.movie_app_compose.data.entity.*
 import com.example.movie_app_compose.model.RequestWrapper
 import com.example.movie_app_compose.model.Root
-import com.example.movie_app_compose.data.entity.OnTheAir
-import com.example.movie_app_compose.data.entity.Playing
-import com.example.movie_app_compose.data.entity.Trending
 import com.example.movie_app_compose.util.Movie
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +28,8 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
     private lateinit var mutableLiveDataPeople: MutableLiveData<List<People>>
     private lateinit var mLiveDataTrendingMovie: MutableLiveData<List<Trending>>
     private lateinit var mOnTheAir: MutableLiveData<List<OnTheAir>>
-    private lateinit var mPlaying : MutableLiveData<List<Playing>>
+    private lateinit var mPlaying: MutableLiveData<List<Playing>>
+    private lateinit var mUpcoming: MutableLiveData<List<Upcoming>>
     private lateinit var people: ArrayList<People>
 
     fun createRequestToken(context: Context): String {
@@ -219,14 +217,14 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
         return mOnTheAir
     }
 
-    fun requestPlayingMovies(){
+    fun requestPlayingMovies() {
         mPlaying = MutableLiveData()
         var playingMovies = ArrayList<Playing>()
         var remotePlayingMovies = ArrayList<Playing>()
         val result = apiInterface.getNowPlaying(API)
-        result.enqueue(object : Callback<Root<Playing>>{
+        result.enqueue(object : Callback<Root<Playing>> {
             override fun onResponse(call: Call<Root<Playing>>, response: Response<Root<Playing>>) {
-                if (response.isSuccessful){
+                if (response.isSuccessful) {
                     val data = response.body()
                     data?.results?.let { remotePlayingMovies.addAll(it) }
                     CoroutineScope(Dispatchers.IO).launch {
@@ -248,7 +246,44 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
         })
     }
 
-    fun getPlayingMovies(): LiveData<List<Playing>>{
+    fun getPlayingMovies(): LiveData<List<Playing>> {
         return mPlaying
+    }
+
+    fun requestUpcoming() {
+        mUpcoming = MutableLiveData()
+        val upcoming = ArrayList<Upcoming>()
+        val remoteUpcoming = ArrayList<Upcoming>()
+        val result = apiInterface.getUpcoming(API)
+        result.enqueue(object : Callback<Root<Upcoming>> {
+            override fun onResponse(
+                call: Call<Root<Upcoming>>,
+                response: Response<Root<Upcoming>>
+            ) {
+                if (response.isSuccessful) {
+                    val data = response.body()
+                    data?.results?.let { remoteUpcoming.addAll(it) }
+                    CoroutineScope(Dispatchers.IO).launch {
+                        appDatabase.UpcomingDao().insertAll(remoteUpcoming)
+                        mUpcoming.postValue(remoteUpcoming)
+                    }
+                } else {
+                    Log.d(TAG, "onResponse: $response")
+                }
+            }
+
+            override fun onFailure(call: Call<Root<Upcoming>>, t: Throwable) {
+                Log.d(TAG, "onFailure: $t")
+                CoroutineScope(Dispatchers.IO).launch {
+                    upcoming.addAll(appDatabase.UpcomingDao().getUpcoming())
+                    mUpcoming.postValue(upcoming)
+                }
+            }
+
+        })
+    }
+
+    fun getUpcomingMovies(): LiveData<List<Upcoming>> {
+        return mUpcoming
     }
 }
