@@ -7,7 +7,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -17,6 +19,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.movie_app_compose.BuildConfig
+import com.example.movie_app_compose.api.ApiFactory
+import com.example.movie_app_compose.api.ApiInterface
+import com.example.movie_app_compose.data.AppDatabase
+import com.example.movie_app_compose.data.Repository
 import com.example.movie_app_compose.ui.components.LazyRowCommonItem
 import com.example.movie_app_compose.ui.components.LazyRowItem
 import com.example.movie_app_compose.ui.components.LazyRowLandscapeItem
@@ -25,6 +33,12 @@ import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 
 @Composable
 fun Tv(modifier: Modifier = Modifier, scrollState: ScrollState) {
+    val restApi by lazy { ApiFactory.create() }
+    val appDatabase = AppDatabase.getDatabase(LocalContext.current)
+    val tvViewModel: TvViewModel = viewModel()
+    tvViewModel.repository = Repository(apiInterface = restApi, appDatabase = appDatabase)
+    val listOnTheAir = tvViewModel.getOnTheAir().observeAsState()
+
     Column(
         modifier = modifier
             .verticalScroll(scrollState)
@@ -64,8 +78,18 @@ fun Tv(modifier: Modifier = Modifier, scrollState: ScrollState) {
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(horizontal = 16.dp)
             ) {
-                items(4) {
-                    LazyRowLandscapeItem()
+                items(listOnTheAir.value?.size ?: 0) { index ->
+                    val data = listOnTheAir.value?.get(index)
+                    val title = data?.name ?: ""
+                    val imageUrl = "${BuildConfig.BASE_IMAGE_URL}${data?.backdropPath}" ?: ""
+                    val date = data?.firstAirDate ?: ""
+                    val voteAverage = data?.voteAverage ?: 0f
+                    LazyRowLandscapeItem(
+                        imageUrl = imageUrl,
+                        title = title,
+                        date = date,
+                        voteAverage = voteAverage
+                    )
                 }
             }
 
