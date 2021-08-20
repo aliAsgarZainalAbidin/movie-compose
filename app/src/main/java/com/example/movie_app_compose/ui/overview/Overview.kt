@@ -88,7 +88,7 @@ fun OverviewBody(modifier: Modifier = Modifier, scrollState: ScrollState) {
                 items(listTrending.value?.size ?: 0) { index ->
                     val data = listTrending.value?.get(index)
                     val title = data?.title ?: ""
-                    val imageUrl = "${BuildConfig.BASE_IMAGE_URL}${data?.posterPath}"
+                    val imageUrl = data?.posterPath ?: ""
                     val date = data?.releaseDate ?: ""
                     val voteAverage = data?.voteAverage ?: 0f
                     LazyRowItem(
@@ -169,7 +169,7 @@ fun OverviewBody(modifier: Modifier = Modifier, scrollState: ScrollState) {
                 items(listOnTheAir.value?.size ?: 0) { index ->
                     val data = listOnTheAir.value?.get(index)
                     val title = data?.name ?: ""
-                    val imageUrl = "${BuildConfig.BASE_IMAGE_URL}${data?.backdropPath}"
+                    val imageUrl = data?.backdropPath ?: ""
                     val date = data?.firstAirDate ?: ""
                     val voteAverage = data?.voteAverage ?: 0f
                     LazyRowLandscapeItem(

@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.rememberImagePainter
+import com.example.movie_app_compose.BuildConfig
 import com.example.movie_app_compose.R
 import com.example.movie_app_compose.ui.theme.DarkBlue900
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
@@ -47,7 +48,7 @@ fun LazyRowCommonItem(
         ) {
             Image(
                 painter = rememberImagePainter(
-                    data = imageUrl
+                    data = "${BuildConfig.BASE_IMAGE_URL}$imageUrl"
                 ),
                 contentDescription = null,
                 modifier = modifier

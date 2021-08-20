@@ -38,7 +38,7 @@ fun LazyRowItem(modifier: Modifier = Modifier, imageUrl : String = "", title : S
                 }
         ) {
             Image(
-                painter = rememberImagePainter(data = imageUrl),
+                painter = rememberImagePainter(data = "${BuildConfig.BASE_IMAGE_URL}$imageUrl"),
                 contentDescription = null,
                 modifier = modifier
                     .width(184.dp)

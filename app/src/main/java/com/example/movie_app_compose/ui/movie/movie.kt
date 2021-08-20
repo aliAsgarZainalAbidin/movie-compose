@@ -92,7 +92,7 @@ fun Movie(modifier: Modifier = Modifier, scrollState: ScrollState) {
                 items(listNowPlaying.value?.size ?: 0) { index ->
                     val data = listNowPlaying.value?.get(index)
                     val title = data?.title ?: ""
-                    val imageUrl = "${BuildConfig.BASE_IMAGE_URL}${data?.posterPath}"
+                    val imageUrl = data?.posterPath ?: ""
                     val date = data?.releaseDate ?: ""
                     val voteAverage = data?.voteAverage ?: 0f
                     LazyRowItem(
@@ -135,7 +135,7 @@ fun Movie(modifier: Modifier = Modifier, scrollState: ScrollState) {
                 items(listUpcoming.value?.size ?: 0) { index ->
                     val data = listUpcoming.value?.get(index)
                     val title = data?.title ?: ""
-                    val imageUrl = "${BuildConfig.BASE_IMAGE_URL}${data?.posterPath}"
+                    val imageUrl = data?.posterPath ?: ""
                     val date = data?.releaseDate ?: ""
                     val voteAverage = data?.voteAverage ?: 0f
                     LazyRowLandscapeItem(
@@ -178,7 +178,7 @@ fun Movie(modifier: Modifier = Modifier, scrollState: ScrollState) {
                 items(listPopularMovies.value?.size ?: 0) { index ->
                     val data = listPopularMovies.value?.get(index)
                     val title = data?.title ?: ""
-                    val imageUrl = "${BuildConfig.BASE_IMAGE_URL}${data?.posterPath}"
+                    val imageUrl = data?.posterPath ?: ""
                     val date = data?.releaseDate ?: ""
                     val voteAverage = data?.voteAverage ?: 0f
                     LazyRowCommonItem(

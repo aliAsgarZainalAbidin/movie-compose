@@ -81,7 +81,7 @@ fun Tv(modifier: Modifier = Modifier, scrollState: ScrollState) {
                 items(listOnTheAir.value?.size ?: 0) { index ->
                     val data = listOnTheAir.value?.get(index)
                     val title = data?.name ?: ""
-                    val imageUrl = "${BuildConfig.BASE_IMAGE_URL}${data?.backdropPath}" ?: ""
+                    val imageUrl = data?.backdropPath ?: ""
                     val date = data?.firstAirDate ?: ""
                     val voteAverage = data?.voteAverage ?: 0f
                     LazyRowLandscapeItem(
