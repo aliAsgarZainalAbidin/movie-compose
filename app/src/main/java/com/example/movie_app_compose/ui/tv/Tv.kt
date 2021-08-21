@@ -166,8 +166,8 @@ fun Tv(modifier: Modifier = Modifier, scrollState: ScrollState) {
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(horizontal = 16.dp)
             ) {
-                items(listAiringToday.value?.size ?: 0) { index ->
-                    val data = listAiringToday.value?.get(index)
+                items(listPopularTv.value?.size ?: 0) { index ->
+                    val data = listPopularTv.value?.get(index)
                     val title = data?.name ?: ""
                     val imageUrl = data?.posterPath ?: ""
                     val date = data?.firstAirDate ?: ""
