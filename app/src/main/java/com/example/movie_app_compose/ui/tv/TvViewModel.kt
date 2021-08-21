@@ -3,6 +3,7 @@ package com.example.movie_app_compose.ui.tv
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.movie_app_compose.data.Repository
+import com.example.movie_app_compose.data.entity.AiringToday
 import com.example.movie_app_compose.data.entity.OnTheAir
 
 class TvViewModel : ViewModel() {
@@ -11,5 +12,10 @@ class TvViewModel : ViewModel() {
     fun getOnTheAir(): LiveData<List<OnTheAir>> {
         repository.requestOnTheAir()
         return repository.getOnTheAir()
+    }
+
+    fun getAiringToday(): LiveData<List<AiringToday>>{
+        repository.requestAiringToday()
+        return repository.getAiringToday()
     }
 }

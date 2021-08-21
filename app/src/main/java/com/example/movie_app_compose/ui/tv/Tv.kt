@@ -38,6 +38,7 @@ fun Tv(modifier: Modifier = Modifier, scrollState: ScrollState) {
     val tvViewModel: TvViewModel = viewModel()
     tvViewModel.repository = Repository(apiInterface = restApi, appDatabase = appDatabase)
     val listOnTheAir = tvViewModel.getOnTheAir().observeAsState()
+    val listAiringToday = tvViewModel.getAiringToday().observeAsState()
 
     Column(
         modifier = modifier
@@ -121,8 +122,18 @@ fun Tv(modifier: Modifier = Modifier, scrollState: ScrollState) {
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(horizontal = 16.dp)
             ) {
-                items(4) {
-                    LazyRowLandscapeItem()
+                items(listAiringToday.value?.size ?: 0) { index ->
+                    val data = listAiringToday.value?.get(index)
+                    val title = data?.name ?: ""
+                    val imageUrl = data?.backdropPath ?: ""
+                    val date = data?.firstAirDate ?: ""
+                    val voteAverage = data?.voteAverage ?: 0f
+                    LazyRowLandscapeItem(
+                        imageUrl = imageUrl,
+                        title = title,
+                        date = date,
+                        voteAverage = voteAverage
+                    )
                 }
             }
 
