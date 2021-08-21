@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.example.movie_app_compose.data.Repository
 import com.example.movie_app_compose.data.entity.AiringToday
 import com.example.movie_app_compose.data.entity.OnTheAir
+import com.example.movie_app_compose.data.entity.PopularTv
 
 class TvViewModel : ViewModel() {
     lateinit var repository: Repository
@@ -17,5 +18,10 @@ class TvViewModel : ViewModel() {
     fun getAiringToday(): LiveData<List<AiringToday>>{
         repository.requestAiringToday()
         return repository.getAiringToday()
+    }
+
+    fun getPopularTv(): LiveData<List<PopularTv>>{
+        repository.requestPopularTvShow()
+        return repository.getPopularTvShow()
     }
 }

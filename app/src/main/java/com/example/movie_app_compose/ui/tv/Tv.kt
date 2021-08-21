@@ -39,6 +39,7 @@ fun Tv(modifier: Modifier = Modifier, scrollState: ScrollState) {
     tvViewModel.repository = Repository(apiInterface = restApi, appDatabase = appDatabase)
     val listOnTheAir = tvViewModel.getOnTheAir().observeAsState()
     val listAiringToday = tvViewModel.getAiringToday().observeAsState()
+    val listPopularTv = tvViewModel.getPopularTv().observeAsState()
 
     Column(
         modifier = modifier
@@ -165,8 +166,18 @@ fun Tv(modifier: Modifier = Modifier, scrollState: ScrollState) {
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(horizontal = 16.dp)
             ) {
-                items(4) {
-                    LazyRowCommonItem()
+                items(listAiringToday.value?.size ?: 0) { index ->
+                    val data = listAiringToday.value?.get(index)
+                    val title = data?.name ?: ""
+                    val imageUrl = data?.posterPath ?: ""
+                    val date = data?.firstAirDate ?: ""
+                    val voteAverage = data?.voteAverage ?: 0f
+                    LazyRowCommonItem(
+                        imageUrl = imageUrl,
+                        title = title,
+                        date = date,
+                        voteAverage = voteAverage
+                    )
                 }
             }
 
