@@ -31,6 +31,7 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
     private lateinit var mPlaying: MutableLiveData<List<Playing>>
     private lateinit var mUpcoming: MutableLiveData<List<Upcoming>>
     private lateinit var mPopularMovies: MutableLiveData<List<PopularMovies>>
+    private lateinit var mAiringToday : MutableLiveData<List<AiringToday>>
     private lateinit var people: ArrayList<People>
 
     fun createRequestToken(context: Context): String {
@@ -323,5 +324,41 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
 
     fun getPopularMovies(): LiveData<List<PopularMovies>>{
         return mPopularMovies
+    }
+
+    fun requestAiringToday(){
+        mAiringToday = MutableLiveData()
+        val airingToday = ArrayList<AiringToday>()
+        val remoteAiringToday = ArrayList<AiringToday>()
+        val result = apiInterface.getAiringToday(API)
+        result.enqueue(object : Callback<Root<AiringToday>>{
+            override fun onResponse(
+                call: Call<Root<AiringToday>>,
+                response: Response<Root<AiringToday>>
+            ) {
+                if (response.isSuccessful){
+                    val data = response.body()
+                    CoroutineScope(Dispatchers.IO).launch {
+                        data?.results?.let { remoteAiringToday.addAll(it) }
+                        mAiringToday.postValue(remoteAiringToday)
+                    }
+                } else {
+                    Log.d(TAG, "onResponse: $response")
+                }
+            }
+
+            override fun onFailure(call: Call<Root<AiringToday>>, t: Throwable) {
+                Log.d(TAG, "onFailure: $t")
+                CoroutineScope(Dispatchers.IO).launch {
+                    airingToday.addAll(appDatabase.AiringTodayDao().getAllAiringToday())
+                    mAiringToday.postValue(airingToday)
+                }
+            }
+
+        })
+    }
+
+    fun getAiringToday(): LiveData<List<AiringToday>>{
+        return mAiringToday
     }
 }

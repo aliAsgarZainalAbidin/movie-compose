@@ -62,4 +62,10 @@ interface ApiInterface {
         @Query("api_key")
         apiKey: String = ""
     ) : Call<Root<PopularMovies>>
+
+    @GET("tv/airing_today")
+    fun getAiringToday(
+        @Query("api_key")
+        apiKey: String = ""
+    ) : Call<Root<AiringToday>>
 }
