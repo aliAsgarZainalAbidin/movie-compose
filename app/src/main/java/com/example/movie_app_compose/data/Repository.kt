@@ -31,7 +31,8 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
     private lateinit var mPlaying: MutableLiveData<List<Playing>>
     private lateinit var mUpcoming: MutableLiveData<List<Upcoming>>
     private lateinit var mPopularMovies: MutableLiveData<List<PopularMovies>>
-    private lateinit var mAiringToday : MutableLiveData<List<AiringToday>>
+    private lateinit var mAiringToday: MutableLiveData<List<AiringToday>>
+    private lateinit var mPopularTv: MutableLiveData<List<PopularTv>>
     private lateinit var people: ArrayList<People>
 
     fun createRequestToken(context: Context): String {
@@ -289,17 +290,17 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
         return mUpcoming
     }
 
-    fun requestPopularMovies(){
+    fun requestPopularMovies() {
         mPopularMovies = MutableLiveData()
         val popularMovies = ArrayList<PopularMovies>()
         val remotePopularMovies = ArrayList<PopularMovies>()
         val result = apiInterface.getPopularMovies(API)
-        result.enqueue(object : Callback<Root<PopularMovies>>{
+        result.enqueue(object : Callback<Root<PopularMovies>> {
             override fun onResponse(
                 call: Call<Root<PopularMovies>>,
                 response: Response<Root<PopularMovies>>
             ) {
-                if (response.isSuccessful){
+                if (response.isSuccessful) {
                     val data = response.body()
                     data?.results?.let { remotePopularMovies.addAll(it) }
                     CoroutineScope(Dispatchers.IO).launch {
@@ -322,24 +323,25 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
         })
     }
 
-    fun getPopularMovies(): LiveData<List<PopularMovies>>{
+    fun getPopularMovies(): LiveData<List<PopularMovies>> {
         return mPopularMovies
     }
 
-    fun requestAiringToday(){
+    fun requestAiringToday() {
         mAiringToday = MutableLiveData()
         val airingToday = ArrayList<AiringToday>()
         val remoteAiringToday = ArrayList<AiringToday>()
         val result = apiInterface.getAiringToday(API)
-        result.enqueue(object : Callback<Root<AiringToday>>{
+        result.enqueue(object : Callback<Root<AiringToday>> {
             override fun onResponse(
                 call: Call<Root<AiringToday>>,
                 response: Response<Root<AiringToday>>
             ) {
-                if (response.isSuccessful){
+                if (response.isSuccessful) {
                     val data = response.body()
+                    data?.results?.let { remoteAiringToday.addAll(it) }
                     CoroutineScope(Dispatchers.IO).launch {
-                        data?.results?.let { remoteAiringToday.addAll(it) }
+                        appDatabase.AiringTodayDao().inserAll(remoteAiringToday)
                         mAiringToday.postValue(remoteAiringToday)
                     }
                 } else {
@@ -358,7 +360,44 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
         })
     }
 
-    fun getAiringToday(): LiveData<List<AiringToday>>{
+    fun getAiringToday(): LiveData<List<AiringToday>> {
         return mAiringToday
+    }
+
+    fun requestPopularTvShow() {
+        mPopularTv = MutableLiveData()
+        val popularTv = ArrayList<PopularTv>()
+        val remotePopularTv = ArrayList<PopularTv>()
+        val result = apiInterface.getPopularTvShow(API)
+        result.enqueue(object : Callback<Root<PopularTv>> {
+            override fun onResponse(
+                call: Call<Root<PopularTv>>,
+                response: Response<Root<PopularTv>>
+            ) {
+                if (response.isSuccessful) {
+                    val data = response.body()
+                    data?.results?.let { remotePopularTv.addAll(it) }
+                    CoroutineScope(Dispatchers.IO).launch {
+                        appDatabase.PopularTvDao().inserAll(remotePopularTv)
+                        mPopularTv.postValue(remotePopularTv)
+                    }
+                } else {
+                    Log.d(TAG, "onResponse: $response")
+                }
+            }
+
+            override fun onFailure(call: Call<Root<PopularTv>>, t: Throwable) {
+                Log.d(TAG, "onFailure: $t")
+                CoroutineScope(Dispatchers.IO).launch {
+                    popularTv.addAll(appDatabase.PopularTvDao().getAllPopularTv())
+                    mPopularTv.postValue(popularTv)
+                }
+            }
+
+        })
+    }
+
+    fun getPopularTvShow(): LiveData<List<PopularTv>> {
+        return mPopularTv
     }
 }
