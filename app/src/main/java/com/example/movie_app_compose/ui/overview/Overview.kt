@@ -1,6 +1,7 @@
 package com.example.movie_app_compose.ui.overview
 
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -32,9 +33,14 @@ import com.example.movie_app_compose.ui.components.LazyRowPopularItem
 import com.example.movie_app_compose.ui.theme.Green500
 import com.example.movie_app_compose.ui.theme.Green600
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
+import com.example.movie_app_compose.util.Const
 
 @Composable
-fun OverviewBody(modifier: Modifier = Modifier, scrollState: ScrollState) {
+fun OverviewBody(
+    modifier: Modifier = Modifier,
+    scrollState: ScrollState,
+    onItemClickListener: (String, String) -> Unit = { i: String, s: String -> }
+) {
     val restApi by lazy { ApiFactory.create() }
     val overviewViewModel: OverviewViewModel = viewModel()
     overviewViewModel.repositor = Repository(restApi, AppDatabase.getDatabase(LocalContext.current))
@@ -92,6 +98,9 @@ fun OverviewBody(modifier: Modifier = Modifier, scrollState: ScrollState) {
                     val date = data?.releaseDate ?: ""
                     val voteAverage = data?.voteAverage ?: 0f
                     LazyRowItem(
+                        modifier = modifier.clickable {
+                            onItemClickListener(Const.TYPE_MOVIE, data?.id.toString())
+                        },
                         imageUrl = imageUrl,
                         title = title,
                         date = date,
@@ -173,6 +182,9 @@ fun OverviewBody(modifier: Modifier = Modifier, scrollState: ScrollState) {
                     val date = data?.firstAirDate ?: ""
                     val voteAverage = data?.voteAverage ?: 0f
                     LazyRowLandscapeItem(
+                        modifier = modifier.clickable {
+
+                        },
                         imageUrl = imageUrl,
                         title = title,
                         date = date,

@@ -7,50 +7,73 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberImagePainter
+import com.example.movie_app_compose.BuildConfig
 import com.example.movie_app_compose.R
+import com.example.movie_app_compose.api.ApiFactory
+import com.example.movie_app_compose.data.AppDatabase
+import com.example.movie_app_compose.data.Repository
 import com.example.movie_app_compose.ui.components.Chip
 import com.example.movie_app_compose.ui.components.TextComponent
 import com.example.movie_app_compose.ui.theme.DarkBlue900
 import com.example.movie_app_compose.ui.theme.Grey
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
+import java.util.*
 
 @Composable
-fun Detail(modifier: Modifier = Modifier) {
+fun Detail(
+    modifier: Modifier = Modifier,
+    title: String = "",
+    imageUrl: String = "",
+    titleDate: String = "",
+    date: String = "",
+    popularity: String = "",
+    adult: String = "",
+    language: String = "",
+    overview: String = "",
+    listGenre: List<String> = listOf(),
+) {
+    val image = rememberImagePainter(data = imageUrl)
     Image(
-        painter = painterResource(id = R.drawable.sample_foto),
+        painter = image,
         contentDescription = null,
         contentScale = ContentScale.Crop,
         modifier = modifier
             .fillMaxHeight()
             .fillMaxWidth()
     )
+
     Surface(
         modifier = modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .alpha(0.8f)
             .background(color = DarkBlue900)
     ) {
         Column(
@@ -64,7 +87,7 @@ fun Detail(modifier: Modifier = Modifier) {
             ) {
                 val (ivPoster, tvTitle, columnDetail, columnOverview, consCircular) = createRefs()
                 Image(
-                    painter = painterResource(id = R.drawable.sample_foto),
+                    painter = image,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = modifier
@@ -77,7 +100,7 @@ fun Detail(modifier: Modifier = Modifier) {
                 )
 
                 Text(
-                    text = "Fast and Furios as",
+                    text = title,
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.h6,
@@ -99,12 +122,12 @@ fun Detail(modifier: Modifier = Modifier) {
                 }) {
                     Row {
                         TextComponent(
-                            value = "Release Date : ",
+                            value = titleDate,
                             modifier = modifier,
                             style = MaterialTheme.typography.caption
                         )
                         TextComponent(
-                            value = "2021-07-28",
+                            value = date,
                             modifier = modifier,
                             style = MaterialTheme.typography.caption,
                             color = Grey
@@ -118,7 +141,7 @@ fun Detail(modifier: Modifier = Modifier) {
                             style = MaterialTheme.typography.caption
                         )
                         TextComponent(
-                            value = "11135.763",
+                            value = popularity,
                             modifier = modifier,
                             style = MaterialTheme.typography.caption,
                             color = Grey
@@ -132,7 +155,7 @@ fun Detail(modifier: Modifier = Modifier) {
                             style = MaterialTheme.typography.caption
                         )
                         TextComponent(
-                            value = "NO",
+                            value = adult,
                             modifier = modifier,
                             style = MaterialTheme.typography.caption,
                             color = Grey
@@ -146,7 +169,7 @@ fun Detail(modifier: Modifier = Modifier) {
                             style = MaterialTheme.typography.caption
                         )
                         TextComponent(
-                            value = "EN",
+                            value = language.uppercase(Locale.getDefault()),
                             modifier = modifier,
                             style = MaterialTheme.typography.caption,
                             color = Grey
@@ -154,8 +177,8 @@ fun Detail(modifier: Modifier = Modifier) {
                     }
                     Spacer(modifier = modifier.height(8.dp))
                     LazyRow {
-                        items(3) {
-                            Chip(text = "Action")
+                        items(listGenre.size) { index ->
+                            Chip(text = listGenre.get(index))
                         }
                     }
                     Spacer(modifier = modifier.height(8.dp))
@@ -163,17 +186,18 @@ fun Detail(modifier: Modifier = Modifier) {
 
                 Column(
                     modifier = modifier
+                        .fillMaxHeight()
+                        .fillMaxWidth()
                         .constrainAs(columnOverview) {
                             top.linkTo(ivPoster.bottom, 16.dp)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                             width = Dimension.fillToConstraints
-                        }
-                        .fillMaxWidth(),
+                        },
                     verticalArrangement = Arrangement.Bottom
                 ) {
                     TextComponent(
-                        value = "OverView",
+                        value = "Overview",
                         modifier = modifier,
                         style = MaterialTheme.typography.subtitle1,
                         fontWeight = FontWeight.Bold
@@ -184,7 +208,7 @@ fun Detail(modifier: Modifier = Modifier) {
                             .fillMaxWidth()
                     )
                     TextComponent(
-                        value = "Supervillains Harley Quinn, Bloodsport, Peacemaker and a collection of nutty cons at Belle Reve prison join the super-secret, super-shady Task Force X as they are dropped off at the remote, enemy-infused island of Corto Maltese.",
+                        value = overview,
                         modifier = modifier,
                         style = MaterialTheme.typography.caption,
                         maxLines = Int.MAX_VALUE,

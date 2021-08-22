@@ -11,9 +11,9 @@ import com.example.movie_app_compose.BuildConfig.API
 import com.example.movie_app_compose.BuildConfig.TAG
 import com.example.movie_app_compose.api.ApiInterface
 import com.example.movie_app_compose.data.entity.*
+import com.example.movie_app_compose.model.Detail
 import com.example.movie_app_compose.model.RequestWrapper
 import com.example.movie_app_compose.model.Root
-import com.example.movie_app_compose.util.Movie
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,6 +33,7 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
     private lateinit var mPopularMovies: MutableLiveData<List<PopularMovies>>
     private lateinit var mAiringToday: MutableLiveData<List<AiringToday>>
     private lateinit var mPopularTv: MutableLiveData<List<PopularTv>>
+    private lateinit var mDetail: MutableLiveData<Detail>
     private lateinit var people: ArrayList<People>
 
     fun createRequestToken(context: Context): String {
@@ -399,5 +400,59 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
 
     fun getPopularTvShow(): LiveData<List<PopularTv>> {
         return mPopularTv
+    }
+
+    fun requestDetail(id: String, type: String) {
+        mDetail = MutableLiveData()
+        var remoteDetail: Detail
+        val result = apiInterface.getDetail(type, id, API)
+        result.enqueue(object : Callback<Detail> {
+            override fun onResponse(call: Call<Detail>, response: Response<Detail>) {
+                if (response.isSuccessful) {
+                    val data = response.body()
+                    if (data != null) {
+                        remoteDetail = Detail(
+                            data.adult,
+                            data.backdrop_path,
+                            data.budget,
+                            data.homepage,
+                            data.first_air_date,
+                            data.name,
+                            data.id,
+                            data.imdb_id,
+                            data.original_language,
+                            data.original_title,
+                            data.overview,
+                            data.popularity,
+                            data.poster_path,
+                            data.production_companies,
+                            data.production_countries,
+                            data.release_date,
+                            data.revenue,
+                            data.runtime,
+                            data.spoken_languages,
+                            data.status,
+                            data.tagline,
+                            data.title,
+                            data.video,
+                            data.vote_average,
+                            data.vote_count
+                        )
+                        mDetail.postValue(remoteDetail)
+                    }
+                } else {
+                    Log.d(TAG, "onResponse: $response")
+                }
+            }
+
+            override fun onFailure(call: Call<Detail>, t: Throwable) {
+                Log.d(TAG, "onFailure: $t")
+            }
+
+        })
+    }
+
+    fun getDetail(): LiveData<Detail> {
+        return mDetail
     }
 }

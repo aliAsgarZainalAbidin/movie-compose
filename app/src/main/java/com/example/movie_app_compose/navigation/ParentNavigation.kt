@@ -2,15 +2,24 @@ package com.example.movie_app_compose.navigation
 
 import android.os.Handler
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
+import com.example.movie_app_compose.BuildConfig
 import com.example.movie_app_compose.MainActivityContent
+import com.example.movie_app_compose.api.ApiFactory
+import com.example.movie_app_compose.data.AppDatabase
+import com.example.movie_app_compose.data.Repository
 import com.example.movie_app_compose.ui.detail.Detail
+import com.example.movie_app_compose.ui.detail.DetailViewModel
 import com.example.movie_app_compose.ui.login.LoginContent
 import com.example.movie_app_compose.ui.splash.SplashScreenContent
+import com.example.movie_app_compose.util.Const
 
 @Composable
 fun ParentNavigation() {
@@ -25,7 +34,7 @@ fun ParentNavigation() {
             Handler().postDelayed({
                 navControllerMainUI.navigate(Navigation.Activity.router) {
 //                        splashScreenActive = true
-                    popUpTo(Navigation.SplashScreen.router){
+                    popUpTo(Navigation.SplashScreen.router) {
                         inclusive = true
                     }
                     launchSingleTop = true
@@ -33,8 +42,68 @@ fun ParentNavigation() {
                 }
             }, 1500)
         }
-        composable(Navigation.Detail.router) {
-            Detail()
+        composable(
+            "${Navigation.Detail.router}/{type}/{idItem}",
+            arguments = listOf(
+                navArgument("idItem") {
+                    type = NavType.StringType
+                },
+                navArgument("type") {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            val id = it.arguments?.getString("idItem") ?: ""
+            val type = it.arguments?.getString("type") ?: ""
+
+            val restApi by lazy { ApiFactory.create() }
+            val detailViewModel: DetailViewModel = viewModel()
+            detailViewModel.repository = Repository(
+                apiInterface = restApi, appDatabase = AppDatabase.getDatabase(
+                    LocalContext.current
+                )
+            )
+            val remoteData = detailViewModel.getDetail(id, type).observeAsState()
+            val title: String
+            val titleDate: String
+            val date: String
+            val imageUrl = "${BuildConfig.BASE_IMAGE_URL}${remoteData.value?.poster_path}"
+            val adult = if (remoteData.value?.adult == true) "YES" else "NO"
+            val language = remoteData.value?.original_language.toString()
+            val overview = remoteData.value?.overview.toString()
+            val popularity = remoteData.value?.popularity?.toInt().toString()
+            when (type) {
+                Const.TYPE_MOVIE -> {
+                    title = remoteData.value?.title.toString()
+                    titleDate = "Release Date : "
+                    date = remoteData.value?.release_date.toString()
+                    Detail(
+                        title = title,
+                        imageUrl = imageUrl,
+                        titleDate = titleDate,
+                        date = date,
+                        adult = adult,
+                        overview = overview,
+                        language = language,
+                        popularity = popularity
+                    )
+                }
+                Const.TYPE_TV -> {
+                    title = remoteData.value?.title.toString()
+                    titleDate = "First Air Date : "
+                    date = remoteData.value?.first_air_date.toString()
+                    Detail(
+                        title = title,
+                        imageUrl = imageUrl,
+                        titleDate = titleDate,
+                        date = date,
+                        adult = adult,
+                        overview = overview,
+                        language = language,
+                        popularity = popularity
+                    )
+                }
+            }
         }
         composable(Navigation.Activity.router) {
             MainActivityContent(navControllerMainUI)

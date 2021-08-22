@@ -1,9 +1,9 @@
 package com.example.movie_app_compose.api
 
 import com.example.movie_app_compose.data.entity.*
+import com.example.movie_app_compose.model.Detail
 import com.example.movie_app_compose.model.RequestWrapper
 import com.example.movie_app_compose.model.Root
-import com.example.movie_app_compose.util.Movie
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -28,50 +28,60 @@ interface ApiInterface {
         @Query("api_key")
         apiKey: String = "",
         @Query("language")
-        language : String = "en-US",
+        language: String = "en-US",
         @Query("page")
-        page : String = "1"
-    ) : Call<Root<People>>
+        page: String = "1"
+    ): Call<Root<People>>
 
     @GET("trending/movie/week")
     fun getTrendingMovies(
         @Query("api_key")
         apiKey: String = ""
-    ) : Call<Root<Trending>>
+    ): Call<Root<Trending>>
 
     @GET("tv/on_the_air")
     fun getOnTheAir(
         @Query("api_key")
         apiKey: String = ""
-    ) : Call<Root<OnTheAir>>
+    ): Call<Root<OnTheAir>>
 
     @GET("movie/now_playing")
     fun getNowPlaying(
         @Query("api_key")
         apiKey: String = ""
-    ) : Call<Root<Playing>>
+    ): Call<Root<Playing>>
 
     @GET("movie/upcoming")
     fun getUpcoming(
         @Query("api_key")
         apiKey: String = ""
-    ) : Call<Root<Upcoming>>
+    ): Call<Root<Upcoming>>
 
     @GET("movie/popular")
     fun getPopularMovies(
         @Query("api_key")
         apiKey: String = ""
-    ) : Call<Root<PopularMovies>>
+    ): Call<Root<PopularMovies>>
 
     @GET("tv/airing_today")
     fun getAiringToday(
         @Query("api_key")
         apiKey: String = ""
-    ) : Call<Root<AiringToday>>
+    ): Call<Root<AiringToday>>
 
     @GET("tv/popular")
     fun getPopularTvShow(
         @Query("api_key")
         apiKey: String = ""
-    ) : Call<Root<PopularTv>>
+    ): Call<Root<PopularTv>>
+
+    @GET("{type}/{id}")
+    fun getDetail(
+        @Path("type")
+        type: String = "",
+        @Path("id")
+        id: String = "",
+        @Query("api_key")
+        apiKey: String = ""
+    ): Call<Detail>
 }

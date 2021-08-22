@@ -95,7 +95,11 @@ fun MainActivityContent(navControllerMainUI: NavController) {
         ) {
             composable(Screen.Overview.route) {
                 scrollState = rememberScrollState()
-                OverviewBody(scrollState = scrollState)
+                OverviewBody(
+                    scrollState = scrollState,
+                    onItemClickListener = { type, id ->
+                        navigateToDetail(navControllerMainUI, type, id)
+                    })
             }
             composable(Screen.Movie.route) {
                 scrollState = rememberScrollState()
@@ -110,6 +114,10 @@ fun MainActivityContent(navControllerMainUI: NavController) {
             }
         }
     }
+}
+
+fun navigateToDetail(navControl: NavController, type: String, id: String) {
+    navControl.navigate("${Navigation.Detail.router}/$type/$id")
 }
 
 @Preview
