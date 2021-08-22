@@ -1,6 +1,7 @@
 package com.example.movie_app_compose.navigation
 
 import android.os.Handler
+import android.util.Log
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
@@ -11,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
 import com.example.movie_app_compose.BuildConfig
+import com.example.movie_app_compose.BuildConfig.TAG
 import com.example.movie_app_compose.MainActivityContent
 import com.example.movie_app_compose.api.ApiFactory
 import com.example.movie_app_compose.data.AppDatabase
@@ -18,6 +20,7 @@ import com.example.movie_app_compose.data.Repository
 import com.example.movie_app_compose.ui.detail.Detail
 import com.example.movie_app_compose.ui.detail.DetailViewModel
 import com.example.movie_app_compose.ui.login.LoginContent
+import com.example.movie_app_compose.ui.offline.OfflineContent
 import com.example.movie_app_compose.ui.splash.SplashScreenContent
 import com.example.movie_app_compose.util.Const
 
@@ -55,7 +58,6 @@ fun ParentNavigation() {
         ) {
             val id = it.arguments?.getString("idItem") ?: ""
             val type = it.arguments?.getString("type") ?: ""
-
             val restApi by lazy { ApiFactory.create() }
             val detailViewModel: DetailViewModel = viewModel()
             detailViewModel.repository = Repository(
@@ -75,9 +77,11 @@ fun ParentNavigation() {
             when (type) {
                 Const.TYPE_MOVIE -> {
                     title = remoteData.value?.title.toString()
+                    Log.d(TAG, title)
                     titleDate = "Release Date : "
                     date = remoteData.value?.release_date.toString()
                     Detail(
+                        id = id,
                         title = title,
                         imageUrl = imageUrl,
                         titleDate = titleDate,
@@ -93,6 +97,7 @@ fun ParentNavigation() {
                     titleDate = "First Air Date : "
                     date = remoteData.value?.first_air_date.toString()
                     Detail(
+                        id = id,
                         title = title,
                         imageUrl = imageUrl,
                         titleDate = titleDate,
@@ -104,6 +109,9 @@ fun ParentNavigation() {
                     )
                 }
             }
+        }
+        composable(Navigation.Offline.router) {
+            OfflineContent()
         }
         composable(Navigation.Activity.router) {
             MainActivityContent(navControllerMainUI)

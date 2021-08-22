@@ -1,5 +1,6 @@
 package com.example.movie_app_compose.ui.detail
 
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -36,12 +37,14 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberImagePainter
 import com.example.movie_app_compose.BuildConfig
+import com.example.movie_app_compose.BuildConfig.TAG
 import com.example.movie_app_compose.R
 import com.example.movie_app_compose.api.ApiFactory
 import com.example.movie_app_compose.data.AppDatabase
 import com.example.movie_app_compose.data.Repository
 import com.example.movie_app_compose.ui.components.Chip
 import com.example.movie_app_compose.ui.components.TextComponent
+import com.example.movie_app_compose.ui.offline.OfflineContent
 import com.example.movie_app_compose.ui.theme.DarkBlue900
 import com.example.movie_app_compose.ui.theme.Grey
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
@@ -50,6 +53,7 @@ import java.util.*
 @Composable
 fun Detail(
     modifier: Modifier = Modifier,
+    id: String = "",
     title: String = "",
     imageUrl: String = "",
     titleDate: String = "",
@@ -60,168 +64,20 @@ fun Detail(
     overview: String = "",
     listGenre: List<String> = listOf(),
 ) {
-    val image = rememberImagePainter(data = imageUrl)
-    Image(
-        painter = image,
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        modifier = modifier
-            .fillMaxHeight()
-            .fillMaxWidth()
-    )
-
-    Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .background(color = DarkBlue900)
-    ) {
-        Column(
-            modifier = modifier
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp)
-        ) {
-            ConstraintLayout(
-                modifier = modifier
-                    .fillMaxWidth()
-            ) {
-                val (ivPoster, tvTitle, columnDetail, columnOverview, consCircular) = createRefs()
-                Image(
-                    painter = image,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = modifier
-                        .width(123.dp)
-                        .height(200.dp)
-                        .constrainAs(ivPoster) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                        }
-                )
-
-                Text(
-                    text = title,
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.h6,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Start,
-                    modifier = modifier.constrainAs(tvTitle) {
-                        top.linkTo(ivPoster.top)
-                        start.linkTo(ivPoster.end, margin = 16.dp)
-                        end.linkTo(parent.end)
-                        width = Dimension.fillToConstraints
-                    }
-                )
-
-                Column(modifier = modifier.constrainAs(columnDetail) {
-                    top.linkTo(tvTitle.bottom, 16.dp)
-                    start.linkTo(tvTitle.start)
-                    width = Dimension.wrapContent
-                }) {
-                    Row {
-                        TextComponent(
-                            value = titleDate,
-                            modifier = modifier,
-                            style = MaterialTheme.typography.caption
-                        )
-                        TextComponent(
-                            value = date,
-                            modifier = modifier,
-                            style = MaterialTheme.typography.caption,
-                            color = Grey
-                        )
-                    }
-                    Spacer(modifier = modifier.height(4.dp))
-                    Row {
-                        TextComponent(
-                            value = "Popularity : ",
-                            modifier = modifier,
-                            style = MaterialTheme.typography.caption
-                        )
-                        TextComponent(
-                            value = popularity,
-                            modifier = modifier,
-                            style = MaterialTheme.typography.caption,
-                            color = Grey
-                        )
-                    }
-                    Spacer(modifier = modifier.height(4.dp))
-                    Row {
-                        TextComponent(
-                            value = "Adult : ",
-                            modifier = modifier,
-                            style = MaterialTheme.typography.caption
-                        )
-                        TextComponent(
-                            value = adult,
-                            modifier = modifier,
-                            style = MaterialTheme.typography.caption,
-                            color = Grey
-                        )
-                    }
-                    Spacer(modifier = modifier.height(4.dp))
-                    Row {
-                        TextComponent(
-                            value = "Language : ",
-                            modifier = modifier,
-                            style = MaterialTheme.typography.caption
-                        )
-                        TextComponent(
-                            value = language.uppercase(Locale.getDefault()),
-                            modifier = modifier,
-                            style = MaterialTheme.typography.caption,
-                            color = Grey
-                        )
-                    }
-                    Spacer(modifier = modifier.height(8.dp))
-                    LazyRow {
-                        items(listGenre.size) { index ->
-                            Chip(text = listGenre.get(index))
-                        }
-                    }
-                    Spacer(modifier = modifier.height(8.dp))
-                }
-
-                Column(
-                    modifier = modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth()
-                        .constrainAs(columnOverview) {
-                            top.linkTo(ivPoster.bottom, 16.dp)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                            width = Dimension.fillToConstraints
-                        },
-                    verticalArrangement = Arrangement.Bottom
-                ) {
-                    TextComponent(
-                        value = "Overview",
-                        modifier = modifier,
-                        style = MaterialTheme.typography.subtitle1,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(
-                        modifier = modifier
-                            .height(8.dp)
-                            .fillMaxWidth()
-                    )
-                    TextComponent(
-                        value = overview,
-                        modifier = modifier,
-                        style = MaterialTheme.typography.caption,
-                        maxLines = Int.MAX_VALUE,
-                        textAlign = TextAlign.Justify
-                    )
-                    Spacer(
-                        modifier = modifier
-                            .height(16.dp)
-                            .fillMaxWidth()
-                    )
-                }
-            }
-        }
+    Log.d(TAG, "Detail: $title")
+    if (!title.equals("null")) {
+        DetailContent(
+            title = title,
+            imageUrl = imageUrl,
+            titleDate = titleDate,
+            date = date,
+            adult = adult,
+            overview = overview,
+            language = language,
+            popularity = popularity
+        )
+    } else {
+        OfflineContent()
     }
 }
 
