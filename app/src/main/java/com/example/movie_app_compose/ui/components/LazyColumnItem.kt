@@ -14,11 +14,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import coil.compose.rememberImagePainter
+import com.example.movie_app_compose.BuildConfig
 import com.example.movie_app_compose.R
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 
 @Composable
-fun LazyColumnItem(modifier: Modifier = Modifier) {
+fun LazyColumnItem(modifier: Modifier = Modifier, imageUrl: String = "") {
+
+    val fullUrlImage = "${BuildConfig.BASE_IMAGE_URL}$imageUrl"
+    val data = rememberImagePainter(
+        data = fullUrlImage,
+        builder = {
+            error(R.drawable.ic_baseline_image_not_supported_24)
+            placeholder(R.color.darkblue)
+            crossfade(true)
+        })
+
     Surface(modifier = Modifier.padding(bottom = 16.dp)) {
         Card(modifier = modifier, shape = RoundedCornerShape(8.dp)) {
             ConstraintLayout(

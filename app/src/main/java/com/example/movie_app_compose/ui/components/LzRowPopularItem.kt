@@ -16,12 +16,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import com.example.movie_app_compose.BuildConfig
+import com.example.movie_app_compose.R
 import com.example.movie_app_compose.data.entity.People
 import com.example.movie_app_compose.ui.theme.Green500
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 
 @Composable
 fun LazyRowPopularItem(modifier: Modifier = Modifier, people: People) {
+    val fullUrlImage = "${BuildConfig.BASE_IMAGE_URL}${people.profile_path}"
+    val data = rememberImagePainter(
+        data = fullUrlImage,
+        builder = {
+            error(R.drawable.ic_baseline_image_not_supported_24)
+            placeholder(R.color.darkblue)
+            crossfade(true)
+        })
+
     Column(modifier = modifier.width(IntrinsicSize.Min)) {
 //        val (surface, text) = createRefs()
         Surface(
@@ -33,9 +43,7 @@ fun LazyRowPopularItem(modifier: Modifier = Modifier, people: People) {
                 .height(80.dp), shape = CircleShape
         ) {
             Image(
-                painter = rememberImagePainter(
-                    data = "${BuildConfig.BASE_IMAGE_URL}${people.profile_path}"
-                ),
+                painter = data,
                 contentDescription = null,
                 contentScale = ContentScale.Crop
             )

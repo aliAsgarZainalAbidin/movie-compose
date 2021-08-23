@@ -1,5 +1,7 @@
 package com.example.movie_app_compose.ui.components
 
+import android.net.Uri
+import android.view.animation.Transformation
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.height
@@ -21,11 +23,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import coil.annotation.ExperimentalCoilApi
+import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
+import coil.size.Scale
+import coil.transform.CircleCropTransformation
 import com.example.movie_app_compose.BuildConfig
+import com.example.movie_app_compose.R
 import com.example.movie_app_compose.ui.theme.DarkBlue900
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 
+@ExperimentalCoilApi
 @Composable
 fun LazyRowLandscapeItem(
     modifier: Modifier = Modifier,
@@ -36,6 +44,14 @@ fun LazyRowLandscapeItem(
 ) {
     ConstraintLayout(modifier = modifier) {
         val (tvTitle, tvReleaseDate, rating, surfaceImage) = createRefs()
+        val fullUrlImage = "${BuildConfig.BASE_IMAGE_URL}$imageUrl"
+        val data = rememberImagePainter(
+            data = fullUrlImage,
+            builder = {
+                error(R.drawable.ic_baseline_image_not_supported_24)
+                placeholder(R.color.darkblue)
+                crossfade(true)
+            })
 
         Surface(
             shape = RoundedCornerShape(4.dp),
@@ -43,9 +59,7 @@ fun LazyRowLandscapeItem(
                 top.linkTo(parent.top)
             }) {
             Image(
-                painter = rememberImagePainter(
-                    data = "${BuildConfig.BASE_IMAGE_URL}$imageUrl"
-                ),
+                painter = data,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = modifier

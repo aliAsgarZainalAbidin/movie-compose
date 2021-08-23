@@ -135,7 +135,7 @@ fun Movie(modifier: Modifier = Modifier, scrollState: ScrollState) {
                 items(listUpcoming.value?.size ?: 0) { index ->
                     val data = listUpcoming.value?.get(index)
                     val title = data?.title ?: ""
-                    val imageUrl = data?.posterPath ?: ""
+                    val imageUrl = data?.backdropPath ?: ""
                     val date = data?.releaseDate ?: ""
                     val voteAverage = data?.voteAverage ?: 0f
                     LazyRowLandscapeItem(

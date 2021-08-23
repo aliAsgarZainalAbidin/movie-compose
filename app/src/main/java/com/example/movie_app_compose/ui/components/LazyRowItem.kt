@@ -2,6 +2,7 @@ package com.example.movie_app_compose.ui.components
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -20,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.rememberImagePainter
 import com.example.movie_app_compose.BuildConfig
+import com.example.movie_app_compose.R
 import com.example.movie_app_compose.data.entity.Trending
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 import com.example.movie_app_compose.ui.theme.*
@@ -27,6 +29,15 @@ import com.example.movie_app_compose.util.Movie
 
 @Composable
 fun LazyRowItem(modifier: Modifier = Modifier, imageUrl : String = "", title : String = "", date : String = "", voteAverage : Float = 0f ) {
+    val fullUrlImage = "${BuildConfig.BASE_IMAGE_URL}$imageUrl"
+    val data = rememberImagePainter(
+        data = fullUrlImage,
+        builder = {
+            error(R.drawable.ic_baseline_image_not_supported_24)
+            placeholder(R.color.darkblue)
+            crossfade(true)
+        })
+
     ConstraintLayout {
         val (tvTitle, tvReleaseDate, rating, surfaceImage) = createRefs()
         Surface(
@@ -35,10 +46,10 @@ fun LazyRowItem(modifier: Modifier = Modifier, imageUrl : String = "", title : S
             modifier = modifier
                 .constrainAs(surfaceImage) {
                     top.linkTo(parent.top)
-                }
+                },
         ) {
             Image(
-                painter = rememberImagePainter(data = "${BuildConfig.BASE_IMAGE_URL}$imageUrl"),
+                painter = data,
                 contentDescription = null,
                 modifier = modifier
                     .width(184.dp)

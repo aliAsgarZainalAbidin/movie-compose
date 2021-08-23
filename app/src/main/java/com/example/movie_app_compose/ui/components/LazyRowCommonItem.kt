@@ -36,6 +36,15 @@ fun LazyRowCommonItem(
     date: String = "",
     voteAverage: Float = 0f
 ) {
+    val fullUrlImage = "${BuildConfig.BASE_IMAGE_URL}$imageUrl"
+    val data = rememberImagePainter(
+        data = fullUrlImage,
+        builder = {
+            error(R.drawable.ic_baseline_image_not_supported_24)
+            placeholder(R.color.darkblue)
+            crossfade(true)
+        })
+
     ConstraintLayout {
         val (tvTitle, tvReleaseDate, rating, surfaceImage) = createRefs()
         Surface(
@@ -47,9 +56,7 @@ fun LazyRowCommonItem(
                 }
         ) {
             Image(
-                painter = rememberImagePainter(
-                    data = "${BuildConfig.BASE_IMAGE_URL}$imageUrl"
-                ),
+                painter = data,
                 contentDescription = null,
                 modifier = modifier
                     .width(123.dp)
