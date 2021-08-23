@@ -25,6 +25,7 @@ import com.example.movie_app_compose.api.ApiFactory
 import com.example.movie_app_compose.api.ApiInterface
 import com.example.movie_app_compose.data.AppDatabase
 import com.example.movie_app_compose.data.Repository
+import com.example.movie_app_compose.ui.IdleContent
 import com.example.movie_app_compose.ui.components.LazyRowCommonItem
 import com.example.movie_app_compose.ui.components.LazyRowItem
 import com.example.movie_app_compose.ui.components.LazyRowLandscapeItem
@@ -41,152 +42,159 @@ fun Tv(modifier: Modifier = Modifier, scrollState: ScrollState) {
     val listAiringToday = tvViewModel.getAiringToday().observeAsState()
     val listPopularTv = tvViewModel.getPopularTv().observeAsState()
 
-    Column(
-        modifier = modifier
-            .verticalScroll(scrollState)
-            .fillMaxHeight()
+    if (listOnTheAir.value != null &&
+        listAiringToday.value != null &&
+        listPopularTv.value != null
     ) {
-        ConstraintLayout(
+        Column(
             modifier = modifier
-                .fillMaxWidth()
+                .verticalScroll(scrollState)
                 .fillMaxHeight()
         ) {
-            val (tvWelcome, lzRow, tvPopular, lzRowPopular, tvMovies, lzRowMovies, spacer) = createRefs()
-            Text(
-                buildAnnotatedString {
-                    withStyle(
-                        style = SpanStyle(
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Green500
-                        )
-                    ) {
-                        append("On The Air")
-                    }
-                },
-                modifier = modifier.constrainAs(tvWelcome) {
-                    top.linkTo(parent.top, 16.dp)
-                    start.linkTo(parent.start, 16.dp)
-                    width = Dimension.preferredWrapContent
-                }
-            )
-
-            LazyRow(
-                modifier = modifier.constrainAs(lzRow) {
-                    top.linkTo(tvWelcome.bottom, 8.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(horizontal = 16.dp)
+            ConstraintLayout(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
             ) {
-                items(listOnTheAir.value?.size ?: 0) { index ->
-                    val data = listOnTheAir.value?.get(index)
-                    val title = data?.name ?: ""
-                    val imageUrl = data?.backdropPath ?: ""
-                    val date = data?.firstAirDate ?: ""
-                    val voteAverage = data?.voteAverage ?: 0f
-                    LazyRowLandscapeItem(
-                        imageUrl = imageUrl,
-                        title = title,
-                        date = date,
-                        voteAverage = voteAverage
-                    )
-                }
-            }
-
-            Text(
-                buildAnnotatedString {
-                    withStyle(
-                        style = SpanStyle(
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Green500
-                        )
-                    ) {
-                        append("Tv Airing Today")
+                val (tvWelcome, lzRow, tvPopular, lzRowPopular, tvMovies, lzRowMovies, spacer) = createRefs()
+                Text(
+                    buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Green500
+                            )
+                        ) {
+                            append("On The Air")
+                        }
+                    },
+                    modifier = modifier.constrainAs(tvWelcome) {
+                        top.linkTo(parent.top, 16.dp)
+                        start.linkTo(parent.start, 16.dp)
+                        width = Dimension.preferredWrapContent
                     }
-                },
-                modifier = modifier.constrainAs(tvMovies) {
-                    top.linkTo(lzRow.bottom, 16.dp)
-                    start.linkTo(parent.start, 16.dp)
-                    width = Dimension.preferredWrapContent
-                }
-            )
+                )
 
-            LazyRow(
-                modifier = modifier.constrainAs(lzRowMovies) {
-                    top.linkTo(tvMovies.bottom, 8.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(horizontal = 16.dp)
-            ) {
-                items(listAiringToday.value?.size ?: 0) { index ->
-                    val data = listAiringToday.value?.get(index)
-                    val title = data?.name ?: ""
-                    val imageUrl = data?.backdropPath ?: ""
-                    val date = data?.firstAirDate ?: ""
-                    val voteAverage = data?.voteAverage ?: 0f
-                    LazyRowLandscapeItem(
-                        imageUrl = imageUrl,
-                        title = title,
-                        date = date,
-                        voteAverage = voteAverage
-                    )
-                }
-            }
-
-            Text(
-                buildAnnotatedString {
-                    withStyle(
-                        style = SpanStyle(
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Green500
+                LazyRow(
+                    modifier = modifier.constrainAs(lzRow) {
+                        top.linkTo(tvWelcome.bottom, 8.dp)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    },
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp)
+                ) {
+                    items(listOnTheAir.value?.size ?: 0) { index ->
+                        val data = listOnTheAir.value?.get(index)
+                        val title = data?.name ?: ""
+                        val imageUrl = data?.backdropPath ?: ""
+                        val date = data?.firstAirDate ?: ""
+                        val voteAverage = data?.voteAverage ?: 0f
+                        LazyRowLandscapeItem(
+                            imageUrl = imageUrl,
+                            title = title,
+                            date = date,
+                            voteAverage = voteAverage
                         )
-                    ) {
-                        append("Popular Tv Shows")
                     }
-                },
-                modifier = modifier.constrainAs(tvPopular) {
-                    top.linkTo(lzRowMovies.bottom, 16.dp)
-                    start.linkTo(parent.start, 16.dp)
-                    width = Dimension.preferredWrapContent
                 }
-            )
 
-            LazyRow(
-                modifier = modifier.constrainAs(lzRowPopular) {
-                    top.linkTo(tvPopular.bottom, 8.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(horizontal = 16.dp)
-            ) {
-                items(listPopularTv.value?.size ?: 0) { index ->
-                    val data = listPopularTv.value?.get(index)
-                    val title = data?.name ?: ""
-                    val imageUrl = data?.posterPath ?: ""
-                    val date = data?.firstAirDate ?: ""
-                    val voteAverage = data?.voteAverage ?: 0f
-                    LazyRowCommonItem(
-                        imageUrl = imageUrl,
-                        title = title,
-                        date = date,
-                        voteAverage = voteAverage
-                    )
+                Text(
+                    buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Green500
+                            )
+                        ) {
+                            append("Tv Airing Today")
+                        }
+                    },
+                    modifier = modifier.constrainAs(tvMovies) {
+                        top.linkTo(lzRow.bottom, 16.dp)
+                        start.linkTo(parent.start, 16.dp)
+                        width = Dimension.preferredWrapContent
+                    }
+                )
+
+                LazyRow(
+                    modifier = modifier.constrainAs(lzRowMovies) {
+                        top.linkTo(tvMovies.bottom, 8.dp)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    },
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp)
+                ) {
+                    items(listAiringToday.value?.size ?: 0) { index ->
+                        val data = listAiringToday.value?.get(index)
+                        val title = data?.name ?: ""
+                        val imageUrl = data?.backdropPath ?: ""
+                        val date = data?.firstAirDate ?: ""
+                        val voteAverage = data?.voteAverage ?: 0f
+                        LazyRowLandscapeItem(
+                            imageUrl = imageUrl,
+                            title = title,
+                            date = date,
+                            voteAverage = voteAverage
+                        )
+                    }
                 }
+
+                Text(
+                    buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Green500
+                            )
+                        ) {
+                            append("Popular Tv Shows")
+                        }
+                    },
+                    modifier = modifier.constrainAs(tvPopular) {
+                        top.linkTo(lzRowMovies.bottom, 16.dp)
+                        start.linkTo(parent.start, 16.dp)
+                        width = Dimension.preferredWrapContent
+                    }
+                )
+
+                LazyRow(
+                    modifier = modifier.constrainAs(lzRowPopular) {
+                        top.linkTo(tvPopular.bottom, 8.dp)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    },
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp)
+                ) {
+                    items(listPopularTv.value?.size ?: 0) { index ->
+                        val data = listPopularTv.value?.get(index)
+                        val title = data?.name ?: ""
+                        val imageUrl = data?.posterPath ?: ""
+                        val date = data?.firstAirDate ?: ""
+                        val voteAverage = data?.voteAverage ?: 0f
+                        LazyRowCommonItem(
+                            imageUrl = imageUrl,
+                            title = title,
+                            date = date,
+                            voteAverage = voteAverage
+                        )
+                    }
+                }
+
+                Spacer(modifier = modifier
+                    .width(16.dp)
+                    .constrainAs(spacer) {
+                        top.linkTo(lzRowPopular.bottom, margin = 16.dp)
+                    })
             }
-
-            Spacer(modifier = modifier
-                .width(16.dp)
-                .constrainAs(spacer) {
-                    top.linkTo(lzRowPopular.bottom, margin = 16.dp)
-                })
         }
+    } else {
+        IdleContent()
     }
 }
 
