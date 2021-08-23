@@ -1,6 +1,7 @@
 package com.example.movie_app_compose.ui.movie
 
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.gestures.ScrollScope
 import androidx.compose.foundation.layout.*
@@ -35,9 +36,14 @@ import com.example.movie_app_compose.ui.components.LazyRowPopularItem
 import com.example.movie_app_compose.ui.theme.Green500
 import com.example.movie_app_compose.ui.theme.Green600
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
+import com.example.movie_app_compose.util.Const
 
 @Composable
-fun Movie(modifier: Modifier = Modifier, scrollState: ScrollState) {
+fun Movie(
+    modifier: Modifier = Modifier,
+    scrollState: ScrollState,
+    onItemClickListener: (String, String) -> Unit = { t: String, i: String -> }
+) {
     val restApi by lazy { ApiFactory.create() }
     val movieViewModel: MovieViewModel = viewModel()
     movieViewModel.repository = Repository(
@@ -101,6 +107,9 @@ fun Movie(modifier: Modifier = Modifier, scrollState: ScrollState) {
                         val date = data?.releaseDate ?: ""
                         val voteAverage = data?.voteAverage ?: 0f
                         LazyRowItem(
+                            modifier = modifier.clickable {
+                                onItemClickListener(Const.TYPE_MOVIE, data?.id.toString())
+                            },
                             imageUrl = imageUrl,
                             title = title,
                             date = date,
@@ -144,6 +153,9 @@ fun Movie(modifier: Modifier = Modifier, scrollState: ScrollState) {
                         val date = data?.releaseDate ?: ""
                         val voteAverage = data?.voteAverage ?: 0f
                         LazyRowLandscapeItem(
+                            modifier = modifier.clickable {
+                                onItemClickListener(Const.TYPE_MOVIE, data?.id.toString())
+                            },
                             imageUrl = imageUrl,
                             title = title,
                             date = date,
@@ -187,6 +199,9 @@ fun Movie(modifier: Modifier = Modifier, scrollState: ScrollState) {
                         val date = data?.releaseDate ?: ""
                         val voteAverage = data?.voteAverage ?: 0f
                         LazyRowCommonItem(
+                            modifier = modifier.clickable {
+                                onItemClickListener(Const.TYPE_MOVIE, data?.id.toString())
+                            },
                             imageUrl = imageUrl,
                             title = title,
                             date = date,

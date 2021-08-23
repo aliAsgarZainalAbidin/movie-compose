@@ -1,6 +1,7 @@
 package com.example.movie_app_compose.ui.tv
 
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
@@ -31,9 +32,14 @@ import com.example.movie_app_compose.ui.components.LazyRowItem
 import com.example.movie_app_compose.ui.components.LazyRowLandscapeItem
 import com.example.movie_app_compose.ui.theme.Green500
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
+import com.example.movie_app_compose.util.Const
 
 @Composable
-fun Tv(modifier: Modifier = Modifier, scrollState: ScrollState) {
+fun Tv(
+    modifier: Modifier = Modifier,
+    scrollState: ScrollState,
+    onItemClickListener: (String, String) -> Unit = { t: String, i: String -> }
+) {
     val restApi by lazy { ApiFactory.create() }
     val appDatabase = AppDatabase.getDatabase(LocalContext.current)
     val tvViewModel: TvViewModel = viewModel()
@@ -92,6 +98,9 @@ fun Tv(modifier: Modifier = Modifier, scrollState: ScrollState) {
                         val date = data?.firstAirDate ?: ""
                         val voteAverage = data?.voteAverage ?: 0f
                         LazyRowLandscapeItem(
+                            modifier = modifier.clickable {
+                                onItemClickListener(Const.TYPE_TV, data?.id.toString())
+                            },
                             imageUrl = imageUrl,
                             title = title,
                             date = date,
@@ -135,6 +144,9 @@ fun Tv(modifier: Modifier = Modifier, scrollState: ScrollState) {
                         val date = data?.firstAirDate ?: ""
                         val voteAverage = data?.voteAverage ?: 0f
                         LazyRowLandscapeItem(
+                            modifier = modifier.clickable {
+                                onItemClickListener(Const.TYPE_TV, data?.id.toString())
+                            },
                             imageUrl = imageUrl,
                             title = title,
                             date = date,
@@ -178,6 +190,9 @@ fun Tv(modifier: Modifier = Modifier, scrollState: ScrollState) {
                         val date = data?.firstAirDate ?: ""
                         val voteAverage = data?.voteAverage ?: 0f
                         LazyRowCommonItem(
+                            modifier = modifier.clickable {
+                                onItemClickListener(Const.TYPE_TV, data?.id.toString())
+                            },
                             imageUrl = imageUrl,
                             title = title,
                             date = date,

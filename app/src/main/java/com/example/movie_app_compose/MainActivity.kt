@@ -103,11 +103,21 @@ fun MainActivityContent(navControllerMainUI: NavController) {
             }
             composable(Screen.Movie.route) {
                 scrollState = rememberScrollState()
-                Movie(scrollState = scrollState)
+                Movie(
+                    scrollState = scrollState,
+                    onItemClickListener = { type, id ->
+                        navigateToDetail(navControllerMainUI, type, id)
+                    }
+                )
             }
             composable(Screen.Tv.route) {
                 scrollState = rememberScrollState()
-                Tv(scrollState = scrollState)
+                Tv(
+                    scrollState = scrollState,
+                    onItemClickListener = { type, id ->
+                        navigateToDetail(navControllerMainUI, type, id)
+                    }
+                )
             }
             composable(Screen.Save.route) {
                 SaveMenu(navController = navControllerMainUI)
