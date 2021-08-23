@@ -183,7 +183,7 @@ fun OverviewBody(
                     val voteAverage = data?.voteAverage ?: 0f
                     LazyRowLandscapeItem(
                         modifier = modifier.clickable {
-
+                            onItemClickListener(Const.TYPE_TV, data?.id.toString())
                         },
                         imageUrl = imageUrl,
                         title = title,

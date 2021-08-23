@@ -105,7 +105,6 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
         people = arrayListOf()
         val remoteListPerson = ArrayList<People>()
         val result = apiInterface.getPopularPerson(API)
-        Log.d(TAG, "getAllPerson: ${result}")
         result.enqueue(object : Callback<Root<People>> {
             override fun onResponse(call: Call<Root<People>>, response: Response<Root<People>>) {
                 if (response.isSuccessful) {
@@ -118,10 +117,8 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
                         people.addAll(appDatabase.PersonDao().getAllPerson())
                         if (people == remoteListPerson) {
                             // Autosort database membuat block code ini tidak pernah running
-                            Log.d(TAG, "onResponse: OPSI 1")
                             mutableLiveDataPeople.postValue(people)
                         } else {
-                            Log.d(TAG, "onResponse: OPSI 2")
                             appDatabase.PersonDao().insertAll(remoteListPerson)
                             mutableLiveDataPeople.postValue(remoteListPerson)
                         }
@@ -408,6 +405,7 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
         val result = apiInterface.getDetail(type, id, API)
         result.enqueue(object : Callback<Detail> {
             override fun onResponse(call: Call<Detail>, response: Response<Detail>) {
+                Log.d(TAG, "onResponse: ${response.raw().request.url}")
                 if (response.isSuccessful) {
                     val data = response.body()
                     if (data != null) {

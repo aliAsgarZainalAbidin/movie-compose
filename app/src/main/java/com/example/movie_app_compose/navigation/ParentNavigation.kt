@@ -65,6 +65,7 @@ fun ParentNavigation() {
                     LocalContext.current
                 )
             )
+            Log.d(TAG, "ParentNavigation: $type")
             val remoteData = detailViewModel.getDetail(id, type).observeAsState()
             val title: String
             val titleDate: String
@@ -93,7 +94,7 @@ fun ParentNavigation() {
                     )
                 }
                 Const.TYPE_TV -> {
-                    title = remoteData.value?.title.toString()
+                    title = remoteData.value?.name.toString()
                     titleDate = "First Air Date : "
                     date = remoteData.value?.first_air_date.toString()
                     Detail(
