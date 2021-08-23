@@ -1,5 +1,8 @@
 package com.example.movie_app_compose.ui.detail
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
@@ -42,6 +45,7 @@ import com.example.movie_app_compose.R
 import com.example.movie_app_compose.api.ApiFactory
 import com.example.movie_app_compose.data.AppDatabase
 import com.example.movie_app_compose.data.Repository
+import com.example.movie_app_compose.ui.IdleContent
 import com.example.movie_app_compose.ui.components.Chip
 import com.example.movie_app_compose.ui.components.TextComponent
 import com.example.movie_app_compose.ui.offline.OfflineContent
@@ -65,7 +69,7 @@ fun Detail(
     listGenre: List<String> = listOf(),
 ) {
     Log.d(TAG, "Detail: $title")
-    if (!title.equals("null")) {
+    if (title != "null") {
         DetailContent(
             title = title,
             imageUrl = imageUrl,
@@ -77,7 +81,15 @@ fun Detail(
             popularity = popularity
         )
     } else {
-        OfflineContent()
+        val connectionManager =
+            LocalContext.current.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (connectionManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)?.state == NetworkInfo.State.CONNECTED ||
+            connectionManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI)?.state == NetworkInfo.State.CONNECTED
+        ) {
+            IdleContent()
+        } else {
+            OfflineContent()
+        }
     }
 }
 
@@ -86,7 +98,7 @@ fun Detail(
 fun PreviewDetail() {
     MovieAppComposeTheme {
         Surface(color = DarkBlue900) {
-            Detail()
+            IdleContent()
         }
     }
 }
