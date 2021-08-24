@@ -1,9 +1,6 @@
 package com.example.movie_app_compose.data.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.example.movie_app_compose.data.entity.MyMovie
 import com.example.movie_app_compose.data.entity.MyTvShow
 import com.example.movie_app_compose.data.entity.Upcoming
@@ -21,4 +18,7 @@ interface MyMovieDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(data : MyMovie)
+
+    @Query("DELETE FROM MyMovie WHERE id=:id")
+    fun deleteById(id: String)
 }

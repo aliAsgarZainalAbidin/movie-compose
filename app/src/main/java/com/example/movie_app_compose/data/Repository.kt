@@ -35,6 +35,7 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
     private lateinit var mPopularTv: MutableLiveData<List<PopularTv>>
     private lateinit var mDetail: MutableLiveData<Detail>
     private lateinit var people: ArrayList<People>
+    private lateinit var myMovie: MutableLiveData<MyMovie>
 
     fun createRequestToken(context: Context): String {
         val result = apiInterface.createRequestToken(BuildConfig.API)
@@ -453,5 +454,28 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
 
     fun getDetail(): LiveData<Detail> {
         return mDetail
+    }
+
+    fun requestMovieById(id: String) {
+        myMovie = MutableLiveData()
+        CoroutineScope(Dispatchers.IO).launch {
+            myMovie.postValue(appDatabase.MyMovieDao().getMovieById(id))
+        }
+    }
+
+    fun getMovieById(): LiveData<MyMovie> {
+        return myMovie
+    }
+
+    fun insertToMyMovie(myMovie: MyMovie){
+        CoroutineScope(Dispatchers.IO).launch {
+            appDatabase.MyMovieDao().insert(myMovie)
+        }
+    }
+
+    fun deleteMovieById(id: String){
+        CoroutineScope(Dispatchers.IO).launch {
+            appDatabase.MyMovieDao().deleteById(id)
+        }
     }
 }

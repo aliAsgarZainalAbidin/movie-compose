@@ -85,6 +85,7 @@ fun ParentNavigation() {
                     date = remoteData.value?.release_date.toString()
                     Detail(
                         id = id,
+                        type = Const.TYPE_MOVIE,
                         title = title,
                         imageUrl = imageUrl,
                         titleDate = titleDate,

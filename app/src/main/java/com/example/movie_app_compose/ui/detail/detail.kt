@@ -59,6 +59,7 @@ import java.util.*
 fun Detail(
     modifier: Modifier = Modifier,
     id: String = "",
+    type: String = "",
     title: String = "",
     imageUrl: String = "",
     titleDate: String = "",
@@ -72,6 +73,8 @@ fun Detail(
     Log.d(TAG, "Detail: $title")
     if (title != "null") {
         DetailContent(
+            id = id,
+            type = type,
             title = title,
             imageUrl = imageUrl,
             titleDate = titleDate,

@@ -1,14 +1,11 @@
 package com.example.movie_app_compose.ui.detail
 
 import android.util.Log
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -20,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -28,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberImagePainter
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -36,6 +35,11 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.movie_app_compose.BuildConfig
 import com.example.movie_app_compose.BuildConfig.TAG
 import com.example.movie_app_compose.R
+import com.example.movie_app_compose.api.ApiFactory
+import com.example.movie_app_compose.data.AppDatabase
+import com.example.movie_app_compose.data.Repository
+import com.example.movie_app_compose.data.entity.MyMovie
+import com.example.movie_app_compose.model.Detail
 import com.example.movie_app_compose.model.Genre
 import com.example.movie_app_compose.ui.components.Chip
 import com.example.movie_app_compose.ui.components.TextComponent
@@ -43,11 +47,14 @@ import com.example.movie_app_compose.ui.theme.DarkBlue900
 import com.example.movie_app_compose.ui.theme.Green500
 import com.example.movie_app_compose.ui.theme.Grey
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
+import com.example.movie_app_compose.util.Const
+import com.example.movie_app_compose.util.Mapper
 import java.util.*
 
 @Composable
 fun DetailContent(
     modifier: Modifier = Modifier,
+    id: String = "",
     type: String = "",
     title: String = "",
     imageUrl: String = "",
@@ -59,6 +66,30 @@ fun DetailContent(
     overview: String = "",
     listGenre: List<Genre> = listOf(),
 ) {
+    val restApi by lazy { ApiFactory.create() }
+    var isPlaying = false
+    var isSaved = false
+    val detailViewModel: DetailViewModel = viewModel()
+    detailViewModel.repository = Repository(restApi, AppDatabase.getDatabase(LocalContext.current))
+    val animationSpec by
+    rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.lf30_editor_24))
+    when (type) {
+        Const.TYPE_MOVIE -> {
+            val myMovie = detailViewModel.getMovieById(id)
+            if (myMovie.value?.isSaved == true) {
+                isPlaying = true
+                isSaved = true
+            }
+        }
+        Const.TYPE_TV -> {
+
+        }
+    }
+    val progress by animateLottieCompositionAsState(
+        composition = animationSpec,
+        isPlaying = isPlaying
+    )
+
     val image = rememberImagePainter(
         data = imageUrl,
         builder = {
@@ -111,8 +142,6 @@ fun DetailContent(
                         alignment = Alignment.Center
                     )
 
-                    val animationSpec by
-                    rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.lf30_editor_24))
                     Surface(
                         modifier = modifier
                             .size(32.dp)
@@ -126,12 +155,37 @@ fun DetailContent(
 
                     LottieAnimation(
                         animationSpec,
+                        progress,
                         alignment = Alignment.Center,
                         modifier = modifier
                             .constrainAs(lottie) {
                                 centerTo(surface)
                             }
                             .size(24.dp)
+                            .clickable {
+                                if (!isSaved) {
+                                    detailViewModel.insertToMyMovies(
+                                        MyMovie(
+                                            id = id.toInt(),
+                                            type = type,
+                                            title = title,
+                                            backdropPath = imageUrl,
+                                            releaseDate = date,
+                                            popularity = popularity.toDouble(),
+                                            adult = adult.equals("YES"),
+                                            language = language,
+                                            overview = overview,
+                                            genreIds = listGenre,
+                                            isSaved = true
+                                        )
+                                    )
+                                    isSaved = true
+                                } else {
+                                    isSaved = false
+                                    detailViewModel.deleteById(id)
+                                    isPlaying = false
+                                }
+                            }
                     )
 
                     Spacer(modifier = modifier
