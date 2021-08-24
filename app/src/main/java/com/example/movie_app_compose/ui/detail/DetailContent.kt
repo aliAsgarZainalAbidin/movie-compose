@@ -31,6 +31,7 @@ import androidx.constraintlayout.compose.Dimension
 import coil.compose.rememberImagePainter
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.movie_app_compose.BuildConfig
 import com.example.movie_app_compose.BuildConfig.TAG
@@ -112,7 +113,6 @@ fun DetailContent(
 
                     val animationSpec by
                     rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.lf30_editor_24))
-
                     Surface(
                         modifier = modifier
                             .size(32.dp)
@@ -127,9 +127,11 @@ fun DetailContent(
                     LottieAnimation(
                         animationSpec,
                         alignment = Alignment.Center,
-                        modifier = modifier.constrainAs(lottie) {
-                            centerTo(surface)
-                        }.size(24.dp)
+                        modifier = modifier
+                            .constrainAs(lottie) {
+                                centerTo(surface)
+                            }
+                            .size(24.dp)
                     )
 
                     Spacer(modifier = modifier

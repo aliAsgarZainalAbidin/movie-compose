@@ -16,6 +16,9 @@ interface MyTvShowDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(list: List<MyTvShow>)
 
+    @Query("SELECT * FROM MyTvShow WHERE id=:id")
+    fun getTvShowsById(id : String): MyTvShow
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(data : MyTvShow)
 }

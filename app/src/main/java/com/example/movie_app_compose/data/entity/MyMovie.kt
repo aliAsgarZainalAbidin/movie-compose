@@ -12,6 +12,9 @@ data class MyMovie(
     @field:SerializedName("release_date")
     override var releaseDate: String? = "",
 
+    @ColumnInfo(name = "is_saved")
+    var isSaved: Boolean? = false,
+
     @ColumnInfo(name = "adult")
     @field:SerializedName("adult")
     override var adult: Boolean? = false,

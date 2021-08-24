@@ -13,9 +13,12 @@ interface MyMovieDao {
     @Query(value = "SELECT * FROM MyMovie")
     fun getAllMovie():List<MyMovie>
 
+    @Query("SELECT * FROM MyMovie WHERE id=:id")
+    fun getMovieById(id : String): MyMovie
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(list: List<MyMovie>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(data : MyTvShow)
+    fun insert(data : MyMovie)
 }

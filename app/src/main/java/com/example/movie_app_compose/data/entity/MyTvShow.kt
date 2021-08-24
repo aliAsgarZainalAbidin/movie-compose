@@ -12,6 +12,9 @@ data class MyTvShow(
     @field:SerializedName("vote_average")
     override var voteAverage: Float? = 0.0f,
 
+    @ColumnInfo(name = "is_saved")
+    var isSaved: Boolean? = false,
+
     @ColumnInfo(name = "backdrop_path")
     @field:SerializedName("backdrop_path")
     override var backdropPath: String? = "",
