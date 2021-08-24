@@ -45,6 +45,7 @@ import com.example.movie_app_compose.R
 import com.example.movie_app_compose.api.ApiFactory
 import com.example.movie_app_compose.data.AppDatabase
 import com.example.movie_app_compose.data.Repository
+import com.example.movie_app_compose.model.Genre
 import com.example.movie_app_compose.ui.IdleContent
 import com.example.movie_app_compose.ui.components.Chip
 import com.example.movie_app_compose.ui.components.TextComponent
@@ -66,7 +67,7 @@ fun Detail(
     adult: String = "",
     language: String = "",
     overview: String = "",
-    listGenre: List<String> = listOf(),
+    listGenre: List<Genre> = listOf(),
 ) {
     Log.d(TAG, "Detail: $title")
     if (title != "null") {
@@ -78,7 +79,8 @@ fun Detail(
             adult = adult,
             overview = overview,
             language = language,
-            popularity = popularity
+            popularity = popularity,
+            listGenre = listGenre
         )
     } else {
         val connectionManager =

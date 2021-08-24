@@ -412,6 +412,7 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
                         remoteDetail = Detail(
                             data.adult,
                             data.backdrop_path,
+                            data.genres,
                             data.budget,
                             data.homepage,
                             data.first_air_date,

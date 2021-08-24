@@ -9,6 +9,9 @@ data class Detail(
     @field:SerializedName("backdrop_path")
     val backdrop_path: String?,
 
+    @field:SerializedName("genres")
+    val genres: List<Genre>?,
+
     @field:SerializedName("budget")
     val budget: Int?,
 

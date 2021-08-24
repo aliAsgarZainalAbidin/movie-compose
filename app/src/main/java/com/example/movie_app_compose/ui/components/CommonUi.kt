@@ -182,6 +182,7 @@ fun Chip(modifier: Modifier = Modifier, text: String) {
             )
         }
     }
+    Spacer(Modifier.width(4.dp))
 }
 
 @Composable

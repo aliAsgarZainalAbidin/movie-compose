@@ -1,5 +1,6 @@
 package com.example.movie_app_compose.ui.detail
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -26,7 +27,9 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import coil.compose.rememberImagePainter
 import com.example.movie_app_compose.BuildConfig
+import com.example.movie_app_compose.BuildConfig.TAG
 import com.example.movie_app_compose.R
+import com.example.movie_app_compose.model.Genre
 import com.example.movie_app_compose.ui.components.Chip
 import com.example.movie_app_compose.ui.components.TextComponent
 import com.example.movie_app_compose.ui.theme.DarkBlue900
@@ -47,7 +50,7 @@ fun DetailContent(
     adult: String = "",
     language: String = "",
     overview: String = "",
-    listGenre: List<String> = listOf(),
+    listGenre: List<Genre> = listOf(),
 ) {
     val image = rememberImagePainter(
         data = imageUrl,
@@ -69,13 +72,13 @@ fun DetailContent(
                 .padding(16.dp)
                 .fillMaxWidth()
         ) {
-            val (tvTitle, ivSurface) = createRefs()
+            val (tvTitle, ivSurface, lzCategory, tvCategory) = createRefs()
             val (tvTitleOver, tvOverview, tvTitleDate, tvDate, tvTitleAdult, tvAdult, tvTitlePopularity, tvPopularity, tvTitleLanguage, tvLanguage) = createRefs()
             val backImage = painterResource(id = R.drawable.landscape)
 
             Surface(
                 modifier = modifier
-                    .height(240.dp)
+                    .height(272.dp)
                     .constrainAs(ivSurface) {
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
@@ -203,17 +206,34 @@ fun DetailContent(
                 color = Grey
             )
 
-            LazyRow {
+            TextComponent(
+                value = "Genre",
+                modifier = modifier.constrainAs(tvCategory) {
+                    top.linkTo(tvPopularity.bottom, 12.dp)
+                    start.linkTo(tvPopularity.start)
+                },
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.caption
+            )
+
+            LazyRow(
+                modifier = modifier.constrainAs(lzCategory) {
+                    top.linkTo(tvCategory.bottom, 4.dp)
+                    start.linkTo(tvCategory.start)
+                    end.linkTo(parent.end)
+                    width = Dimension.fillToConstraints
+                }
+            ) {
                 items(listGenre.size) { index ->
-                    Chip(text = listGenre.get(index))
+                    Chip(text = listGenre.get(index).name.toString())
                 }
             }
 
             TextComponent(
                 value = "Overview",
                 modifier = modifier.constrainAs(tvTitleOver) {
-                    top.linkTo(tvPopularity.bottom, 12.dp)
-                    start.linkTo(tvPopularity.start)
+                    top.linkTo(lzCategory.bottom, 12.dp)
+                    start.linkTo(lzCategory.start)
                 },
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.subtitle1,

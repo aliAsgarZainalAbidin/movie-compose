@@ -17,6 +17,7 @@ import com.example.movie_app_compose.MainActivityContent
 import com.example.movie_app_compose.api.ApiFactory
 import com.example.movie_app_compose.data.AppDatabase
 import com.example.movie_app_compose.data.Repository
+import com.example.movie_app_compose.model.Genre
 import com.example.movie_app_compose.ui.detail.Detail
 import com.example.movie_app_compose.ui.detail.DetailViewModel
 import com.example.movie_app_compose.ui.login.LoginContent
@@ -65,20 +66,21 @@ fun ParentNavigation() {
                     LocalContext.current
                 )
             )
-            Log.d(TAG, "ParentNavigation: $type")
             val remoteData = detailViewModel.getDetail(id, type).observeAsState()
             val title: String
             val titleDate: String
             val date: String
+            val listGenre = remoteData.value?.genres ?: listOf()
             val imageUrl = "${BuildConfig.BASE_IMAGE_URL}${remoteData.value?.backdrop_path}"
             val adult = if (remoteData.value?.adult == true) "YES" else "NO"
             val language = remoteData.value?.original_language.toString()
             val overview = remoteData.value?.overview.toString()
             val popularity = remoteData.value?.popularity?.toInt().toString()
+            Log.d(TAG, "ParentNavigation: $listGenre")
+            
             when (type) {
                 Const.TYPE_MOVIE -> {
                     title = remoteData.value?.title.toString()
-                    Log.d(TAG, title)
                     titleDate = "Release Date"
                     date = remoteData.value?.release_date.toString()
                     Detail(
@@ -90,7 +92,8 @@ fun ParentNavigation() {
                         adult = adult,
                         overview = overview,
                         language = language,
-                        popularity = popularity
+                        popularity = popularity,
+                        listGenre = listGenre
                     )
                 }
                 Const.TYPE_TV -> {
@@ -106,7 +109,8 @@ fun ParentNavigation() {
                         adult = adult,
                         overview = overview,
                         language = language,
-                        popularity = popularity
+                        popularity = popularity,
+                        listGenre = listGenre
                     )
                 }
             }
