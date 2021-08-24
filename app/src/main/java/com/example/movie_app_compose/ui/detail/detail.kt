@@ -98,7 +98,7 @@ fun Detail(
 fun PreviewDetail() {
     MovieAppComposeTheme {
         Surface(color = DarkBlue900) {
-            IdleContent()
+            DetailContent()
         }
     }
 }

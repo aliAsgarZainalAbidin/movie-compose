@@ -70,7 +70,7 @@ fun ParentNavigation() {
             val title: String
             val titleDate: String
             val date: String
-            val imageUrl = "${BuildConfig.BASE_IMAGE_URL}${remoteData.value?.poster_path}"
+            val imageUrl = "${BuildConfig.BASE_IMAGE_URL}${remoteData.value?.backdrop_path}"
             val adult = if (remoteData.value?.adult == true) "YES" else "NO"
             val language = remoteData.value?.original_language.toString()
             val overview = remoteData.value?.overview.toString()
@@ -79,7 +79,7 @@ fun ParentNavigation() {
                 Const.TYPE_MOVIE -> {
                     title = remoteData.value?.title.toString()
                     Log.d(TAG, title)
-                    titleDate = "Release Date : "
+                    titleDate = "Release Date"
                     date = remoteData.value?.release_date.toString()
                     Detail(
                         id = id,
@@ -95,7 +95,7 @@ fun ParentNavigation() {
                 }
                 Const.TYPE_TV -> {
                     title = remoteData.value?.name.toString()
-                    titleDate = "First Air Date : "
+                    titleDate = "First Air Date"
                     date = remoteData.value?.first_air_date.toString()
                     Detail(
                         id = id,
