@@ -6,12 +6,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -26,6 +29,9 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import coil.compose.rememberImagePainter
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.movie_app_compose.BuildConfig
 import com.example.movie_app_compose.BuildConfig.TAG
 import com.example.movie_app_compose.R
@@ -89,7 +95,7 @@ fun DetailContent(
                 shape = RoundedCornerShape(16.dp)
             ) {
                 ConstraintLayout {
-                    val (ivBackdrop, view) = createRefs()
+                    val (ivBackdrop, view, lottie, surface) = createRefs()
                     Image(
                         painter = image,
                         contentDescription = null,
@@ -102,6 +108,28 @@ fun DetailContent(
                                 bottom.linkTo(parent.bottom)
                             },
                         alignment = Alignment.Center
+                    )
+
+                    val animationSpec by
+                    rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.lf30_editor_24))
+
+                    Surface(
+                        modifier = modifier
+                            .size(32.dp)
+                            .alpha(0.5f)
+                            .constrainAs(surface) {
+                                top.linkTo(parent.top, 8.dp)
+                                end.linkTo(parent.end, 8.dp)
+                            },
+                        shape = CircleShape,
+                        color = DarkBlue900, content = {})
+
+                    LottieAnimation(
+                        animationSpec,
+                        alignment = Alignment.Center,
+                        modifier = modifier.constrainAs(lottie) {
+                            centerTo(surface)
+                        }.size(24.dp)
                     )
 
                     Spacer(modifier = modifier
