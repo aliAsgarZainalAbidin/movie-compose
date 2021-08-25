@@ -36,6 +36,7 @@ import com.example.movie_app_compose.api.ApiFactory
 import com.example.movie_app_compose.data.AppDatabase
 import com.example.movie_app_compose.data.Repository
 import com.example.movie_app_compose.data.entity.MyMovie
+import com.example.movie_app_compose.data.entity.MyTvShow
 import com.example.movie_app_compose.model.Detail
 import com.example.movie_app_compose.model.Genre
 import com.example.movie_app_compose.ui.components.Chip
@@ -58,7 +59,7 @@ fun DetailContent(
     titleDate: String = "",
     date: String = "",
     popularity: String = "",
-    adult: String = "",
+    adult: String = "-",
     language: String = "",
     overview: String = "",
     listGenre: List<Genre> = listOf(),
@@ -73,7 +74,7 @@ fun DetailContent(
 
     val animationSpec by
     rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.lf30_editor_24))
-    
+
     val image = rememberImagePainter(
         data = imageUrl,
         builder = {
@@ -147,26 +148,52 @@ fun DetailContent(
                             }
                             .size(24.dp)
                             .clickable {
-                                if (!isSaved) {
-                                    detailViewModel.insertToMyMovies(
-                                        MyMovie(
-                                            id = id.toInt(),
-                                            type = type,
-                                            title = title,
-                                            backdropPath = imageUrl,
-                                            releaseDate = date,
-                                            popularity = popularity.toDouble(),
-                                            adult = adult.equals("YES"),
-                                            language = language,
-                                            overview = overview,
-                                            genreIds = listGenre,
-                                            isSaved = true
-                                        )
-                                    )
-                                    progress = 1f
-                                } else {
-                                    progress = 0f
-                                    detailViewModel.deleteById(id)
+                                when (type) {
+                                    Const.TYPE_MOVIE -> {
+                                        if (!isSaved) {
+                                            detailViewModel.insertToMyMovies(
+                                                MyMovie(
+                                                    id = id.toInt(),
+                                                    type = type,
+                                                    title = title,
+                                                    backdropPath = imageUrl,
+                                                    releaseDate = date,
+                                                    popularity = popularity.toDouble(),
+                                                    adult = adult.equals("YES"),
+                                                    language = language,
+                                                    overview = overview,
+                                                    genreIds = listGenre,
+                                                    isSaved = true
+                                                )
+                                            )
+                                            progress = 1f
+                                        } else {
+                                            progress = 0f
+                                            detailViewModel.deleteMovieById(id)
+                                        }
+                                    }
+                                    Const.TYPE_TV -> {
+                                        if (!isSaved) {
+                                            detailViewModel.insertToMyTvShow(
+                                                MyTvShow(
+                                                    id = id.toInt(),
+                                                    type = type,
+                                                    name = title,
+                                                    backdropPath = imageUrl,
+                                                    firstAirDate = date,
+                                                    popularity = popularity.toDouble(),
+                                                    language = language,
+                                                    overview = overview,
+                                                    genres = listGenre,
+                                                    isSaved = true
+                                                )
+                                            )
+                                            progress = 1f
+                                        } else {
+                                            progress = 0f
+                                            detailViewModel.deleteTvShowById(id)
+                                        }
+                                    }
                                 }
                             }
                     )

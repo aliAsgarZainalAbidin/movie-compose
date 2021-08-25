@@ -14,6 +14,7 @@ import com.example.movie_app_compose.data.entity.*
 import com.example.movie_app_compose.model.Detail
 import com.example.movie_app_compose.model.RequestWrapper
 import com.example.movie_app_compose.model.Root
+import com.example.movie_app_compose.model.TvShow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,6 +37,7 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
     private lateinit var mDetail: MutableLiveData<Detail>
     private lateinit var people: ArrayList<People>
     private lateinit var myMovie: MutableLiveData<MyMovie>
+    private lateinit var myTvShow: MutableLiveData<MyTvShow>
 
     fun createRequestToken(context: Context): String {
         val result = apiInterface.createRequestToken(BuildConfig.API)
@@ -476,6 +478,29 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
     fun deleteMovieById(id: String){
         CoroutineScope(Dispatchers.IO).launch {
             appDatabase.MyMovieDao().deleteById(id)
+        }
+    }
+
+    fun requestTvShowById(id: String) {
+        myTvShow = MutableLiveData()
+        CoroutineScope(Dispatchers.IO).launch {
+            myTvShow.postValue(appDatabase.MyTvShowDao().getTvShowsById(id))
+        }
+    }
+
+    fun getTvShowById(): LiveData<MyTvShow> {
+        return myTvShow
+    }
+
+    fun insertToTvShow(tvShow: MyTvShow){
+        CoroutineScope(Dispatchers.IO).launch {
+            appDatabase.MyTvShowDao().insert(tvShow)
+        }
+    }
+
+    fun deleteTvShowById(id: String){
+        CoroutineScope(Dispatchers.IO).launch {
+            appDatabase.MyTvShowDao().deleteTvShowById(id)
         }
     }
 }

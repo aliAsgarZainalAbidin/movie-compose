@@ -65,7 +65,7 @@ fun Detail(
     titleDate: String = "",
     date: String = "",
     popularity: String = "",
-    adult: String = "",
+    adult: String = "-",
     language: String = "",
     overview: String = "",
     listGenre: List<Genre> = listOf(),

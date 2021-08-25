@@ -77,7 +77,7 @@ fun ParentNavigation() {
             val overview = remoteData.value?.overview.toString()
             val popularity = remoteData.value?.popularity?.toInt().toString()
             Log.d(TAG, "ParentNavigation: $listGenre")
-            
+
             when (type) {
                 Const.TYPE_MOVIE -> {
                     title = remoteData.value?.title.toString()
@@ -103,17 +103,20 @@ fun ParentNavigation() {
                     title = remoteData.value?.name.toString()
                     titleDate = "First Air Date"
                     date = remoteData.value?.first_air_date.toString()
+                    val dbData = detailViewModel.getTvShowById(id).observeAsState()
                     Detail(
+                        type = Const.TYPE_TV,
                         id = id,
                         title = title,
                         imageUrl = imageUrl,
                         titleDate = titleDate,
                         date = date,
-                        adult = adult,
+                        adult = " - ",
                         overview = overview,
                         language = language,
                         popularity = popularity,
-                        listGenre = listGenre
+                        listGenre = listGenre,
+                        isSaved = dbData.value?.isSaved ?: false
                     )
                 }
             }

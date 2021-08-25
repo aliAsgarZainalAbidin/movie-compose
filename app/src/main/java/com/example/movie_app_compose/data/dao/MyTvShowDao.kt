@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.movie_app_compose.data.entity.AiringToday
+import com.example.movie_app_compose.data.entity.MyMovie
 import com.example.movie_app_compose.data.entity.MyTvShow
 import com.example.movie_app_compose.data.entity.PopularTv
 
@@ -21,4 +22,7 @@ interface MyTvShowDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(data : MyTvShow)
+
+    @Query("DELETE FROM MyTvShow WHERE id=:id")
+    fun deleteTvShowById(id: String)
 }
