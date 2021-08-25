@@ -69,6 +69,7 @@ fun Detail(
     language: String = "",
     overview: String = "",
     listGenre: List<Genre> = listOf(),
+    isSaved: Boolean = false
 ) {
     Log.d(TAG, "Detail: $title")
     if (title != "null") {
@@ -83,7 +84,8 @@ fun Detail(
             overview = overview,
             language = language,
             popularity = popularity,
-            listGenre = listGenre
+            listGenre = listGenre,
+            isSaved = isSaved
         )
     } else {
         val connectionManager =

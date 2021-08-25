@@ -1,6 +1,8 @@
 package com.example.movie_app_compose.ui.detail
 
+import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -9,9 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -28,10 +28,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberImagePainter
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.animateLottieCompositionAsState
-import com.airbnb.lottie.compose.rememberLottieComposition
+import com.airbnb.lottie.compose.*
 import com.example.movie_app_compose.BuildConfig
 import com.example.movie_app_compose.BuildConfig.TAG
 import com.example.movie_app_compose.R
@@ -65,31 +62,18 @@ fun DetailContent(
     language: String = "",
     overview: String = "",
     listGenre: List<Genre> = listOf(),
+    isSaved: Boolean = false
 ) {
     val restApi by lazy { ApiFactory.create() }
-    var isPlaying = false
-    var isSaved = false
+    var progress by remember {
+        mutableStateOf(if (isSaved) 1f else 0f)
+    }
     val detailViewModel: DetailViewModel = viewModel()
     detailViewModel.repository = Repository(restApi, AppDatabase.getDatabase(LocalContext.current))
+
     val animationSpec by
     rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.lf30_editor_24))
-    when (type) {
-        Const.TYPE_MOVIE -> {
-            val myMovie = detailViewModel.getMovieById(id)
-            if (myMovie.value?.isSaved == true) {
-                isPlaying = true
-                isSaved = true
-            }
-        }
-        Const.TYPE_TV -> {
-
-        }
-    }
-    val progress by animateLottieCompositionAsState(
-        composition = animationSpec,
-        isPlaying = isPlaying
-    )
-
+    
     val image = rememberImagePainter(
         data = imageUrl,
         builder = {
@@ -155,7 +139,7 @@ fun DetailContent(
 
                     LottieAnimation(
                         animationSpec,
-                        progress,
+                        progress = progress,
                         alignment = Alignment.Center,
                         modifier = modifier
                             .constrainAs(lottie) {
@@ -179,11 +163,10 @@ fun DetailContent(
                                             isSaved = true
                                         )
                                     )
-                                    isSaved = true
+                                    progress = 1f
                                 } else {
-                                    isSaved = false
+                                    progress = 0f
                                     detailViewModel.deleteById(id)
-                                    isPlaying = false
                                 }
                             }
                     )

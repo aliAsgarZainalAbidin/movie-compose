@@ -83,6 +83,7 @@ fun ParentNavigation() {
                     title = remoteData.value?.title.toString()
                     titleDate = "Release Date"
                     date = remoteData.value?.release_date.toString()
+                    val dbData = detailViewModel.getMovieById(id).observeAsState()
                     Detail(
                         id = id,
                         type = Const.TYPE_MOVIE,
@@ -94,7 +95,8 @@ fun ParentNavigation() {
                         overview = overview,
                         language = language,
                         popularity = popularity,
-                        listGenre = listGenre
+                        listGenre = listGenre,
+                        isSaved = dbData.value?.isSaved ?: false
                     )
                 }
                 Const.TYPE_TV -> {
