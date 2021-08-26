@@ -30,7 +30,7 @@ import com.example.movie_app_compose.util.Const
 @Composable
 fun EmptyContent(modifier: Modifier = Modifier) {
     val animationSpec by
-    rememberLottieComposition(spec = LottieCompositionSpec.Url(url = "https://assets3.lottiefiles.com/packages/lf20_d29eunxw.json"))
+    rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.empty))
 
     ConstraintLayout(
         modifier = Modifier
