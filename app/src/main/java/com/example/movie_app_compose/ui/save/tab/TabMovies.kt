@@ -16,11 +16,13 @@ import androidx.navigation.compose.rememberNavController
 import com.example.movie_app_compose.api.ApiFactory
 import com.example.movie_app_compose.data.AppDatabase
 import com.example.movie_app_compose.data.Repository
+import com.example.movie_app_compose.navigateToDetail
 import com.example.movie_app_compose.navigation.Navigation
 import com.example.movie_app_compose.ui.components.LazyColumnItem
 import com.example.movie_app_compose.ui.empty.EmptyContent
 import com.example.movie_app_compose.ui.theme.DarkBlue900
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
+import com.example.movie_app_compose.util.Const
 
 val topics = listOf(
     "Arts & Crafts", "Beauty", "Books", "Business", "Comics", "Culinary",
@@ -44,7 +46,10 @@ fun TabMovies(navController: NavController) {
                     imageUrl = data?.posterPath ?: "",
                     title = data?.title ?: "",
                     date = data?.releaseDate ?: "",
-                    overview = data?.overview ?: ""
+                    overview = data?.overview ?: "",
+                    modifier = Modifier.clickable {
+                        navigateToDetail(navController, data?.type.toString(), data?.id.toString(), Const.TYPE_REPO_LOCAL)
+                    }
                 )
             }
         }

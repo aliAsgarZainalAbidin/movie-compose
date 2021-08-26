@@ -41,4 +41,5 @@ class DetailViewModel : ViewModel() {
     fun deleteTvShowById(id: String){
         repository.deleteTvShowById(id)
     }
+
 }

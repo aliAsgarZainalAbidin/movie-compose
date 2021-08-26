@@ -33,6 +33,7 @@ import com.example.movie_app_compose.ui.save.SaveMenu
 import com.example.movie_app_compose.ui.splash.SplashScreenContent
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 import com.example.movie_app_compose.ui.tv.Tv
+import com.example.movie_app_compose.util.Const
 import com.facebook.stetho.Stetho
 
 val items = listOf(
@@ -126,8 +127,8 @@ fun MainActivityContent(navControllerMainUI: NavController) {
     }
 }
 
-fun navigateToDetail(navControl: NavController, type: String, id: String) {
-    navControl.navigate("${Navigation.Detail.router}/$type/$id")
+fun navigateToDetail(navControl: NavController, type: String, id: String, repo: String = Const.TYPE_REPO_REMOTE) {
+    navControl.navigate("${Navigation.Detail.router}/$type/$id/$repo")
 }
 
 @Preview

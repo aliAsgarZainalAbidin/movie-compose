@@ -45,7 +45,7 @@ fun SaveMenu(modifier: Modifier = Modifier, navController: NavController) {
                 TabMovies(navController)
             }
             1 -> {
-                TabTvShow()
+                TabTvShow(navController)
             }
         }
     }

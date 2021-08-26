@@ -47,18 +47,22 @@ fun ParentNavigation() {
             }, 1500)
         }
         composable(
-            "${Navigation.Detail.router}/{type}/{idItem}",
+            "${Navigation.Detail.router}/{type}/{idItem}/{repo}",
             arguments = listOf(
                 navArgument("idItem") {
                     type = NavType.StringType
                 },
                 navArgument("type") {
                     type = NavType.StringType
+                },
+                navArgument("repo") {
+                    type = NavType.StringType
                 }
             )
         ) {
             val id = it.arguments?.getString("idItem") ?: ""
             val type = it.arguments?.getString("type") ?: ""
+            val repo = it.arguments?.getString("repo") ?: ""
             val restApi by lazy { ApiFactory.create() }
             val detailViewModel: DetailViewModel = viewModel()
             detailViewModel.repository = Repository(
@@ -67,24 +71,77 @@ fun ParentNavigation() {
                 )
             )
             val remoteData = detailViewModel.getDetail(id, type).observeAsState()
-            val title: String
-            val titleDate: String
-            val date: String
-            val listGenre = remoteData.value?.genres ?: listOf()
-            val imageUrl = "${BuildConfig.BASE_IMAGE_URL}${remoteData.value?.backdrop_path}"
-            val posterPath = "${BuildConfig.BASE_IMAGE_URL}${remoteData.value?.poster_path}"
-            val adult = if (remoteData.value?.adult == true) "YES" else "NO"
-            val language = remoteData.value?.original_language.toString()
-            val overview = remoteData.value?.overview.toString()
-            val popularity = remoteData.value?.popularity?.toInt().toString()
-            Log.d(TAG, "ParentNavigation: $listGenre")
+            val localDataMovie = detailViewModel.getMovieById(id).observeAsState()
+            val localDataTvShow = detailViewModel.getTvShowById(id).observeAsState()
+            var title = ""
+            var titleDate= ""
+            var date= ""
+            var listGenre: List<Genre> = listOf()
+            var imageUrl = ""
+            var posterPath = ""
+            var adult = ""
+            var language = ""
+            var overview = ""
+            var popularity = ""
+
+            if (!repo.equals(Const.TYPE_REPO_REMOTE)) {
+                when (type){
+                    Const.TYPE_MOVIE -> {
+                        title = localDataMovie.value?.title.toString()
+                        titleDate = "Release Date"
+                        date = localDataMovie.value?.releaseDate.toString()
+                        listGenre = localDataMovie.value?.genreIds ?: listOf()
+                        imageUrl = "${BuildConfig.BASE_IMAGE_URL}${localDataMovie.value?.backdropPath}"
+                        posterPath = "${BuildConfig.BASE_IMAGE_URL}${localDataMovie.value?.posterPath}"
+                        adult = if (localDataMovie.value?.adult == true) "YES" else "NO"
+                        language = localDataMovie.value?.language.toString()
+                        overview = localDataMovie.value?.overview.toString()
+                        popularity = localDataMovie.value?.popularity?.toInt().toString()
+                    }
+                    Const.TYPE_TV -> {
+                        title = localDataTvShow.value?.name.toString()
+                        titleDate = "First Air Date"
+                        date = localDataTvShow.value?.firstAirDate.toString()
+                        listGenre = localDataTvShow.value?.genres ?: listOf()
+                        imageUrl = "${BuildConfig.BASE_IMAGE_URL}${localDataTvShow.value?.backdropPath}"
+                        posterPath = "${BuildConfig.BASE_IMAGE_URL}${localDataTvShow.value?.posterPath}"
+                        adult = "-"
+                        language = localDataTvShow.value?.language.toString()
+                        overview = localDataTvShow.value?.overview.toString()
+                        popularity = localDataTvShow.value?.popularity?.toInt().toString()
+                    }
+                }
+            } else {
+                when(type){
+                    Const.TYPE_MOVIE -> {
+                        title = remoteData.value?.title.toString()
+                        titleDate = "Release Date"
+                        date = remoteData.value?.release_date.toString()
+                        listGenre = remoteData.value?.genres ?: listOf()
+                        imageUrl = "${BuildConfig.BASE_IMAGE_URL}${remoteData.value?.backdrop_path}"
+                        posterPath = "${BuildConfig.BASE_IMAGE_URL}${remoteData.value?.poster_path}"
+                        adult = if (remoteData.value?.adult == true) "YES" else "NO"
+                        language = remoteData.value?.original_language.toString()
+                        overview = remoteData.value?.overview.toString()
+                        popularity = remoteData.value?.popularity?.toInt().toString()
+                    }
+                    Const.TYPE_TV -> {
+                        title = remoteData.value?.name.toString()
+                        titleDate = "First Air Date"
+                        date = remoteData.value?.first_air_date.toString()
+                        listGenre = remoteData.value?.genres ?: listOf()
+                        imageUrl = "${BuildConfig.BASE_IMAGE_URL}${remoteData.value?.backdrop_path}"
+                        posterPath = "${BuildConfig.BASE_IMAGE_URL}${remoteData.value?.poster_path}"
+                        adult = "-"
+                        language = remoteData.value?.original_language.toString()
+                        overview = remoteData.value?.overview.toString()
+                        popularity = remoteData.value?.popularity?.toInt().toString()
+                    }
+                }
+            }
 
             when (type) {
                 Const.TYPE_MOVIE -> {
-                    title = remoteData.value?.title.toString()
-                    titleDate = "Release Date"
-                    date = remoteData.value?.release_date.toString()
-                    val dbData = detailViewModel.getMovieById(id).observeAsState()
                     Detail(
                         posterPath = posterPath,
                         id = id,
@@ -98,14 +155,10 @@ fun ParentNavigation() {
                         language = language,
                         popularity = popularity,
                         listGenre = listGenre,
-                        isSaved = dbData.value?.isSaved ?: false
+                        isSaved = localDataMovie.value?.isSaved ?: false
                     )
                 }
                 Const.TYPE_TV -> {
-                    title = remoteData.value?.name.toString()
-                    titleDate = "First Air Date"
-                    date = remoteData.value?.first_air_date.toString()
-                    val dbData = detailViewModel.getTvShowById(id).observeAsState()
                     Detail(
                         posterPath = posterPath,
                         type = Const.TYPE_TV,
@@ -119,7 +172,7 @@ fun ParentNavigation() {
                         language = language,
                         popularity = popularity,
                         listGenre = listGenre,
-                        isSaved = dbData.value?.isSaved ?: false
+                        isSaved = localDataTvShow.value?.isSaved ?: false
                     )
                 }
             }
