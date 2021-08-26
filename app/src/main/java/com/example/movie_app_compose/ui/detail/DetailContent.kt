@@ -54,6 +54,7 @@ fun DetailContent(
     modifier: Modifier = Modifier,
     id: String = "",
     type: String = "",
+    posterPath: String = "",
     title: String = "",
     imageUrl: String = "",
     titleDate: String = "",
@@ -163,6 +164,7 @@ fun DetailContent(
                                                     language = language,
                                                     overview = overview,
                                                     genreIds = listGenre,
+                                                    posterPath = posterPath,
                                                     isSaved = true
                                                 )
                                             )
@@ -184,6 +186,7 @@ fun DetailContent(
                                                     popularity = popularity.toDouble(),
                                                     language = language,
                                                     overview = overview,
+                                                    posterPath = posterPath,
                                                     genres = listGenre,
                                                     isSaved = true
                                                 )

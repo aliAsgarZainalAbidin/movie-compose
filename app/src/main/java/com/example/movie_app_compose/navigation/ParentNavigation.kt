@@ -72,6 +72,7 @@ fun ParentNavigation() {
             val date: String
             val listGenre = remoteData.value?.genres ?: listOf()
             val imageUrl = "${BuildConfig.BASE_IMAGE_URL}${remoteData.value?.backdrop_path}"
+            val posterPath = "${BuildConfig.BASE_IMAGE_URL}${remoteData.value?.poster_path}"
             val adult = if (remoteData.value?.adult == true) "YES" else "NO"
             val language = remoteData.value?.original_language.toString()
             val overview = remoteData.value?.overview.toString()
@@ -85,6 +86,7 @@ fun ParentNavigation() {
                     date = remoteData.value?.release_date.toString()
                     val dbData = detailViewModel.getMovieById(id).observeAsState()
                     Detail(
+                        posterPath = posterPath,
                         id = id,
                         type = Const.TYPE_MOVIE,
                         title = title,
@@ -105,6 +107,7 @@ fun ParentNavigation() {
                     date = remoteData.value?.first_air_date.toString()
                     val dbData = detailViewModel.getTvShowById(id).observeAsState()
                     Detail(
+                        posterPath = posterPath,
                         type = Const.TYPE_TV,
                         id = id,
                         title = title,

@@ -59,6 +59,7 @@ import java.util.*
 fun Detail(
     modifier: Modifier = Modifier,
     id: String = "",
+    posterPath : String = "",
     type: String = "",
     title: String = "",
     imageUrl: String = "",
@@ -75,6 +76,7 @@ fun Detail(
     if (title != "null") {
         DetailContent(
             id = id,
+            posterPath = posterPath,
             type = type,
             title = title,
             imageUrl = imageUrl,

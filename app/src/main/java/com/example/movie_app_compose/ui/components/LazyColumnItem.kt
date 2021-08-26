@@ -20,7 +20,13 @@ import com.example.movie_app_compose.R
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 
 @Composable
-fun LazyColumnItem(modifier: Modifier = Modifier, imageUrl: String = "") {
+fun LazyColumnItem(
+    modifier: Modifier = Modifier,
+    imageUrl: String = "",
+    title: String = "",
+    date: String = "",
+    overview: String = ""
+) {
 
     val fullUrlImage = "${BuildConfig.BASE_IMAGE_URL}$imageUrl"
     val data = rememberImagePainter(
@@ -49,7 +55,7 @@ fun LazyColumnItem(modifier: Modifier = Modifier, imageUrl: String = "") {
                     elevation = 4.dp
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.sample_foto),
+                        painter = data,
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = modifier
@@ -59,12 +65,12 @@ fun LazyColumnItem(modifier: Modifier = Modifier, imageUrl: String = "") {
                 }
 
                 TextComponent(
-                    value = "Fast and Furios F9 Assambler asdasd asdas dasd asd asda sada sd",
+                    value = title,
                     modifier = modifier.constrainAs(tvTitle) {
                         top.linkTo(poster.top)
                         start.linkTo(poster.end, margin = 16.dp)
                         end.linkTo(parent.end)
-                        width = Dimension.preferredWrapContent
+                        width = Dimension.fillToConstraints
                     },
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.subtitle1,
@@ -72,7 +78,7 @@ fun LazyColumnItem(modifier: Modifier = Modifier, imageUrl: String = "") {
                 )
 
                 Text(
-                    text = "Fast and Furios F9 Assambler asldkjsad adlksajda kajsd lkajsd lkasjdlk asdlkj asdkj asdlkjasd lkasjd laksdj laskdj asldkjasdlkj asdlkajsd lkasjd alskdjasdlkasjdlkasd asl askdjlskadj aslkj asdlkjasd lkasdj lkasdj lasdkj asdlkj",
+                    text = overview,
                     modifier = modifier.constrainAs(tvDesc) {
                         top.linkTo(tvRilis.bottom, 16.dp)
                         start.linkTo(tvRilis.start)
@@ -85,7 +91,7 @@ fun LazyColumnItem(modifier: Modifier = Modifier, imageUrl: String = "") {
                 )
 
                 TextComponent(
-                    value = "07-08-2021",
+                    value = date,
                     modifier = modifier.constrainAs(tvRilis) {
                         top.linkTo(tvTitle.bottom, 4.dp)
                         start.linkTo(tvTitle.start)
