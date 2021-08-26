@@ -38,6 +38,7 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
     private lateinit var people: ArrayList<People>
     private lateinit var myMovie: MutableLiveData<MyMovie>
     private lateinit var listMyMovie: MutableLiveData<List<MyMovie>>
+    private lateinit var listMyTvShow: MutableLiveData<List<MyTvShow>>
     private lateinit var myTvShow: MutableLiveData<MyTvShow>
 
     fun createRequestToken(context: Context): String {
@@ -473,8 +474,19 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
         }
     }
 
+    fun requestAllMyTvShow(){
+        listMyTvShow = MutableLiveData()
+        CoroutineScope(Dispatchers.IO).launch {
+            listMyTvShow.postValue(appDatabase.MyTvShowDao().getAllTvShow())
+        }
+    }
+
     fun getAllMyMovies():LiveData<List<MyMovie>>{
         return listMyMovie
+    }
+
+    fun getAllMyTvShow():LiveData<List<MyTvShow>>{
+        return listMyTvShow
     }
 
     fun getMovieById(): LiveData<MyMovie> {
