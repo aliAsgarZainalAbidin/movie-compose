@@ -15,6 +15,7 @@ import com.example.movie_app_compose.api.ApiFactory
 import com.example.movie_app_compose.data.AppDatabase
 import com.example.movie_app_compose.data.Repository
 import com.example.movie_app_compose.ui.components.LazyColumnItem
+import com.example.movie_app_compose.ui.empty.EmptyContent
 import com.example.movie_app_compose.ui.theme.DarkBlue900
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 
@@ -26,16 +27,20 @@ fun TabTvShow() {
         Repository(restApi, AppDatabase.getDatabase(LocalContext.current))
     val listTvShow = tabTvShowViewModel.getAllTvShow().observeAsState()
 
-    LazyColumn(modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)) {
-        items(listTvShow.value?.size ?: 0) { index ->
-            val data = listTvShow.value?.get(index)
-            LazyColumnItem(
-                imageUrl = data?.posterPath ?: "",
-                title = data?.name ?: "",
-                date = data?.firstAirDate ?: "",
-                overview = data?.overview ?: ""
-            )
+    if (listTvShow.value?.size ?: 0 > 0){
+        LazyColumn(modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)) {
+            items(listTvShow.value?.size ?: 0) { index ->
+                val data = listTvShow.value?.get(index)
+                LazyColumnItem(
+                    imageUrl = data?.posterPath ?: "",
+                    title = data?.name ?: "",
+                    date = data?.firstAirDate ?: "",
+                    overview = data?.overview ?: ""
+                )
+            }
         }
+    } else {
+        EmptyContent()
     }
 }
 

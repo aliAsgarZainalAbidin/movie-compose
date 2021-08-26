@@ -18,6 +18,7 @@ import com.example.movie_app_compose.data.AppDatabase
 import com.example.movie_app_compose.data.Repository
 import com.example.movie_app_compose.navigation.Navigation
 import com.example.movie_app_compose.ui.components.LazyColumnItem
+import com.example.movie_app_compose.ui.empty.EmptyContent
 import com.example.movie_app_compose.ui.theme.DarkBlue900
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 
@@ -35,16 +36,20 @@ fun TabMovies(navController: NavController) {
         Repository(restApi, AppDatabase.getDatabase(LocalContext.current))
     val listMovies = tabMovieViewModel.getAllMyMovies().observeAsState()
 
-    LazyColumn(modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)) {
-        items(listMovies.value?.size ?: 0) { index ->
-            val data = listMovies.value?.get(index)
-            LazyColumnItem(
-                imageUrl = data?.posterPath ?: "",
-                title = data?.title ?: "",
-                date = data?.releaseDate ?: "",
-                overview = data?.overview ?: ""
-            )
+    if (listMovies.value?.size ?: 0 > 0) {
+        LazyColumn(modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)) {
+            items(listMovies.value?.size ?: 0) { index ->
+                val data = listMovies.value?.get(index)
+                LazyColumnItem(
+                    imageUrl = data?.posterPath ?: "",
+                    title = data?.title ?: "",
+                    date = data?.releaseDate ?: "",
+                    overview = data?.overview ?: ""
+                )
+            }
         }
+    } else {
+        EmptyContent()
     }
 }
 
