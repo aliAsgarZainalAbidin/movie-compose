@@ -49,9 +49,9 @@ fun OverviewBody(
     val overviewViewModel: OverviewViewModel = viewModel()
     overviewViewModel.repositor = Repository(restApi, AppDatabase.getDatabase(LocalContext.current))
 
-    var listPeople = overviewViewModel.getPopularPeople().observeAsState()
-    var listTrending = overviewViewModel.getTrendingMovies().observeAsState()
-    var listOnTheAir = overviewViewModel.getOnTheAir().observeAsState()
+    val listPeople = overviewViewModel.getPopularPeople().observeAsState()
+    val listTrending = overviewViewModel.getTrendingMovies().observeAsState()
+    val listOnTheAir = overviewViewModel.getOnTheAir().observeAsState()
 
     if (listPeople.value != null && listTrending.value != null && listOnTheAir.value != null){
         Column(

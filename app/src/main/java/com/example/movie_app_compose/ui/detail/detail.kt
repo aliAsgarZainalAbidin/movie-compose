@@ -38,6 +38,8 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.example.movie_app_compose.BuildConfig
 import com.example.movie_app_compose.BuildConfig.TAG
@@ -70,7 +72,8 @@ fun Detail(
     language: String = "",
     overview: String = "",
     listGenre: List<Genre> = listOf(),
-    isSaved: Boolean = false
+    isSaved: Boolean = false,
+    navController : NavController = rememberNavController()
 ) {
     Log.d(TAG, "Detail: $title")
     if (title != "null") {
@@ -87,7 +90,8 @@ fun Detail(
             language = language,
             popularity = popularity,
             listGenre = listGenre,
-            isSaved = isSaved
+            isSaved = isSaved,
+            navController = navController
         )
     } else {
         val connectionManager =

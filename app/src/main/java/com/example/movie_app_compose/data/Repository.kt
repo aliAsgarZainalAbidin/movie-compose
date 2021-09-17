@@ -186,11 +186,11 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
         return mLiveDataTrendingMovie
     }
 
-    fun requestOnTheAir() {
+    fun requestOnTheAir(page : String = "1") {
         mOnTheAir = MutableLiveData()
         var tvShow = ArrayList<OnTheAir>()
         var remoteTvShow = ArrayList<OnTheAir>()
-        val result = apiInterface.getOnTheAir(API)
+        val result = apiInterface.getOnTheAir(API,page)
         result.enqueue(object : Callback<Root<OnTheAir>> {
             override fun onResponse(
                 call: Call<Root<OnTheAir>>,

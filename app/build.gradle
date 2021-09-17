@@ -82,6 +82,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07"
 
     implementation 'com.airbnb.android:lottie-compose:4.1.0'
+    implementation "androidx.paging:paging-runtime:3.0.1"
 
     implementation "io.coil-kt:coil-compose:$coil"
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'

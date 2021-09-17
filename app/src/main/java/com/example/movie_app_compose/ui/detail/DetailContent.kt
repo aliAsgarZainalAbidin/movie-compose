@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -27,6 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.airbnb.lottie.compose.*
 import com.example.movie_app_compose.BuildConfig
@@ -64,7 +67,8 @@ fun DetailContent(
     language: String = "",
     overview: String = "",
     listGenre: List<Genre> = listOf(),
-    isSaved: Boolean = false
+    isSaved: Boolean = false,
+    navController: NavController = rememberNavController()
 ) {
     val restApi by lazy { ApiFactory.create() }
     var progress by remember {
@@ -79,7 +83,7 @@ fun DetailContent(
     val image = rememberImagePainter(
         data = imageUrl,
         builder = {
-            error(R.drawable.ic_baseline_image_not_supported_24)
+            error(R.color.darkblue)
             placeholder(R.color.darkblue)
             crossfade(true)
         })
@@ -113,7 +117,7 @@ fun DetailContent(
                 shape = RoundedCornerShape(16.dp)
             ) {
                 ConstraintLayout {
-                    val (ivBackdrop, view, lottie, surface) = createRefs()
+                    val (ivBackdrop, view, lottie, surface, ivBack) = createRefs()
                     Image(
                         painter = image,
                         contentDescription = null,
@@ -125,6 +129,24 @@ fun DetailContent(
                                 top.linkTo(parent.top)
                                 bottom.linkTo(parent.bottom)
                             },
+                        alignment = Alignment.Center
+                    )
+
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_baseline_arrow_back_ios_24),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = modifier
+                            .clickable {
+                                navController.popBackStack()
+                            }
+                            .padding(8.dp)
+                            .size(24.dp)
+                            .constrainAs(ivBack) {
+                                top.linkTo(parent.top, 8.dp)
+                                start.linkTo(parent.start, 8.dp)
+                            }
+                            ,
                         alignment = Alignment.Center
                     )
 
@@ -243,7 +265,6 @@ fun DetailContent(
                     top.linkTo(tvTitleDate.bottom)
                     start.linkTo(tvTitleDate.start)
                 },
-                fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.caption,
                 color = Grey
             )
@@ -333,7 +354,7 @@ fun DetailContent(
                     start.linkTo(lzCategory.start)
                 },
                 fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.subtitle1,
+                style = MaterialTheme.typography.caption,
             )
             Spacer(
                 modifier = modifier

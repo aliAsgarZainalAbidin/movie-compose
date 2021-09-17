@@ -155,7 +155,8 @@ fun ParentNavigation() {
                         language = language,
                         popularity = popularity,
                         listGenre = listGenre,
-                        isSaved = localDataMovie.value?.isSaved ?: false
+                        isSaved = localDataMovie.value?.isSaved ?: false,
+                        navController = navControllerMainUI
                     )
                 }
                 Const.TYPE_TV -> {
@@ -172,7 +173,8 @@ fun ParentNavigation() {
                         language = language,
                         popularity = popularity,
                         listGenre = listGenre,
-                        isSaved = localDataTvShow.value?.isSaved ?: false
+                        isSaved = localDataTvShow.value?.isSaved ?: false,
+                        navController = navControllerMainUI
                     )
                 }
             }

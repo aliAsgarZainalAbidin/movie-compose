@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CpuProfilerConfigsState">
+    <option name="userConfigs">
+      <list>
+        <CpuProfilerConfig>
+          <option name="bufferSizeMb" value="32" />
+          <option name="name" value="Unnamed" />
+          <option name="samplingIntervalUs" value="0" />
+          <option name="technology" value="INSTRUMENTED_JAVA" />
+        </CpuProfilerConfig>
+      </list>
+    </option>
+  </component>
+</project>

@@ -42,7 +42,9 @@ interface ApiInterface {
     @GET("tv/on_the_air")
     fun getOnTheAir(
         @Query("api_key")
-        apiKey: String = ""
+        apiKey: String = "",
+        @Query("page")
+        page: String = "1"
     ): Call<Root<OnTheAir>>
 
     @GET("movie/now_playing")
