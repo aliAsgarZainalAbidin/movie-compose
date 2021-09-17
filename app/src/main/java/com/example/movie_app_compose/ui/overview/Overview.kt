@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -26,6 +27,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.movie_app_compose.BuildConfig
+import com.example.movie_app_compose.R
 import com.example.movie_app_compose.api.ApiFactory
 import com.example.movie_app_compose.data.AppDatabase
 import com.example.movie_app_compose.data.Repository
@@ -53,7 +55,7 @@ fun OverviewBody(
     val listTrending = overviewViewModel.getTrendingMovies().observeAsState()
     val listOnTheAir = overviewViewModel.getOnTheAir().observeAsState()
 
-    if (listPeople.value != null && listTrending.value != null && listOnTheAir.value != null){
+    if (listPeople.value != null && listTrending.value != null && listOnTheAir.value != null) {
         Column(
             modifier = modifier
                 .verticalScroll(
@@ -67,7 +69,7 @@ fun OverviewBody(
                     .fillMaxWidth()
                     .fillMaxHeight()
             ) {
-                val (tvWelcome, lzRow, tvPopular, lzRowPopular, tvMovies, lzRowMovies, spacer) = createRefs()
+                val (tvWelcome, lzRow, tvPopular, lzRowPopular, tvMovies, lzRowMovies, spacer, fab) = createRefs()
                 Text(
                     buildAnnotatedString {
                         withStyle(

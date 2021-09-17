@@ -15,6 +15,7 @@ val Green700 = Color(0xFF00796B)
 val Green800 = Color(0xFF00695C)
 val DarkBlue900 = Color(0xFF26282F)
 val DarkBlue = Color(0xFF3C3E46)
+val trans = Color(0xFFFFFF)
 
 // Rally is always dark themed.
 val ColorPalette = darkColors(

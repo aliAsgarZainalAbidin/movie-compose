@@ -11,6 +11,7 @@ sealed class Navigation(val router : String) {
     object Activity : Navigation("mainactivity")
     object Offline : Navigation("offline")
     object Login : Navigation("login")
+    object FormAdd : Navigation("form_add")
 }
 
 

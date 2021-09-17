@@ -111,6 +111,10 @@ fun MainActivityContent(navControllerMainUI: NavController) {
                     }
                 )
             }
+            composable(Screen.Add.route){
+                scrollState = rememberScrollState()
+
+            }
             composable(Screen.Tv.route) {
                 scrollState = rememberScrollState()
                 Tv(
