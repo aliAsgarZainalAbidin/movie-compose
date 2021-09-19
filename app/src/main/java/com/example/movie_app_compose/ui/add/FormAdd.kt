@@ -3,6 +3,7 @@ package com.example.movie_app_compose.ui.add
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -14,11 +15,13 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.DatePicker
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -31,6 +34,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
@@ -40,6 +44,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -50,6 +55,7 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.airbnb.lottie.compose.LottieAnimation
 import com.example.movie_app_compose.BuildConfig.TAG
+import com.example.movie_app_compose.MainActivity
 import com.example.movie_app_compose.R
 import com.example.movie_app_compose.api.ApiFactory
 import com.example.movie_app_compose.data.AppDatabase
@@ -74,6 +80,8 @@ import java.io.File
 import java.io.IOException
 import java.security.acl.Permission
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.sin
@@ -84,12 +92,14 @@ fun FormAdd(
 ) {
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     val bitmap = remember { mutableStateOf<Bitmap?>(null) }
-    val launcher  = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()){
-        imageUri = it
-    }
+    val launcher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) {
+            imageUri = it
+        }
     val restApi by lazy { ApiFactory.create() }
     val formAddViewModel: FormAddViewModel = viewModel()
     formAddViewModel.repositor = Repository(restApi, AppDatabase.getDatabase(LocalContext.current))
+    var buttonSize by remember { mutableStateOf(Size.Zero) }
 
     var currentPhotoPath = ""
 
@@ -97,7 +107,7 @@ fun FormAdd(
         if (Build.VERSION.SDK_INT < 28) {
             bitmap.value = it?.let { image ->
                 MediaStore.Images
-                    .Media.getBitmap(LocalContext.current.contentResolver,image)
+                    .Media.getBitmap(LocalContext.current.contentResolver, image)
             }
 
         } else {
@@ -151,7 +161,7 @@ fun FormAdd(
                     }
                 }
             }
-            val (titleTf, dateTf, popularityTf, adultTf, titleAdult,titleLang, languageTf, titleGenre, genreTf, titleOverview, overviewTf, titleType, typeSpinner, btnSave) = createRefs()
+            val (titleTf, dateTf, popularityTf, adultTf, titleAdult, titleDate, languageTf, titleGenre, genreTf, titleOverview, overviewTf, titleType, typeSpinner, btnSave) = createRefs()
 
             val titleTfState = remember { mutableStateOf(TextFieldValue()) }
             OutlinedTextField(
@@ -173,24 +183,43 @@ fun FormAdd(
                 colors = TextFieldDefaults.textFieldColors(textColor = Color.White)
             )
 
-            val dateTfState = remember { mutableStateOf(TextFieldValue()) }
-            OutlinedTextField(
-                value = dateTfState.value,
-                onValueChange = {
-                    dateTfState.value = it
-                },
-                modifier = modifier.constrainAs(dateTf) {
-                    top.linkTo(titleTf.bottom, 8.dp)
-                    start.linkTo(titleTf.start)
-                    end.linkTo(titleTf.end)
-                    width = Dimension.fillToConstraints
-                },
-                singleLine = true,
-                placeholder = {
-                    TextComponent(value = "2021-09-13")
-                },
-                label = { TextComponent(value = "Date") }
+            val mYear: Int
+            val mMonth: Int
+            val mDay: Int
+            val now = Calendar.getInstance()
+            mYear = now.get(Calendar.YEAR)
+            mMonth = now.get(Calendar.MONTH)
+            mDay = now.get(Calendar.DAY_OF_MONTH)
+            now.time = Date()
+            val date = remember { mutableStateOf("") }
+            val datePickerDialog = DatePickerDialog(
+                LocalContext.current,
+                { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+                    val cal = Calendar.getInstance()
+                    cal.set(year, month, dayOfMonth)
+                    date.value = SimpleDateFormat("yyyy-MM-dd").format(cal.time)
+                }, mYear, mMonth, mDay
             )
+
+            TextComponent(value = "Date", modifier = modifier.constrainAs(titleDate) {
+                top.linkTo(titleTf.bottom, 16.dp)
+                start.linkTo(titleTf.start)
+            })
+            Button(
+                onClick = { datePickerDialog.show() },
+                modifier = modifier
+                    .constrainAs(dateTf) {
+                        top.linkTo(titleDate.bottom, 8.dp)
+                        start.linkTo(titleTf.start)
+                        end.linkTo(titleTf.end)
+                        width = Dimension.fillToConstraints
+                    }
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .onGloballyPositioned { buttonSize = it.size.toSize() }
+            ) {
+                TextComponent(value = date.value)
+            }
 
             var textFieldSize by remember { mutableStateOf(Size.Zero) }
             val popularityTfState = remember { mutableStateOf(TextFieldValue()) }
@@ -211,14 +240,14 @@ fun FormAdd(
                 placeholder = {
                     TextComponent(value = "589")
                 },
-                label = { TextComponent(value = "Popularity") }
+                label = { TextComponent(value = "Popularity") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 
             var adultDropDownState by remember { mutableStateOf(false) }
-            var buttonSize by remember { mutableStateOf(Size.Zero) }
             val adultState = remember { mutableStateOf(TextFieldValue("Pilih Status")) }
-            TextComponent(value = "Adult", modifier = modifier.constrainAs(titleAdult){
-                top.linkTo(popularityTf.bottom,16.dp)
+            TextComponent(value = "Adult", modifier = modifier.constrainAs(titleAdult) {
+                top.linkTo(popularityTf.bottom, 16.dp)
                 start.linkTo(popularityTf.start)
             })
             Column(
@@ -262,47 +291,26 @@ fun FormAdd(
                 }
             }
 
-            var langDropDownState by remember { mutableStateOf(false) }
-            val langState = remember { mutableStateOf(TextFieldValue("Pilih Bahasa")) }
-            TextComponent(value = "Language", modifier = modifier.constrainAs(titleLang){
-                top.linkTo(adultTf.bottom,16.dp)
-                start.linkTo(adultTf.start)
-            })
-            Column(
+            val langState = remember { mutableStateOf(TextFieldValue()) }
+            OutlinedTextField(
+                value = langState.value,
+                onValueChange = {
+                    langState.value = it
+                },
                 modifier = Modifier
                     .constrainAs(languageTf) {
-                        top.linkTo(titleLang.bottom, 8.dp)
+                        top.linkTo(adultTf.bottom, 8.dp)
                         start.linkTo(popularityTf.start)
                         end.linkTo(popularityTf.end)
                         width = Dimension.fillToConstraints
                     }
-            ) {
-                Button(
-                    onClick = { langDropDownState = !langDropDownState },
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .height(48.dp)
-                        .onGloballyPositioned { buttonSize = it.size.toSize() }
-                ) {
-                    TextComponent(value = langState.value.text)
-                }
-
-                DropdownMenu(
-                    expanded = langDropDownState,
-                    onDismissRequest = { langDropDownState = false },
-                    modifier = modifier.width(with(LocalDensity.current) {
-                        buttonSize.width.toDp()
-                    })
-                ) {
-                    DropdownMenuItem(onClick = {
-                        langState.value = TextFieldValue("Yes")
-                        langDropDownState = false
-                    }) {
-                        Text("Yes")
-                    }
-                    //init lang
-                }
-            }
+                    .onGloballyPositioned { textFieldSize = it.size.toSize() },
+                singleLine = true,
+                placeholder = {
+                    TextComponent(value = "English, Indonesian, etc")
+                },
+                label = { TextComponent(value = "Language") },
+            )
 
             val genreTfState = remember { mutableStateOf(TextFieldValue()) }
             OutlinedTextField(
@@ -348,8 +356,8 @@ fun FormAdd(
 
             var typeDropDownState by remember { mutableStateOf(false) }
             val typeState = remember { mutableStateOf(TextFieldValue("Pilih Type Item")) }
-            TextComponent(value = "Type Item", modifier = modifier.constrainAs(titleType){
-                top.linkTo(overviewTf.bottom,16.dp)
+            TextComponent(value = "Type Item", modifier = modifier.constrainAs(titleType) {
+                top.linkTo(overviewTf.bottom, 16.dp)
                 start.linkTo(adultTf.start)
             })
             Column(
@@ -396,31 +404,36 @@ fun FormAdd(
 
             Button(
                 onClick = {
-                          //Logic save item
-                          if (titleTfState.value.text.isNotEmpty() && dateTfState.value.text.isNotEmpty() && popularityTfState.value.text.isNotEmpty() && adultState.value.text.isNotEmpty()  && !adultState.value.text.equals("Pilih Status") && langState.value.text.isNotEmpty() && !langState.value.text.equals("Pilih Bahasa") && genreTfState.value.text.isNotEmpty() && overviewTfState.value.text.isNotEmpty() && typeState.value.text.isNotEmpty() && !typeState.value.text.equals("Pilih Type Item") ){
-                              if (typeState.value.text.equals("Movie")) {
-                                  val trending = TrendingLocal()
-                                  trending.title = titleTfState.value.text
-                                  trending.releaseDate = dateTfState.value.text
-                                  trending.popularity = popularityTfState.value.text.toDouble()
-                                  trending.adult = adultState.value.text.equals("Yes")
-                                  trending.originalLanguage = langState.value.text
-                                  var listGenre = ArrayList<Genre>()
-                                  genreTfState.value.text.split(",").forEach {
-                                      val genre = Genre()
-                                      genre.name = it
-                                      listGenre.add(genre)
-                                  }
-                                  trending.backdropPath = currentPhotoPath
-                                  trending.posterPath = currentPhotoPath
-                                  trending.mediaType = "movie"
-                                  trending.genres = listGenre
-                                  trending.overview = overviewTfState.value.text
-                                  formAddViewModel.insertTrendingMovie(trending)
-                              }
-                          }else {
-                              Log.d(TAG, "FormAdd: false")
-                          }
+                    //Logic save item
+                    if (titleTfState.value.text.isNotEmpty() && date.value.isNotEmpty() && popularityTfState.value.text.isNotEmpty() && adultState.value.text.isNotEmpty() && !adultState.value.text.equals(
+                            "Pilih Status"
+                        ) && langState.value.text.isNotEmpty() && genreTfState.value.text.isNotEmpty() && overviewTfState.value.text.isNotEmpty() && typeState.value.text.isNotEmpty() && !typeState.value.text.equals(
+                            "Pilih Type Item"
+                        )
+                    ) {
+                        if (typeState.value.text.equals("Movie")) {
+                            val trending = TrendingLocal()
+                            trending.title = titleTfState.value.text
+                            trending.releaseDate = date.value
+                            trending.popularity = popularityTfState.value.text.toDouble()
+                            trending.adult = adultState.value.text.equals("Yes")
+                            trending.originalLanguage = langState.value.text
+                            var listGenre = ArrayList<Genre>()
+                            genreTfState.value.text.split(",").forEach {
+                                val genre = Genre()
+                                genre.name = it
+                                listGenre.add(genre)
+                            }
+                            trending.backdropPath = currentPhotoPath
+                            trending.posterPath = currentPhotoPath
+                            trending.mediaType = "movie"
+                            trending.genres = listGenre
+                            trending.overview = overviewTfState.value.text
+                            formAddViewModel.insertTrendingMovie(trending)
+                        }
+                    } else {
+                        Log.d(TAG, "FormAdd: false")
+                    }
                 },
                 modifier = modifier
                     .fillMaxWidth()
