@@ -26,6 +26,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.movie_app_compose.navigation.Navigation
 import com.example.movie_app_compose.navigation.ParentNavigation
 import com.example.movie_app_compose.navigation.Screen
+import com.example.movie_app_compose.ui.add.FormAdd
 import com.example.movie_app_compose.ui.detail.Detail
 import com.example.movie_app_compose.ui.movie.Movie
 import com.example.movie_app_compose.ui.overview.OverviewBody
@@ -39,6 +40,7 @@ import com.facebook.stetho.Stetho
 val items = listOf(
     Screen.Overview,
     Screen.Movie,
+    Screen.Add,
     Screen.Tv,
     Screen.Save
 )
@@ -113,7 +115,7 @@ fun MainActivityContent(navControllerMainUI: NavController) {
             }
             composable(Screen.Add.route){
                 scrollState = rememberScrollState()
-
+                FormAdd()
             }
             composable(Screen.Tv.route) {
                 scrollState = rememberScrollState()

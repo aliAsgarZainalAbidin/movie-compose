@@ -1,5 +1,24 @@
 package com.example.movie_app_compose.ui.add
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.ContentValues
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
+import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
+import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -14,8 +33,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -25,10 +46,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.core.content.FileProvider
 import com.airbnb.lottie.compose.LottieAnimation
+import com.example.movie_app_compose.BuildConfig.TAG
 import com.example.movie_app_compose.R
 import com.example.movie_app_compose.data.entity.MyMovie
 import com.example.movie_app_compose.data.entity.MyTvShow
+import com.example.movie_app_compose.navigation.ParentNavigation
 import com.example.movie_app_compose.ui.components.OutlinedTextFieldCustom
 import com.example.movie_app_compose.ui.components.TextComponent
 import com.example.movie_app_compose.ui.theme.DarkBlue900
@@ -36,13 +60,43 @@ import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 import com.example.movie_app_compose.ui.theme.Shapes
 import com.example.movie_app_compose.ui.theme.trans
 import com.example.movie_app_compose.util.Const
+import com.facebook.stetho.Stetho
 import com.google.android.material.datepicker.MaterialDatePicker
+import java.io.File
+import java.io.IOException
+import java.security.acl.Permission
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.math.sin
 
 @Composable
 fun FormAdd(
     modifier: Modifier = Modifier
 ) {
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
+    val bitmap = remember { mutableStateOf<Bitmap?>(null) }
+    val launcher  = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()){
+        imageUri = it
+    }
+    var currentPhotoPath = ""
+
+    imageUri.let {
+        if (Build.VERSION.SDK_INT < 28) {
+            bitmap.value = it?.let { image ->
+                MediaStore.Images
+                    .Media.getBitmap(LocalContext.current.contentResolver,image)
+            }
+
+        } else {
+            val source = it?.let { image ->
+                ImageDecoder
+                    .createSource(LocalContext.current.contentResolver, image)
+            }
+            bitmap.value = source?.let { deco -> ImageDecoder.decodeBitmap(deco) }
+        }
+        currentPhotoPath = it?.path.toString()
+    }
+
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
         ConstraintLayout(
             modifier = Modifier
@@ -54,6 +108,7 @@ fun FormAdd(
             val (ivSurface, tilTitle, til) = createRefs()
             Surface(
                 modifier = modifier
+                    .clickable { launcher.launch("image/") }
                     .height(272.dp)
                     .constrainAs(ivSurface) {
                         top.linkTo(parent.top)
@@ -66,19 +121,21 @@ fun FormAdd(
             ) {
                 ConstraintLayout {
                     val (ivBackdrop) = createRefs()
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_baseline_add_24),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight()
-                            .constrainAs(ivBackdrop) {
-                                top.linkTo(parent.top)
-                                bottom.linkTo(parent.bottom)
-                            },
-                        alignment = Alignment.Center
-                    )
+                    bitmap.value.let { it?.asImageBitmap() }?.let {
+                        Image(
+                            bitmap = it,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight()
+                                .constrainAs(ivBackdrop) {
+                                    top.linkTo(parent.top)
+                                    bottom.linkTo(parent.bottom)
+                                },
+                            alignment = Alignment.Center
+                        )
+                    }
                 }
             }
             val (titleTf, dateTf, popularityTf, adultTf, titleAdult,titleLang, languageTf, titleGenre, genreTf, titleOverview, overviewTf, titleType, typeSpinner, btnSave) = createRefs()
@@ -99,7 +156,8 @@ fun FormAdd(
                 placeholder = {
                     TextComponent(value = "Title")
                 },
-                label = { TextComponent(value = "Title") }
+                label = { TextComponent(value = "Title") },
+                colors = TextFieldDefaults.textFieldColors(textColor = Color.White)
             )
 
             val dateTfState = remember { mutableStateOf(TextFieldValue()) }
@@ -233,10 +291,6 @@ fun FormAdd(
                 }
             }
 
-            TextComponent(value = "Genre", modifier = modifier.constrainAs(titleGenre){
-                top.linkTo(languageTf.bottom,16.dp)
-                start.linkTo(languageTf.start)
-            })
             val genreTfState = remember { mutableStateOf(TextFieldValue()) }
             OutlinedTextField(
                 value = genreTfState.value,
@@ -245,7 +299,7 @@ fun FormAdd(
                 },
                 modifier = modifier
                     .constrainAs(genreTf) {
-                        top.linkTo(titleGenre.bottom, 8.dp)
+                        top.linkTo(languageTf.bottom, 8.dp)
                         start.linkTo(dateTf.start)
                         end.linkTo(dateTf.end)
                         width = Dimension.fillToConstraints
@@ -258,10 +312,6 @@ fun FormAdd(
                 label = { TextComponent(value = "Genre") }
             )
 
-            TextComponent(value = "Overview", modifier = modifier.constrainAs(titleOverview){
-                top.linkTo(genreTf.bottom,16.dp)
-                start.linkTo(genreTf.start)
-            })
             val overviewTfState = remember { mutableStateOf(TextFieldValue()) }
             OutlinedTextField(
                 value = overviewTfState.value,
@@ -270,7 +320,7 @@ fun FormAdd(
                 },
                 modifier = modifier
                     .constrainAs(overviewTf) {
-                        top.linkTo(titleOverview.bottom, 8.dp)
+                        top.linkTo(genreTf.bottom, 8.dp)
                         start.linkTo(dateTf.start)
                         end.linkTo(dateTf.end)
                         width = Dimension.fillToConstraints
@@ -280,7 +330,7 @@ fun FormAdd(
                 placeholder = {
                     TextComponent(value = "Once open time, there is ...")
                 },
-                label = { TextComponent(value = "Overview") }
+                label = { TextComponent(value = "Overview") },
             )
 
             var typeDropDownState by remember { mutableStateOf(false) }
@@ -338,7 +388,7 @@ fun FormAdd(
                 modifier = modifier
                     .fillMaxWidth()
                     .height(48.dp)
-                    .constrainAs(btnSave){
+                    .constrainAs(btnSave) {
                         top.linkTo(typeSpinner.bottom, 32.dp)
                         start.linkTo(typeSpinner.start)
                         end.linkTo(typeSpinner.end)
