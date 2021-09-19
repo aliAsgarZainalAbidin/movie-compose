@@ -3,6 +3,7 @@ package com.example.movie_app_compose.data.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.movie_app_compose.model.Genre
 import com.example.movie_app_compose.util.Movie
 import com.google.gson.annotations.SerializedName
 
@@ -24,6 +25,10 @@ data class Trending(
     @field:SerializedName("genre_ids")
     override var genreIds: List<Int>? = listOf(),
 
+    @ColumnInfo(name = "genre")
+    @field:SerializedName("genre")
+    var genres: List<Genre>? = listOf(),
+
     @ColumnInfo(name = "vote_count")
     @field:SerializedName("vote_count")
     override var voteCounts: Int? = -1,
@@ -44,7 +49,7 @@ data class Trending(
     @field:SerializedName("video")
     override var video: Boolean? = false,
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     @field:SerializedName("id")
     override var id: Int? = -1,

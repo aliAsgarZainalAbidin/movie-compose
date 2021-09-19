@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 
 @Entity
 data class Genre(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     @field:SerializedName("id")
     var id : Int? = -1,

@@ -47,14 +47,21 @@ import androidx.compose.ui.unit.toSize
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.core.content.FileProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.airbnb.lottie.compose.LottieAnimation
 import com.example.movie_app_compose.BuildConfig.TAG
 import com.example.movie_app_compose.R
+import com.example.movie_app_compose.api.ApiFactory
+import com.example.movie_app_compose.data.AppDatabase
+import com.example.movie_app_compose.data.Repository
 import com.example.movie_app_compose.data.entity.MyMovie
 import com.example.movie_app_compose.data.entity.MyTvShow
+import com.example.movie_app_compose.data.entity.Trending
+import com.example.movie_app_compose.model.Genre
 import com.example.movie_app_compose.navigation.ParentNavigation
 import com.example.movie_app_compose.ui.components.OutlinedTextFieldCustom
 import com.example.movie_app_compose.ui.components.TextComponent
+import com.example.movie_app_compose.ui.detail.DetailViewModel
 import com.example.movie_app_compose.ui.theme.DarkBlue900
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 import com.example.movie_app_compose.ui.theme.Shapes
@@ -67,6 +74,7 @@ import java.io.IOException
 import java.security.acl.Permission
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.sin
 
 @Composable
@@ -78,6 +86,10 @@ fun FormAdd(
     val launcher  = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()){
         imageUri = it
     }
+    val restApi by lazy { ApiFactory.create() }
+    val formAddViewModel: FormAddViewModel = viewModel()
+    formAddViewModel.repositor = Repository(restApi, AppDatabase.getDatabase(LocalContext.current))
+
     var currentPhotoPath = ""
 
     imageUri.let {
@@ -203,6 +215,7 @@ fun FormAdd(
 
             var adultDropDownState by remember { mutableStateOf(false) }
             var buttonSize by remember { mutableStateOf(Size.Zero) }
+            val adultState = remember { mutableStateOf(TextFieldValue("Pilih Status")) }
             TextComponent(value = "Adult", modifier = modifier.constrainAs(titleAdult){
                 top.linkTo(popularityTf.bottom,16.dp)
                 start.linkTo(popularityTf.start)
@@ -216,7 +229,6 @@ fun FormAdd(
                         width = Dimension.fillToConstraints
                     }
             ) {
-                val adultState = remember { mutableStateOf(TextFieldValue("Pilih Status")) }
                 Button(
                     onClick = { adultDropDownState = !adultDropDownState },
                     modifier = modifier
@@ -250,6 +262,7 @@ fun FormAdd(
             }
 
             var langDropDownState by remember { mutableStateOf(false) }
+            val langState = remember { mutableStateOf(TextFieldValue("Pilih Bahasa")) }
             TextComponent(value = "Language", modifier = modifier.constrainAs(titleLang){
                 top.linkTo(adultTf.bottom,16.dp)
                 start.linkTo(adultTf.start)
@@ -263,7 +276,6 @@ fun FormAdd(
                         width = Dimension.fillToConstraints
                     }
             ) {
-                val langState = remember { mutableStateOf(TextFieldValue("Pilih Bahasa")) }
                 Button(
                     onClick = { langDropDownState = !langDropDownState },
                     modifier = modifier
@@ -334,6 +346,7 @@ fun FormAdd(
             )
 
             var typeDropDownState by remember { mutableStateOf(false) }
+            val typeState = remember { mutableStateOf(TextFieldValue("Pilih Type Item")) }
             TextComponent(value = "Type Item", modifier = modifier.constrainAs(titleType){
                 top.linkTo(overviewTf.bottom,16.dp)
                 start.linkTo(adultTf.start)
@@ -347,7 +360,6 @@ fun FormAdd(
                         width = Dimension.fillToConstraints
                     }
             ) {
-                val typeState = remember { mutableStateOf(TextFieldValue("Pilih Type Item")) }
                 Button(
                     onClick = { typeDropDownState = !typeDropDownState },
                     modifier = modifier
@@ -384,6 +396,27 @@ fun FormAdd(
             Button(
                 onClick = {
                           //Logic save item
+                          if (titleTfState.value.text.isNotEmpty() && dateTfState.value.text.isNotEmpty() && popularityTfState.value.text.isNotEmpty() && adultState.value.text.isNotEmpty()  && !adultState.value.text.equals("Pilih Status") && langState.value.text.isNotEmpty() && !langState.value.text.equals("Pilih Bahasa") && genreTfState.value.text.isNotEmpty() && overviewTfState.value.text.isNotEmpty() && typeState.value.text.isNotEmpty() && !typeState.value.text.equals("Pilih Type Item") ){
+                              if (typeState.value.text.equals("Movie")) {
+                                  val trending = Trending()
+                                  trending.title = titleTfState.value.text
+                                  trending.releaseDate = dateTfState.value.text
+                                  trending.popularity = popularityTfState.value.text.toDouble()
+                                  trending.adult = adultState.value.text.equals("Yes")
+                                  trending.originalLanguage = langState.value.text
+                                  var listGenre = ArrayList<Genre>()
+                                  genreTfState.value.text.split(",").forEach {
+                                      val genre = Genre()
+                                      genre.name = it
+                                      listGenre.add(genre)
+                                  }
+                                  trending.genres = listGenre
+                                  trending.overview = overviewTfState.value.text
+                                  formAddViewModel.insertTrendingMovie(trending)
+                              }
+                          }else {
+                              Log.d(TAG, "FormAdd: false")
+                          }
                 },
                 modifier = modifier
                     .fillMaxWidth()
