@@ -57,6 +57,7 @@ import com.example.movie_app_compose.data.Repository
 import com.example.movie_app_compose.data.entity.MyMovie
 import com.example.movie_app_compose.data.entity.MyTvShow
 import com.example.movie_app_compose.data.entity.Trending
+import com.example.movie_app_compose.data.entity.TrendingLocal
 import com.example.movie_app_compose.model.Genre
 import com.example.movie_app_compose.navigation.ParentNavigation
 import com.example.movie_app_compose.ui.components.OutlinedTextFieldCustom
@@ -398,7 +399,7 @@ fun FormAdd(
                           //Logic save item
                           if (titleTfState.value.text.isNotEmpty() && dateTfState.value.text.isNotEmpty() && popularityTfState.value.text.isNotEmpty() && adultState.value.text.isNotEmpty()  && !adultState.value.text.equals("Pilih Status") && langState.value.text.isNotEmpty() && !langState.value.text.equals("Pilih Bahasa") && genreTfState.value.text.isNotEmpty() && overviewTfState.value.text.isNotEmpty() && typeState.value.text.isNotEmpty() && !typeState.value.text.equals("Pilih Type Item") ){
                               if (typeState.value.text.equals("Movie")) {
-                                  val trending = Trending()
+                                  val trending = TrendingLocal()
                                   trending.title = titleTfState.value.text
                                   trending.releaseDate = dateTfState.value.text
                                   trending.popularity = popularityTfState.value.text.toDouble()
@@ -410,6 +411,7 @@ fun FormAdd(
                                       genre.name = it
                                       listGenre.add(genre)
                                   }
+                                  trending.mediaType = "movie"
                                   trending.genres = listGenre
                                   trending.overview = overviewTfState.value.text
                                   formAddViewModel.insertTrendingMovie(trending)

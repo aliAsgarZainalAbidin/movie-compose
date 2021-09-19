@@ -13,7 +13,4 @@ interface TrendingDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(list: List<Trending>)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(data : Trending)
 }

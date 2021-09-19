@@ -8,7 +8,7 @@ import com.example.movie_app_compose.util.Movie
 import com.google.gson.annotations.SerializedName
 
 @Entity
-data class Trending(
+data class TrendingLocal(
     @ColumnInfo(name = "release_date")
     @field:SerializedName("release_date")
     var releaseDate: String? = "",
@@ -31,7 +31,7 @@ data class Trending(
 
     @ColumnInfo(name = "vote_count")
     @field:SerializedName("vote_count")
-    var voteCounts: Int? = -1,
+    var voteCounts: Int? = 0,
 
     @ColumnInfo(name = "original_language")
     @field:SerializedName("original_language")
@@ -50,9 +50,9 @@ data class Trending(
     var video: Boolean? = false,
 
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
+    @ColumnInfo(name = "id_local")
     @field:SerializedName("id")
-    var id: Int? = null,
+    var id_local: Int? = null,
 
     @ColumnInfo(name = "vote_average")
     @field:SerializedName("vote_average")

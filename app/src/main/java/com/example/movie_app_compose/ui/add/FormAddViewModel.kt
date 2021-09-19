@@ -8,11 +8,12 @@ import com.example.movie_app_compose.data.Repository
 import com.example.movie_app_compose.data.entity.OnTheAir
 import com.example.movie_app_compose.data.entity.People
 import com.example.movie_app_compose.data.entity.Trending
+import com.example.movie_app_compose.data.entity.TrendingLocal
 
 class FormAddViewModel : ViewModel() {
     lateinit var repositor : Repository
 
-    fun insertTrendingMovie(data : Trending){
+    fun insertTrendingMovie(data : TrendingLocal){
         repositor.addTrendingMovies(data)
     }
 }

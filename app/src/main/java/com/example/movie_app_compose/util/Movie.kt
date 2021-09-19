@@ -17,7 +17,6 @@ abstract class Movie{
     abstract var originalLanguage: String?
     abstract var originalTitle: String?
     abstract var video: Boolean?
-    abstract var id: Int?
     abstract var overview: String?
     abstract var popularity: Double?
     abstract var mediaType: String?

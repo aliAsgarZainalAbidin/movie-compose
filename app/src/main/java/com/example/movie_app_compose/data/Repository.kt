@@ -149,9 +149,9 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
         return mutableLiveDataPeople
     }
 
-    fun addTrendingMovies(trending: Trending){
+    fun addTrendingMovies(trending: TrendingLocal){
         CoroutineScope(Dispatchers.IO).launch {
-            appDatabase.TrendingDao().insert(trending)
+            appDatabase.TrendingLocalDao().insert(trending)
         }
     }
 

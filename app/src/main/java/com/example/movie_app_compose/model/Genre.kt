@@ -10,7 +10,7 @@ data class Genre(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     @field:SerializedName("id")
-    var id : Int? = -1,
+    var id : Int? = null,
 
     @ColumnInfo(name = "name")
     @field:SerializedName("name")

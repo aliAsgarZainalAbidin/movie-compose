@@ -20,7 +20,8 @@ import com.example.movie_app_compose.model.*
         AiringToday::class,
         PopularTv::class,
         MyMovie::class,
-        MyTvShow::class
+        MyTvShow::class,
+        TrendingLocal::class,
     ), version = 1,
     exportSchema = false
 )
@@ -36,6 +37,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun PopularTvDao(): PopularTvDao
     abstract fun MyMovieDao(): MyMovieDao
     abstract fun MyTvShowDao(): MyTvShowDao
+    abstract fun TrendingLocalDao() : TrendingLocalDao
 
     companion object {
         @Volatile
