@@ -9,7 +9,7 @@ import com.example.movie_app_compose.data.entity.TrendingLocal
 
 @Dao
 interface TrendingLocalDao {
-    @Query(value = "SELECT * FROM TrendingLocal")
+    @Query(value = "SELECT * FROM TrendingLocal ORDER BY id_local ASC")
     fun getTrending():List<TrendingLocal>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

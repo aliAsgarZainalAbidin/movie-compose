@@ -411,6 +411,8 @@ fun FormAdd(
                                       genre.name = it
                                       listGenre.add(genre)
                                   }
+                                  trending.backdropPath = currentPhotoPath
+                                  trending.posterPath = currentPhotoPath
                                   trending.mediaType = "movie"
                                   trending.genres = listGenre
                                   trending.overview = overviewTfState.value.text

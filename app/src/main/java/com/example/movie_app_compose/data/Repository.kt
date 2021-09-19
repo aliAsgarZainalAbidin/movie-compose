@@ -28,6 +28,7 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
     private var isLogin: Boolean = false
     private lateinit var mutableLiveDataPeople: MutableLiveData<List<People>>
     private lateinit var mLiveDataTrendingMovie: MutableLiveData<List<Trending>>
+    private lateinit var mLiveDataTrendingLocal: MutableLiveData<List<TrendingLocal>>
     private lateinit var mOnTheAir: MutableLiveData<List<OnTheAir>>
     private lateinit var mPlaying: MutableLiveData<List<Playing>>
     private lateinit var mUpcoming: MutableLiveData<List<Upcoming>>
@@ -149,7 +150,7 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
         return mutableLiveDataPeople
     }
 
-    fun addTrendingMovies(trending: TrendingLocal){
+    fun addTrendingMovies(trending: TrendingLocal) {
         CoroutineScope(Dispatchers.IO).launch {
             appDatabase.TrendingLocalDao().insert(trending)
         }
@@ -169,6 +170,27 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
                     val data = response.body()
                     data?.results?.let { remoteMovies.addAll(it) }
                     CoroutineScope(Dispatchers.IO).launch {
+                        appDatabase.TrendingLocalDao().getTrending().forEach {
+                            val trending = Trending(
+                                it.releaseDate,
+                                it.adult,
+                                it.backdropPath,
+                                it.genreIds,
+                                it.genres,
+                                it.voteCounts,
+                                it.originalLanguage,
+                                it.originalTitle,
+                                it.posterPath,
+                                it.video,
+                                it.id_local,
+                                it.voteAverage,
+                                it.title,
+                                it.overview,
+                                it.popularity,
+                                it.mediaType
+                            )
+                            remoteMovies.add(0,trending)
+                        }
                         appDatabase.TrendingDao().insertAll(remoteMovies)
                         mLiveDataTrendingMovie.postValue(remoteMovies)
                     }
@@ -192,11 +214,11 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
         return mLiveDataTrendingMovie
     }
 
-    fun requestOnTheAir(page : String = "1") {
+    fun requestOnTheAir(page: String = "1") {
         mOnTheAir = MutableLiveData()
         var tvShow = ArrayList<OnTheAir>()
         var remoteTvShow = ArrayList<OnTheAir>()
-        val result = apiInterface.getOnTheAir(API,page)
+        val result = apiInterface.getOnTheAir(API, page)
         result.enqueue(object : Callback<Root<OnTheAir>> {
             override fun onResponse(
                 call: Call<Root<OnTheAir>>,
@@ -473,25 +495,25 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
         }
     }
 
-    fun requestAllMyMovies(){
+    fun requestAllMyMovies() {
         listMyMovie = MutableLiveData()
         CoroutineScope(Dispatchers.IO).launch {
             listMyMovie.postValue(appDatabase.MyMovieDao().getAllMovie())
         }
     }
 
-    fun requestAllMyTvShow(){
+    fun requestAllMyTvShow() {
         listMyTvShow = MutableLiveData()
         CoroutineScope(Dispatchers.IO).launch {
             listMyTvShow.postValue(appDatabase.MyTvShowDao().getAllTvShow())
         }
     }
 
-    fun getAllMyMovies():LiveData<List<MyMovie>>{
+    fun getAllMyMovies(): LiveData<List<MyMovie>> {
         return listMyMovie
     }
 
-    fun getAllMyTvShow():LiveData<List<MyTvShow>>{
+    fun getAllMyTvShow(): LiveData<List<MyTvShow>> {
         return listMyTvShow
     }
 
@@ -499,13 +521,13 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
         return myMovie
     }
 
-    fun insertToMyMovie(myMovie: MyMovie){
+    fun insertToMyMovie(myMovie: MyMovie) {
         CoroutineScope(Dispatchers.IO).launch {
             appDatabase.MyMovieDao().insert(myMovie)
         }
     }
 
-    fun deleteMovieById(id: String){
+    fun deleteMovieById(id: String) {
         CoroutineScope(Dispatchers.IO).launch {
             appDatabase.MyMovieDao().deleteById(id)
         }
@@ -522,13 +544,13 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
         return myTvShow
     }
 
-    fun insertToTvShow(tvShow: MyTvShow){
+    fun insertToTvShow(tvShow: MyTvShow) {
         CoroutineScope(Dispatchers.IO).launch {
             appDatabase.MyTvShowDao().insert(tvShow)
         }
     }
 
-    fun deleteTvShowById(id: String){
+    fun deleteTvShowById(id: String) {
         CoroutineScope(Dispatchers.IO).launch {
             appDatabase.MyTvShowDao().deleteTvShowById(id)
         }
