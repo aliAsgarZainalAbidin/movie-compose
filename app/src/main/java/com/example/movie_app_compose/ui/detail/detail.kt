@@ -55,6 +55,7 @@ import com.example.movie_app_compose.ui.offline.OfflineContent
 import com.example.movie_app_compose.ui.theme.DarkBlue900
 import com.example.movie_app_compose.ui.theme.Grey
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
+import com.example.movie_app_compose.util.Const
 import java.util.*
 
 @Composable
@@ -73,7 +74,8 @@ fun Detail(
     overview: String = "",
     listGenre: List<Genre> = listOf(),
     isSaved: Boolean = false,
-    navController : NavController = rememberNavController()
+    navController : NavController = rememberNavController(),
+    typeRepo: String = Const.TYPE_REPO_REMOTE
 ) {
     Log.d(TAG, "Detail: $title")
     if (title != "null") {
@@ -91,7 +93,8 @@ fun Detail(
             popularity = popularity,
             listGenre = listGenre,
             isSaved = isSaved,
-            navController = navController
+            navController = navController,
+            typeRepo = typeRepo
         )
     } else {
         val connectionManager =

@@ -1,5 +1,11 @@
 package com.example.movie_app_compose.ui.components
 
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -9,27 +15,32 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.rememberImagePainter
 import com.example.movie_app_compose.BuildConfig
+import com.example.movie_app_compose.BuildConfig.TAG
 import com.example.movie_app_compose.R
 import com.example.movie_app_compose.data.entity.Trending
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 import com.example.movie_app_compose.ui.theme.*
+import com.example.movie_app_compose.util.Const
 import com.example.movie_app_compose.util.Movie
+import java.io.File
 
 @Composable
-fun LazyRowItem(modifier: Modifier = Modifier, imageUrl : String = "", title : String = "", date : String = "", voteAverage : Float = 0f ) {
-    val fullUrlImage = "${BuildConfig.BASE_IMAGE_URL}$imageUrl"
+fun LazyRowItem(modifier: Modifier = Modifier, imageUrl : String = "", title : String = "", date : String = "", voteAverage : Float = 0f, typeRepo : String = Const.TYPE_REPO_REMOTE ) {
+    var fullUrlImage  = "${BuildConfig.BASE_IMAGE_URL}$imageUrl"
+    var imageUri by remember { mutableStateOf(Uri.fromFile(File(imageUrl))) }
+    val bitmap = remember { mutableStateOf<Bitmap?>(null) }
+
     val data = rememberImagePainter(
         data = fullUrlImage,
         builder = {
@@ -48,14 +59,45 @@ fun LazyRowItem(modifier: Modifier = Modifier, imageUrl : String = "", title : S
                     top.linkTo(parent.top)
                 },
         ) {
-            Image(
-                painter = data,
-                contentDescription = null,
-                modifier = modifier
-                    .width(184.dp)
-                    .height(300.dp),
-                contentScale = ContentScale.Crop
-            )
+            when(typeRepo){
+                Const.TYPE_REPO_REMOTE -> {
+                    Image(
+                        painter = data,
+                        contentDescription = null,
+                        modifier = modifier
+                            .width(184.dp)
+                            .height(300.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+                Const.TYPE_TRENDING_LOCAL -> {
+                    imageUri.let {
+                        if (Build.VERSION.SDK_INT < 28) {
+                            bitmap.value = it?.let { image ->
+                                MediaStore.Images
+                                    .Media.getBitmap(LocalContext.current.contentResolver, image)
+                            }
+
+                        } else {
+                            val source = it?.let { image ->
+                                ImageDecoder
+                                    .createSource(LocalContext.current.contentResolver, image)
+                            }
+                            bitmap.value = source?.let { deco -> ImageDecoder.decodeBitmap(deco) }
+                        }
+                    }
+                    bitmap.value?.asImageBitmap()?.let {
+                        Image(
+                            bitmap = it,
+                            contentDescription = null,
+                            modifier = modifier
+                                .width(184.dp)
+                                .height(300.dp),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                }
+            }
         }
 
         TextComponent(

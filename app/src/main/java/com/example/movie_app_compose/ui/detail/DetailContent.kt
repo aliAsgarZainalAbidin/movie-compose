@@ -1,6 +1,11 @@
 package com.example.movie_app_compose.ui.detail
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.*
@@ -16,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -50,6 +56,7 @@ import com.example.movie_app_compose.ui.theme.Grey
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
 import com.example.movie_app_compose.util.Const
 import com.example.movie_app_compose.util.Mapper
+import java.io.File
 import java.util.*
 
 @Composable
@@ -68,7 +75,8 @@ fun DetailContent(
     overview: String = "",
     listGenre: List<Genre> = listOf(),
     isSaved: Boolean = false,
-    navController: NavController = rememberNavController()
+    navController: NavController = rememberNavController(),
+    typeRepo: String = Const.TYPE_REPO_REMOTE
 ) {
     val restApi by lazy { ApiFactory.create() }
     var progress by remember {
@@ -76,6 +84,9 @@ fun DetailContent(
     }
     val detailViewModel: DetailViewModel = viewModel()
     detailViewModel.repository = Repository(restApi, AppDatabase.getDatabase(LocalContext.current))
+
+    var imageUri by remember { mutableStateOf(Uri.fromFile(File(imageUrl))) }
+    val bitmap = remember { mutableStateOf<Bitmap?>(null) }
 
     val animationSpec by
     rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.lf30_editor_24))
@@ -118,19 +129,56 @@ fun DetailContent(
             ) {
                 ConstraintLayout {
                     val (ivBackdrop, view, lottie, surface, ivBack) = createRefs()
-                    Image(
-                        painter = image,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight()
-                            .constrainAs(ivBackdrop) {
-                                top.linkTo(parent.top)
-                                bottom.linkTo(parent.bottom)
-                            },
-                        alignment = Alignment.Center
-                    )
+
+                    when(typeRepo){
+                        Const.TYPE_REPO_REMOTE -> {
+                            Image(
+                                painter = image,
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = modifier
+                                    .fillMaxWidth()
+                                    .fillMaxHeight()
+                                    .constrainAs(ivBackdrop) {
+                                        top.linkTo(parent.top)
+                                        bottom.linkTo(parent.bottom)
+                                    },
+                                alignment = Alignment.Center
+                            )
+                        }
+                        Const.TYPE_TRENDING_LOCAL -> {
+                            imageUri.let {
+                                if (Build.VERSION.SDK_INT < 28) {
+                                    bitmap.value = it?.let { image ->
+                                        MediaStore.Images
+                                            .Media.getBitmap(LocalContext.current.contentResolver, image)
+                                    }
+
+                                } else {
+                                    val source = it?.let { image ->
+                                        ImageDecoder
+                                            .createSource(LocalContext.current.contentResolver, image)
+                                    }
+                                    bitmap.value = source?.let { deco -> ImageDecoder.decodeBitmap(deco) }
+                                }
+                            }
+                            bitmap.value?.asImageBitmap()?.let {
+                                Image(
+                                    bitmap = it,
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = modifier
+                                        .fillMaxWidth()
+                                        .fillMaxHeight()
+                                        .constrainAs(ivBackdrop) {
+                                            top.linkTo(parent.top)
+                                            bottom.linkTo(parent.bottom)
+                                        },
+                                    alignment = Alignment.Center
+                                )
+                            }
+                        }
+                    }
 
                     Image(
                         painter = painterResource(id = R.drawable.ic_baseline_arrow_back_ios_24),

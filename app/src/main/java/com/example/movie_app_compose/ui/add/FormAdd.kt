@@ -117,7 +117,16 @@ fun FormAdd(
             }
             bitmap.value = source?.let { deco -> ImageDecoder.decodeBitmap(deco) }
         }
-        currentPhotoPath = it?.path.toString()
+        var cursor =
+            it?.let { uri -> LocalContext.current.contentResolver.query(uri, null, null,null, null) }
+        if (cursor == null){
+            currentPhotoPath = it?.path.toString()
+        } else {
+            cursor.moveToFirst()
+            val idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
+            currentPhotoPath = cursor.getString(idx)
+            cursor.close()
+        }
     }
 
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {

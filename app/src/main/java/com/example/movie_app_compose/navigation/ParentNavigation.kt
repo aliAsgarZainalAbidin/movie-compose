@@ -85,6 +85,7 @@ fun ParentNavigation() {
             var language = ""
             var overview = ""
             var popularity = ""
+            var typeRepo : String? = null
 
             if (repo.equals(Const.TYPE_REPO_REMOTE)) {
                 when(type){
@@ -126,6 +127,7 @@ fun ParentNavigation() {
                         language = localTrending.value?.originalLanguage.toString()
                         overview = localTrending.value?.overview.toString()
                         popularity = localTrending.value?.popularity?.toInt().toString()
+                        typeRepo = localTrending.value?.typeTrending.toString()
                     }
                     Const.TYPE_TV -> {
                        
@@ -177,7 +179,8 @@ fun ParentNavigation() {
                         popularity = popularity,
                         listGenre = listGenre,
                         isSaved = localDataMovie.value?.isSaved ?: false,
-                        navController = navControllerMainUI
+                        navController = navControllerMainUI,
+                        typeRepo = typeRepo ?: Const.TYPE_REPO_REMOTE
                     )
                 }
                 Const.TYPE_TV -> {
