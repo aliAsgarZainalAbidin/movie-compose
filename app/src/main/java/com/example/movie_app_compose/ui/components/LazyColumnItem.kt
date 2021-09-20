@@ -1,12 +1,19 @@
 package com.example.movie_app_compose.ui.components
 
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -18,6 +25,8 @@ import coil.compose.rememberImagePainter
 import com.example.movie_app_compose.BuildConfig
 import com.example.movie_app_compose.R
 import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
+import com.example.movie_app_compose.util.Const
+import java.io.File
 
 @Composable
 fun LazyColumnItem(
@@ -25,10 +34,12 @@ fun LazyColumnItem(
     imageUrl: String = "",
     title: String = "",
     date: String = "",
-    overview: String = ""
+    overview: String = "",
+    typeRepo : String = Const.TYPE_REPO_REMOTE
 ) {
-
     val fullUrlImage = "${BuildConfig.BASE_IMAGE_URL}$imageUrl"
+    var imageUri by remember { mutableStateOf(Uri.fromFile(File(imageUrl))) }
+    val bitmap = remember { mutableStateOf<Bitmap?>(null) }
     val data = rememberImagePainter(
         data = fullUrlImage,
         builder = {
@@ -54,14 +65,45 @@ fun LazyColumnItem(
                     shape = RoundedCornerShape(8.dp),
                     elevation = 4.dp
                 ) {
-                    Image(
-                        painter = data,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = modifier
-                            .height(123.dp)
-                            .width(80.dp)
-                    )
+                    when(typeRepo){
+                        Const.TYPE_REPO_REMOTE -> {
+                            Image(
+                                painter = data,
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = modifier
+                                    .height(123.dp)
+                                    .width(80.dp)
+                            )
+                        }
+                        Const.TYPE_TRENDING_LOCAL -> {
+                            imageUri.let {
+                                if (Build.VERSION.SDK_INT < 28) {
+                                    bitmap.value = it?.let { image ->
+                                        MediaStore.Images
+                                            .Media.getBitmap(LocalContext.current.contentResolver, image)
+                                    }
+
+                                } else {
+                                    val source = it?.let { image ->
+                                        ImageDecoder
+                                            .createSource(LocalContext.current.contentResolver, image)
+                                    }
+                                    bitmap.value = source?.let { deco -> ImageDecoder.decodeBitmap(deco) }
+                                }
+                            }
+                            bitmap.value?.asImageBitmap()?.let {
+                                Image(
+                                    bitmap = it,
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = modifier
+                                        .height(123.dp)
+                                        .width(80.dp)
+                                )
+                            }
+                        }
+                    }
                 }
 
                 TextComponent(

@@ -48,8 +48,9 @@ fun TabMovies(navController: NavController) {
                     date = data?.releaseDate ?: "",
                     overview = data?.overview ?: "",
                     modifier = Modifier.clickable {
-                        navigateToDetail(navController, data?.type.toString(), data?.id.toString(), Const.TYPE_REPO_LOCAL)
-                    }
+                        navigateToDetail(navController, data?.type.toString(), data?.id.toString(), data?.typeRepo.toString())
+                    },
+                    typeRepo = data?.typeRepo.toString()
                 )
             }
         }

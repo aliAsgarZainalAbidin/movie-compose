@@ -235,7 +235,8 @@ fun DetailContent(
                                                     overview = overview,
                                                     genreIds = listGenre,
                                                     posterPath = posterPath,
-                                                    isSaved = true
+                                                    isSaved = true,
+                                                    typeRepo = typeRepo
                                                 )
                                             )
                                             progress = 1f
@@ -258,7 +259,8 @@ fun DetailContent(
                                                     overview = overview,
                                                     posterPath = posterPath,
                                                     genres = listGenre,
-                                                    isSaved = true
+                                                    isSaved = true,
+                                                    typeRepo = typeRepo
                                                 )
                                             )
                                             progress = 1f

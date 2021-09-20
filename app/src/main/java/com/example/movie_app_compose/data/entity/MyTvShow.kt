@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.movie_app_compose.model.Genre
+import com.example.movie_app_compose.util.Const
 import com.example.movie_app_compose.util.TvShow
 import com.google.gson.annotations.SerializedName
 
@@ -54,4 +55,5 @@ data class MyTvShow(
     var id: Int? = -1,
 
     var type: String? = "",
+    var typeRepo: String? = Const.TYPE_REPO_LOCAL,
 )
