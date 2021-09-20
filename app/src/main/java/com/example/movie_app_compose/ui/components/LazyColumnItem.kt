@@ -32,7 +32,7 @@ fun LazyColumnItem(
     val data = rememberImagePainter(
         data = fullUrlImage,
         builder = {
-            error(R.drawable.ic_baseline_image_not_supported_24)
+            error(R.color.darkblue)
             placeholder(R.color.darkblue)
             crossfade(true)
         })
