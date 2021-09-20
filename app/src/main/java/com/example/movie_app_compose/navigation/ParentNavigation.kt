@@ -73,6 +73,8 @@ fun ParentNavigation() {
             val remoteData = detailViewModel.getDetail(id, type).observeAsState()
             val localDataMovie = detailViewModel.getMovieById(id).observeAsState()
             val localDataTvShow = detailViewModel.getTvShowById(id).observeAsState()
+            val localTrending = detailViewModel.getLocalTrending(id).observeAsState()
+            Log.d(TAG, "ParentNavigation: $repo")
             var title = ""
             var titleDate= ""
             var date= ""
@@ -84,34 +86,7 @@ fun ParentNavigation() {
             var overview = ""
             var popularity = ""
 
-            if (!repo.equals(Const.TYPE_REPO_REMOTE)) {
-                when (type){
-                    Const.TYPE_MOVIE -> {
-                        title = localDataMovie.value?.title.toString()
-                        titleDate = "Release Date"
-                        date = localDataMovie.value?.releaseDate.toString()
-                        listGenre = localDataMovie.value?.genreIds ?: listOf()
-                        imageUrl = "${BuildConfig.BASE_IMAGE_URL}${localDataMovie.value?.backdropPath}"
-                        posterPath = "${BuildConfig.BASE_IMAGE_URL}${localDataMovie.value?.posterPath}"
-                        adult = if (localDataMovie.value?.adult == true) "YES" else "NO"
-                        language = localDataMovie.value?.language.toString()
-                        overview = localDataMovie.value?.overview.toString()
-                        popularity = localDataMovie.value?.popularity?.toInt().toString()
-                    }
-                    Const.TYPE_TV -> {
-                        title = localDataTvShow.value?.name.toString()
-                        titleDate = "First Air Date"
-                        date = localDataTvShow.value?.firstAirDate.toString()
-                        listGenre = localDataTvShow.value?.genres ?: listOf()
-                        imageUrl = "${BuildConfig.BASE_IMAGE_URL}${localDataTvShow.value?.backdropPath}"
-                        posterPath = "${BuildConfig.BASE_IMAGE_URL}${localDataTvShow.value?.posterPath}"
-                        adult = "-"
-                        language = localDataTvShow.value?.language.toString()
-                        overview = localDataTvShow.value?.overview.toString()
-                        popularity = localDataTvShow.value?.popularity?.toInt().toString()
-                    }
-                }
-            } else {
+            if (repo.equals(Const.TYPE_REPO_REMOTE)) {
                 when(type){
                     Const.TYPE_MOVIE -> {
                         title = remoteData.value?.title.toString()
@@ -136,6 +111,52 @@ fun ParentNavigation() {
                         language = remoteData.value?.original_language.toString()
                         overview = remoteData.value?.overview.toString()
                         popularity = remoteData.value?.popularity?.toInt().toString()
+                    }
+                }
+            } else if (repo.equals(Const.TYPE_TRENDING_LOCAL)){
+                when (type){
+                    Const.TYPE_MOVIE -> {
+                        title = localTrending.value?.title.toString()
+                        titleDate = "Release Date"
+                        date = localTrending.value?.releaseDate.toString()
+                        listGenre = localTrending.value?.genres ?: listOf()
+                        imageUrl = "${localTrending.value?.backdropPath}"
+                        posterPath = "${localTrending.value?.posterPath}"
+                        adult = if (localTrending.value?.adult == true) "YES" else "NO"
+                        language = localTrending.value?.originalLanguage.toString()
+                        overview = localTrending.value?.overview.toString()
+                        popularity = localTrending.value?.popularity?.toInt().toString()
+                    }
+                    Const.TYPE_TV -> {
+                       
+                    }
+                }
+                Log.d(TAG, "ParentNavigation: TYPE_LOCAL_TREND")
+            } else {
+                when (type){
+                    Const.TYPE_MOVIE -> {
+                        title = localDataMovie.value?.title.toString()
+                        titleDate = "Release Date"
+                        date = localDataMovie.value?.releaseDate.toString()
+                        listGenre = localDataMovie.value?.genreIds ?: listOf()
+                        imageUrl = "${BuildConfig.BASE_IMAGE_URL}${localDataMovie.value?.backdropPath}"
+                        posterPath = "${BuildConfig.BASE_IMAGE_URL}${localDataMovie.value?.posterPath}"
+                        adult = if (localDataMovie.value?.adult == true) "YES" else "NO"
+                        language = localDataMovie.value?.language.toString()
+                        overview = localDataMovie.value?.overview.toString()
+                        popularity = localDataMovie.value?.popularity?.toInt().toString()
+                    }
+                    Const.TYPE_TV -> {
+                        title = localDataTvShow.value?.name.toString()
+                        titleDate = "First Air Date"
+                        date = localDataTvShow.value?.firstAirDate.toString()
+                        listGenre = localDataTvShow.value?.genres ?: listOf()
+                        imageUrl = "${BuildConfig.BASE_IMAGE_URL}${localDataTvShow.value?.backdropPath}"
+                        posterPath = "${BuildConfig.BASE_IMAGE_URL}${localDataTvShow.value?.posterPath}"
+                        adult = "-"
+                        language = localDataTvShow.value?.language.toString()
+                        overview = localDataTvShow.value?.overview.toString()
+                        popularity = localDataTvShow.value?.popularity?.toInt().toString()
                     }
                 }
             }

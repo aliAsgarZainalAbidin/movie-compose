@@ -3,6 +3,7 @@ package com.example.movie_app_compose.ui.overview
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
+import android.util.Log
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.ScrollableDefaults
@@ -27,6 +28,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.movie_app_compose.BuildConfig
+import com.example.movie_app_compose.BuildConfig.TAG
 import com.example.movie_app_compose.R
 import com.example.movie_app_compose.api.ApiFactory
 import com.example.movie_app_compose.data.AppDatabase
@@ -45,7 +47,7 @@ import com.example.movie_app_compose.util.Const
 fun OverviewBody(
     modifier: Modifier = Modifier,
     scrollState: ScrollState,
-    onItemClickListener: (String, String) -> Unit = { i: String, s: String -> }
+    onItemClickListener: (String, String, String) -> Unit = { i: String, s: String, t:String -> }
 ) {
     val restApi by lazy { ApiFactory.create() }
     val overviewViewModel: OverviewViewModel = viewModel()
@@ -106,7 +108,7 @@ fun OverviewBody(
                         val voteAverage = data?.voteAverage ?: 0f
                         LazyRowItem(
                             modifier = modifier.clickable {
-                                onItemClickListener(Const.TYPE_MOVIE, data?.id.toString())
+                                onItemClickListener(Const.TYPE_MOVIE, data?.id.toString(), data?.typeTrending.toString())
                             },
                             imageUrl = imageUrl,
                             title = title,
@@ -190,7 +192,7 @@ fun OverviewBody(
                         val voteAverage = data?.voteAverage ?: 0f
                         LazyRowLandscapeItem(
                             modifier = modifier.clickable {
-                                onItemClickListener(Const.TYPE_TV, data?.id.toString())
+                                onItemClickListener(Const.TYPE_TV, data?.id.toString(), data?.typeOnTheAir.toString())
                             },
                             imageUrl = imageUrl,
                             title = title,

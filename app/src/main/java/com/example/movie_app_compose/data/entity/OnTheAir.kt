@@ -3,6 +3,7 @@ package com.example.movie_app_compose.data.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.movie_app_compose.util.Const
 import com.example.movie_app_compose.util.TvShow
 import com.google.gson.annotations.SerializedName
 
@@ -48,4 +49,7 @@ data class OnTheAir(
     @ColumnInfo(name = "id")
     @field:SerializedName("id")
     var id: Int? = null,
+
+    @ColumnInfo(name = "type_trending")
+    var typeOnTheAir : String? = Const.TYPE_REPO_REMOTE
 )

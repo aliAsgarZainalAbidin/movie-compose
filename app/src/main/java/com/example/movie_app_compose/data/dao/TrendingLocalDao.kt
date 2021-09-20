@@ -12,6 +12,9 @@ interface TrendingLocalDao {
     @Query(value = "SELECT * FROM TrendingLocal ORDER BY id_local ASC")
     fun getTrending():List<TrendingLocal>
 
+    @Query(value = "SELECT * FROM TrendingLocal WHERE id_local=:id")
+    fun getTrendingById(id : String):TrendingLocal
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(list: List<TrendingLocal>)
 

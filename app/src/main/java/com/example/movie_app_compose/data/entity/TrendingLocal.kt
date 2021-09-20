@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.movie_app_compose.model.Genre
+import com.example.movie_app_compose.util.Const
 import com.example.movie_app_compose.util.Movie
 import com.google.gson.annotations.SerializedName
 
@@ -73,4 +74,7 @@ data class TrendingLocal(
     @ColumnInfo(name = "mediaType")
     @field:SerializedName("media_type")
     var mediaType: String? = "",
+
+    @ColumnInfo(name = "type_trending")
+    var typeTrending : String? = Const.TYPE_TRENDING_LOCAL
 )

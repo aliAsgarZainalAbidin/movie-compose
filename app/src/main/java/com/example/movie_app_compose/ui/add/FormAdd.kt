@@ -429,6 +429,7 @@ fun FormAdd(
                             trending.mediaType = "movie"
                             trending.genres = listGenre
                             trending.overview = overviewTfState.value.text
+                            trending.typeTrending = Const.TYPE_TRENDING_LOCAL
                             formAddViewModel.insertTrendingMovie(trending)
                         }
                     } else {

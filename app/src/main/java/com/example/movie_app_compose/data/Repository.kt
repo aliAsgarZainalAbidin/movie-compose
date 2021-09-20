@@ -28,7 +28,6 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
     private var isLogin: Boolean = false
     private lateinit var mutableLiveDataPeople: MutableLiveData<List<People>>
     private lateinit var mLiveDataTrendingMovie: MutableLiveData<List<Trending>>
-    private lateinit var mLiveDataTrendingLocal: MutableLiveData<List<TrendingLocal>>
     private lateinit var mOnTheAir: MutableLiveData<List<OnTheAir>>
     private lateinit var mPlaying: MutableLiveData<List<Playing>>
     private lateinit var mUpcoming: MutableLiveData<List<Upcoming>>
@@ -41,6 +40,7 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
     private lateinit var listMyMovie: MutableLiveData<List<MyMovie>>
     private lateinit var listMyTvShow: MutableLiveData<List<MyTvShow>>
     private lateinit var myTvShow: MutableLiveData<MyTvShow>
+    private lateinit var localTrending: MutableLiveData<TrendingLocal>
 
     fun createRequestToken(context: Context): String {
         val result = apiInterface.createRequestToken(BuildConfig.API)
@@ -187,7 +187,8 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
                                 it.title,
                                 it.overview,
                                 it.popularity,
-                                it.mediaType
+                                it.mediaType,
+                                it.typeTrending
                             )
                             remoteMovies.add(0,trending)
                         }
@@ -554,5 +555,16 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
         CoroutineScope(Dispatchers.IO).launch {
             appDatabase.MyTvShowDao().deleteTvShowById(id)
         }
+    }
+
+    fun requestLocalTrendingById(id: String) {
+        localTrending = MutableLiveData()
+        CoroutineScope(Dispatchers.IO).launch {
+            localTrending.postValue(appDatabase.TrendingLocalDao().getTrendingById(id))
+        }
+    }
+
+    fun getDetailLocalTrending():LiveData<TrendingLocal>{
+        return localTrending
     }
 }

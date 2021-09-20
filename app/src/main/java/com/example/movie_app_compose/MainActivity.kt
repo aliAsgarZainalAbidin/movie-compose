@@ -2,6 +2,7 @@ package com.example.movie_app_compose
 
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.DrawableRes
@@ -23,6 +24,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.movie_app_compose.BuildConfig.TAG
 import com.example.movie_app_compose.navigation.Navigation
 import com.example.movie_app_compose.navigation.ParentNavigation
 import com.example.movie_app_compose.navigation.Screen
@@ -100,8 +102,8 @@ fun MainActivityContent(navControllerMainUI: NavController) {
                 scrollState = rememberScrollState()
                 OverviewBody(
                     scrollState = scrollState,
-                    onItemClickListener = { type, id ->
-                        navigateToDetail(navControllerMainUI, type, id)
+                    onItemClickListener = { type, id, repo ->
+                        navigateToDetail(navControllerMainUI, type, id, repo)
                     })
             }
             composable(Screen.Movie.route) {
