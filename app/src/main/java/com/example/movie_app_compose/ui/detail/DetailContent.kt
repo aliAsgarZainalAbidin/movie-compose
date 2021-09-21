@@ -429,6 +429,7 @@ fun DetailContent(
                         title = "Hapus",
                         onButtonClick = {
                             detailViewModel.deletedLocalTrendingById(id)
+                            detailViewModel.deleteMovieById(id)
                             navController.popBackStack()
                         },
                         modifier = modifier.constrainAs(btnDelete) {
@@ -443,6 +444,7 @@ fun DetailContent(
                         title = "Hapus",
                         onButtonClick = {
                             detailViewModel.deletedLocalOnTheAirById(id)
+                            detailViewModel.deleteTvShowById(id)
                             navController.popBackStack()
                         },
                         modifier = modifier.constrainAs(btnDelete) {
