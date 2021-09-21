@@ -602,4 +602,16 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
     fun getDetaillocalOnTheAir():LiveData<OnTheAirLocal>{
         return localOnTheAir
     }
+
+    fun deletelocalOnTheAirById(id: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            appDatabase.OnTheAirLocalDao().deleteById(id)
+        }
+    }
+
+    fun deleteLocalTrendingById(id: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            appDatabase.TrendingLocalDao().deleteById(id)
+        }
+    }
 }

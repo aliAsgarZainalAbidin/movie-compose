@@ -53,4 +53,12 @@ class DetailViewModel : ViewModel() {
         repository.requestlocalOnTheAirById(id)
         return repository.getDetaillocalOnTheAir()
     }
+
+    fun deletedLocalOnTheAirById(id : String){
+        repository.deletelocalOnTheAirById(id)
+    }
+
+    fun deletedLocalTrendingById(id : String){
+        repository.deleteLocalTrendingById(id)
+    }
 }

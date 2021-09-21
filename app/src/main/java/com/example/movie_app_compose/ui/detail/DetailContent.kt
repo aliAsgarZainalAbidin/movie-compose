@@ -48,6 +48,7 @@ import com.example.movie_app_compose.data.entity.MyMovie
 import com.example.movie_app_compose.data.entity.MyTvShow
 import com.example.movie_app_compose.model.Detail
 import com.example.movie_app_compose.model.Genre
+import com.example.movie_app_compose.ui.components.ButtonComponent
 import com.example.movie_app_compose.ui.components.Chip
 import com.example.movie_app_compose.ui.components.TextComponent
 import com.example.movie_app_compose.ui.theme.DarkBlue900
@@ -113,7 +114,7 @@ fun DetailContent(
                 .fillMaxWidth()
         ) {
             val (tvTitle, ivSurface, lzCategory, tvCategory) = createRefs()
-            val (tvTitleOver, tvOverview, tvTitleDate, tvDate, tvTitleAdult, tvAdult, tvTitlePopularity, tvPopularity, tvTitleLanguage, tvLanguage) = createRefs()
+            val (tvTitleOver, tvOverview, tvTitleDate, tvDate, tvTitleAdult, tvAdult, tvTitlePopularity, tvPopularity, tvTitleLanguage, tvLanguage, btnDelete) = createRefs()
             val backImage = painterResource(id = R.drawable.landscape)
 
             Surface(
@@ -422,6 +423,36 @@ fun DetailContent(
                 maxLines = Int.MAX_VALUE,
                 textAlign = TextAlign.Justify
             )
+            when(typeRepo){
+                Const.TYPE_TRENDING_LOCAL ->{
+                    ButtonComponent(
+                        title = "Hapus",
+                        onButtonClick = {
+                            detailViewModel.deletedLocalTrendingById(id)
+                            navController.popBackStack()
+                        },
+                        modifier = modifier.constrainAs(btnDelete) {
+                            top.linkTo(tvOverview.bottom)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        }.fillMaxWidth(),
+                    )
+                }
+                Const.TYPE_ONTHEAIR_LOCAL -> {
+                    ButtonComponent(
+                        title = "Hapus",
+                        onButtonClick = {
+                            detailViewModel.deletedLocalOnTheAirById(id)
+                            navController.popBackStack()
+                        },
+                        modifier = modifier.constrainAs(btnDelete) {
+                            top.linkTo(tvOverview.bottom)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        }.fillMaxWidth(),
+                    )
+                }
+            }
             Spacer(
                 modifier = modifier
                     .height(16.dp)

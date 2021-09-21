@@ -21,4 +21,7 @@ interface OnTheAirLocalDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(data : OnTheAirLocal)
+
+    @Query("DELETE FROM OnTheAirLocal WHERE id=:id")
+    fun deleteById(id: String)
 }

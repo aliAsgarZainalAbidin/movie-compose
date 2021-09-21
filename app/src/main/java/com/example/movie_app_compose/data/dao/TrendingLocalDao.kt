@@ -20,4 +20,7 @@ interface TrendingLocalDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(data : TrendingLocal)
+
+    @Query("DELETE FROM TrendingLocal WHERE id_local=:id")
+    fun deleteById(id: String)
 }
