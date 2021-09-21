@@ -60,10 +60,7 @@ import com.example.movie_app_compose.R
 import com.example.movie_app_compose.api.ApiFactory
 import com.example.movie_app_compose.data.AppDatabase
 import com.example.movie_app_compose.data.Repository
-import com.example.movie_app_compose.data.entity.MyMovie
-import com.example.movie_app_compose.data.entity.MyTvShow
-import com.example.movie_app_compose.data.entity.Trending
-import com.example.movie_app_compose.data.entity.TrendingLocal
+import com.example.movie_app_compose.data.entity.*
 import com.example.movie_app_compose.model.Genre
 import com.example.movie_app_compose.navigation.ParentNavigation
 import com.example.movie_app_compose.ui.components.OutlinedTextFieldCustom
@@ -231,7 +228,7 @@ fun FormAdd(
             }
 
             var textFieldSize by remember { mutableStateOf(Size.Zero) }
-            val popularityTfState = remember { mutableStateOf(TextFieldValue()) }
+            val popularityTfState = remember { mutableStateOf(TextFieldValue("0")) }
             OutlinedTextField(
                 value = popularityTfState.value,
                 onValueChange = {
@@ -440,9 +437,39 @@ fun FormAdd(
                             trending.overview = overviewTfState.value.text
                             trending.typeTrending = Const.TYPE_TRENDING_LOCAL
                             formAddViewModel.insertTrendingMovie(trending)
+                        } else if (typeState.value.text.equals("Tv Show")) {
+                            var listGenre = ArrayList<Genre>()
+                            genreTfState.value.text.split(",").forEach {
+                                val genre = Genre()
+                                genre.name = it
+                                listGenre.add(genre)
+                            }
+
+                            val onTheAirLocal = OnTheAirLocal(
+                                voteAverage = 0f,
+                                backdropPath = currentPhotoPath,
+                                firstAirDate = date.value,
+                                genres = listGenre,
+                                language = langState.value.text,
+                                overview = overviewTfState.value.text,
+                                popularity = popularityTfState.value.text.toDouble(),
+                                posterPath = currentPhotoPath,
+                                name = titleTfState.value.text,
+                                id = null,
+                                typeOnTheAir = Const.TYPE_ONTHEAIR_LOCAL,
+                                adult = adultState.value.text.equals("Yes")
+                            )
+                            formAddViewModel.insertOnTheAir(onTheAirLocal)
                         }
-                    } else {
-                        Log.d(TAG, "FormAdd: false")
+                        titleTfState.value = TextFieldValue("")
+                        date.value = ""
+                        popularityTfState.value = TextFieldValue("0")
+                        adultState.value = TextFieldValue("Pilih Status")
+                        langState.value = TextFieldValue("")
+                        genreTfState.value = TextFieldValue("")
+                        overviewTfState.value = TextFieldValue("")
+                        typeState.value = TextFieldValue("Pilih Type Item")
+
                     }
                 },
                 modifier = modifier

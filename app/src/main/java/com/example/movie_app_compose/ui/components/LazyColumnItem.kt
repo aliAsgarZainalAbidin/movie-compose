@@ -76,7 +76,7 @@ fun LazyColumnItem(
                                     .width(80.dp)
                             )
                         }
-                        Const.TYPE_TRENDING_LOCAL -> {
+                        Const.TYPE_TRENDING_LOCAL, Const.TYPE_ONTHEAIR_LOCAL -> {
                             imageUri.let {
                                 if (Build.VERSION.SDK_INT < 28) {
                                     bitmap.value = it?.let { image ->

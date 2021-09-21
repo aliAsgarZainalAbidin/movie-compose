@@ -91,6 +91,7 @@ fun DetailContent(
     val animationSpec by
     rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.lf30_editor_24))
 
+    Log.d(TAG, "DetailContent: $typeRepo")
     val image = rememberImagePainter(
         data = imageUrl,
         builder = {
@@ -146,7 +147,7 @@ fun DetailContent(
                                 alignment = Alignment.Center
                             )
                         }
-                        Const.TYPE_TRENDING_LOCAL -> {
+                        Const.TYPE_TRENDING_LOCAL, Const.TYPE_ONTHEAIR_LOCAL -> {
                             imageUri.let {
                                 if (Build.VERSION.SDK_INT < 28) {
                                     bitmap.value = it?.let { image ->

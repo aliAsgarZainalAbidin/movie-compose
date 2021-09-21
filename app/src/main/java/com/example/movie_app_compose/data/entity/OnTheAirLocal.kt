@@ -9,7 +9,7 @@ import com.example.movie_app_compose.util.TvShow
 import com.google.gson.annotations.SerializedName
 
 @Entity
-data class OnTheAir(
+data class OnTheAirLocal(
     @ColumnInfo(name = "vote_average")
     @field:SerializedName("vote_average")
     var voteAverage: Float? = 0.0f,
@@ -24,11 +24,7 @@ data class OnTheAir(
 
     @ColumnInfo(name = "genres")
     @field:SerializedName("genres")
-    var genres: List<Int> = listOf(),
-
-    @ColumnInfo(name = "genresType")
-    @field:SerializedName("genresType")
-    var genresType: List<Genre> = listOf(),
+    var genres: List<Genre> = listOf(),
 
     @ColumnInfo(name = "original_language")
     @field:SerializedName("original_language")
@@ -56,5 +52,8 @@ data class OnTheAir(
     var id: Int? = null,
 
     @ColumnInfo(name = "type_trending")
-    var typeOnTheAir : String? = Const.TYPE_REPO_REMOTE
+    var typeOnTheAir : String? = Const.TYPE_ONTHEAIR_LOCAL,
+
+    @ColumnInfo(name = "adult")
+    var adult : Boolean? = false
 )

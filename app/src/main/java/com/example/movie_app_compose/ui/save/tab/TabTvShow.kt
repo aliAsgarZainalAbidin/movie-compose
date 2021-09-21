@@ -1,5 +1,6 @@
 package com.example.movie_app_compose.ui.save.tab
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.movie_app_compose.api.ApiFactory
 import com.example.movie_app_compose.data.AppDatabase
 import com.example.movie_app_compose.data.Repository
+import com.example.movie_app_compose.navigateToDetail
 import com.example.movie_app_compose.ui.components.LazyColumnItem
 import com.example.movie_app_compose.ui.empty.EmptyContent
 import com.example.movie_app_compose.ui.theme.DarkBlue900
@@ -37,7 +39,11 @@ fun TabTvShow(navController: NavController) {
                     imageUrl = data?.posterPath ?: "",
                     title = data?.name ?: "",
                     date = data?.firstAirDate ?: "",
-                    overview = data?.overview ?: ""
+                    overview = data?.overview ?: "",
+                    modifier = Modifier.clickable {
+                        navigateToDetail(navController, data?.type.toString(), data?.id.toString(), data?.typeRepo.toString())
+                    },
+                    typeRepo = data?.typeRepo.toString()
                 )
             }
         }

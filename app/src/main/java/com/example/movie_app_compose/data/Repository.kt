@@ -41,6 +41,7 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
     private lateinit var listMyTvShow: MutableLiveData<List<MyTvShow>>
     private lateinit var myTvShow: MutableLiveData<MyTvShow>
     private lateinit var localTrending: MutableLiveData<TrendingLocal>
+    private lateinit var localOnTheAir: MutableLiveData<OnTheAirLocal>
 
     fun createRequestToken(context: Context): String {
         val result = apiInterface.createRequestToken(BuildConfig.API)
@@ -215,6 +216,12 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
         return mLiveDataTrendingMovie
     }
 
+    fun addOnTheAirTvShow(onTheAirLocal: OnTheAirLocal) {
+        CoroutineScope(Dispatchers.IO).launch {
+            appDatabase.OnTheAirLocalDao().insert(onTheAirLocal)
+        }
+    }
+
     fun requestOnTheAir(page: String = "1") {
         mOnTheAir = MutableLiveData()
         var tvShow = ArrayList<OnTheAir>()
@@ -229,6 +236,23 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
                     val data = response.body()
                     data?.results?.let { remoteTvShow.addAll(it) }
                     CoroutineScope(Dispatchers.IO).launch {
+                        appDatabase.OnTheAirLocalDao().getOnTheAirLocal().forEach {
+                            val onTheAir = OnTheAir(
+                                it.voteAverage,
+                                it.backdropPath,
+                                it.firstAirDate,
+                                listOf(),
+                                it.genres,
+                                it.language,
+                                it.overview,
+                                it.popularity,
+                                it.posterPath,
+                                it.name,
+                                it.id,
+                                it.typeOnTheAir
+                            )
+                            remoteTvShow.add(0, onTheAir)
+                        }
                         appDatabase.OnTheAirDao().insertAll(remoteTvShow)
                         mOnTheAir.postValue(remoteTvShow)
                     }
@@ -566,5 +590,16 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
 
     fun getDetailLocalTrending():LiveData<TrendingLocal>{
         return localTrending
+    }
+
+    fun requestlocalOnTheAirById(id: String) {
+        localOnTheAir = MutableLiveData()
+        CoroutineScope(Dispatchers.IO).launch {
+            localOnTheAir.postValue(appDatabase.OnTheAirLocalDao().getOnTheAirLocalById(id))
+        }
+    }
+
+    fun getDetaillocalOnTheAir():LiveData<OnTheAirLocal>{
+        return localOnTheAir
     }
 }

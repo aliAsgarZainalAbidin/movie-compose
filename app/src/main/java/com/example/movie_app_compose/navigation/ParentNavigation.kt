@@ -74,6 +74,7 @@ fun ParentNavigation() {
             val localDataMovie = detailViewModel.getMovieById(id).observeAsState()
             val localDataTvShow = detailViewModel.getTvShowById(id).observeAsState()
             val localTrending = detailViewModel.getLocalTrending(id).observeAsState()
+            val localOnTheAir = detailViewModel.getLocalOnTheAir(id).observeAsState()
             Log.d(TAG, "ParentNavigation: $repo")
             var title = ""
             var titleDate= ""
@@ -115,25 +116,31 @@ fun ParentNavigation() {
                     }
                 }
             } else if (repo.equals(Const.TYPE_TRENDING_LOCAL)){
-                when (type){
-                    Const.TYPE_MOVIE -> {
-                        title = localTrending.value?.title.toString()
-                        titleDate = "Release Date"
-                        date = localTrending.value?.releaseDate.toString()
-                        listGenre = localTrending.value?.genres ?: listOf()
-                        imageUrl = "${localTrending.value?.backdropPath}"
-                        posterPath = "${localTrending.value?.posterPath}"
-                        adult = if (localTrending.value?.adult == true) "YES" else "NO"
-                        language = localTrending.value?.originalLanguage.toString()
-                        overview = localTrending.value?.overview.toString()
-                        popularity = localTrending.value?.popularity?.toInt().toString()
-                        typeRepo = localTrending.value?.typeTrending.toString()
-                    }
-                    Const.TYPE_TV -> {
-                       
-                    }
-                }
+                title = localTrending.value?.title.toString()
+                titleDate = "Release Date"
+                date = localTrending.value?.releaseDate.toString()
+                listGenre = localTrending.value?.genres ?: listOf()
+                imageUrl = "${localTrending.value?.backdropPath}"
+                posterPath = "${localTrending.value?.posterPath}"
+                adult = if (localTrending.value?.adult == true) "YES" else "NO"
+                language = localTrending.value?.originalLanguage.toString()
+                overview = localTrending.value?.overview.toString()
+                popularity = localTrending.value?.popularity?.toInt().toString()
+                typeRepo = localTrending.value?.typeTrending.toString()
                 Log.d(TAG, "ParentNavigation: TYPE_LOCAL_TREND")
+            } else if (repo.equals(Const.TYPE_ONTHEAIR_LOCAL)){
+                title = localOnTheAir.value?.name.toString()
+                titleDate = "First Air Date"
+                date = localOnTheAir.value?.firstAirDate.toString()
+                listGenre = localOnTheAir.value?.genres ?: listOf()
+                imageUrl = "${localOnTheAir.value?.backdropPath}"
+                posterPath = "${localOnTheAir.value?.posterPath}"
+                adult = if (localTrending.value?.adult == true) "YES" else "NO"
+                language = localOnTheAir.value?.language.toString()
+                overview = localOnTheAir.value?.overview.toString()
+                popularity = localOnTheAir.value?.popularity?.toInt().toString()
+                typeRepo = localOnTheAir.value?.typeOnTheAir.toString()
+                Log.d(TAG, "ParentNavigation: TYPE_LOCAL_ONTHEAIR")
             } else {
                 when (type){
                     Const.TYPE_MOVIE -> {
@@ -198,7 +205,8 @@ fun ParentNavigation() {
                         popularity = popularity,
                         listGenre = listGenre,
                         isSaved = localDataTvShow.value?.isSaved ?: false,
-                        navController = navControllerMainUI
+                        navController = navControllerMainUI,
+                        typeRepo = typeRepo ?: Const.TYPE_REPO_REMOTE
                     )
                 }
             }

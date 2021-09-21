@@ -203,7 +203,8 @@ fun OverviewBody(
                             imageUrl = imageUrl,
                             title = title,
                             date = date,
-                            voteAverage = voteAverage
+                            voteAverage = voteAverage,
+                            typeRepo = data?.typeOnTheAir.toString()
                         )
                     }
                 }
