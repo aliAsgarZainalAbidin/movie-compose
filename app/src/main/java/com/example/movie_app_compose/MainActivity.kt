@@ -101,7 +101,9 @@ fun MainActivityContent(navControllerMainUI: NavController) {
                                     launchSingleTop = true
                                     restoreState = false
                                 }
-                            })
+                            },
+                            alwaysShowLabel = false
+                        )
                     }
                 }
             }) {
@@ -127,7 +129,7 @@ fun MainActivityContent(navControllerMainUI: NavController) {
                             }
                         )
                     }
-                    composable(Screen.Add.route){
+                    composable(Screen.Add.route) {
                         scrollState = rememberScrollState()
                         FormAdd()
                     }
@@ -155,7 +157,12 @@ fun MainActivityContent(navControllerMainUI: NavController) {
     }
 }
 
-fun navigateToDetail(navControl: NavController, type: String, id: String, repo: String = Const.TYPE_REPO_REMOTE) {
+fun navigateToDetail(
+    navControl: NavController,
+    type: String,
+    id: String,
+    repo: String = Const.TYPE_REPO_REMOTE
+) {
     navControl.navigate("${Navigation.Detail.router}/$type/$id/$repo")
 }
 

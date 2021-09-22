@@ -448,7 +448,7 @@ fun DetailContent(
                             navController.popBackStack()
                         },
                         modifier = modifier.constrainAs(btnDelete) {
-                            top.linkTo(tvOverview.bottom)
+                            top.linkTo(tvOverview.bottom,16.dp)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                         }.fillMaxWidth(),
