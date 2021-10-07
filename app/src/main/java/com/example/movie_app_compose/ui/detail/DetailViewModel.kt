@@ -61,4 +61,12 @@ class DetailViewModel : ViewModel() {
     fun deletedLocalTrendingById(id : String){
         repository.deleteLocalTrendingById(id)
     }
+
+    fun updateVoteAvarageTrending(id: String, voteAverage : Float){
+        repository.updateVoteAverageTrending(id, voteAverage)
+    }
+
+    fun updateVoteAvarageOnTheAir(id: String, voteAverage : Float){
+        repository.updateVoteAverageOnTheAir(id, voteAverage)
+    }
 }

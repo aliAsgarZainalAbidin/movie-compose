@@ -23,4 +23,7 @@ interface TrendingLocalDao {
 
     @Query("DELETE FROM TrendingLocal WHERE id_local=:id")
     fun deleteById(id: String)
+
+    @Query(value = "UPDATE TrendingLocal SET vote_average=:voteAverage WHERE id_local=:id")
+    fun updateVoteAverage(voteAverage : Float, id: String)
 }

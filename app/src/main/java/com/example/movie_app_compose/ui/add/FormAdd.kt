@@ -66,10 +66,7 @@ import com.example.movie_app_compose.navigation.ParentNavigation
 import com.example.movie_app_compose.ui.components.OutlinedTextFieldCustom
 import com.example.movie_app_compose.ui.components.TextComponent
 import com.example.movie_app_compose.ui.detail.DetailViewModel
-import com.example.movie_app_compose.ui.theme.DarkBlue900
-import com.example.movie_app_compose.ui.theme.MovieAppComposeTheme
-import com.example.movie_app_compose.ui.theme.Shapes
-import com.example.movie_app_compose.ui.theme.trans
+import com.example.movie_app_compose.ui.theme.*
 import com.example.movie_app_compose.util.Const
 import com.facebook.stetho.Stetho
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -222,7 +219,8 @@ fun FormAdd(
                     }
                     .fillMaxWidth()
                     .height(48.dp)
-                    .onGloballyPositioned { buttonSize = it.size.toSize() }
+                    .onGloballyPositioned { buttonSize = it.size.toSize() },
+                colors = ButtonDefaults.buttonColors(backgroundColor = Green800)
             ) {
                 TextComponent(value = date.value)
             }
@@ -270,7 +268,8 @@ fun FormAdd(
                     modifier = modifier
                         .fillMaxWidth()
                         .height(48.dp)
-                        .onGloballyPositioned { buttonSize = it.size.toSize() }
+                        .onGloballyPositioned { buttonSize = it.size.toSize() },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Green800)
                 ) {
                     TextComponent(value = adultState.value.text)
                 }
@@ -380,7 +379,8 @@ fun FormAdd(
                     modifier = modifier
                         .fillMaxWidth()
                         .height(48.dp)
-                        .onGloballyPositioned { buttonSize = it.size.toSize() }
+                        .onGloballyPositioned { buttonSize = it.size.toSize() },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Green800)
                 ) {
                     TextComponent(value = typeState.value.text)
                 }

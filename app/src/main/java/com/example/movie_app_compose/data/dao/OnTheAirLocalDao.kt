@@ -24,4 +24,7 @@ interface OnTheAirLocalDao {
 
     @Query("DELETE FROM OnTheAirLocal WHERE id=:id")
     fun deleteById(id: String)
+
+    @Query(value = "UPDATE OnTheAirLocal SET vote_average=:voteAverage WHERE id=:id")
+    fun updateVoteAverage(voteAverage : Float, id: String)
 }

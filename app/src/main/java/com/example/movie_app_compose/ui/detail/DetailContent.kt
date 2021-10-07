@@ -13,24 +13,31 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -114,7 +121,7 @@ fun DetailContent(
                 .fillMaxWidth()
         ) {
             val (tvTitle, ivSurface, lzCategory, tvCategory) = createRefs()
-            val (tvTitleOver, tvOverview, tvTitleDate, tvDate, tvTitleAdult, tvAdult, tvTitlePopularity, tvPopularity, tvTitleLanguage, tvLanguage, btnDelete) = createRefs()
+            val (tvTitleOver, tvOverview, tvTitleDate, tvDate, tvTitleAdult, tvAdult, tvTitlePopularity, tvPopularity, tvTitleLanguage, tvLanguage, btnDelete, etVoteAverage) = createRefs()
             val backImage = painterResource(id = R.drawable.landscape)
 
             Surface(
@@ -309,7 +316,8 @@ fun DetailContent(
                     top.linkTo(ivSurface.bottom, 12.dp)
                     start.linkTo(parent.start)
                 },
-                style = MaterialTheme.typography.caption
+                style = MaterialTheme.typography.caption,
+                fontWeight = FontWeight.Bold,
             )
             TextComponent(
                 value = date,
@@ -425,6 +433,30 @@ fun DetailContent(
             )
             when(typeRepo){
                 Const.TYPE_TRENDING_LOCAL ->{
+                    var textFieldSize by remember { mutableStateOf(Size.Zero) }
+                    val voteAverage = remember { mutableStateOf(TextFieldValue("0")) }
+                    OutlinedTextField(
+                        value = voteAverage.value,
+                        onValueChange = {
+                            voteAverage.value = it
+                            detailViewModel.updateVoteAvarageTrending(id, it.text.toFloat())
+                        },
+                        modifier = modifier
+                            .constrainAs(etVoteAverage) {
+                                top.linkTo(tvOverview.bottom, 32.dp)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                                width = Dimension.fillToConstraints
+                            }
+                            .onGloballyPositioned { textFieldSize = it.size.toSize() },
+                        singleLine = true,
+                        placeholder = {
+                            TextComponent(value = "589")
+                        },
+                        label = { TextComponent(value = "Vote Average") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                    )
+
                     ButtonComponent(
                         title = "Hapus",
                         onButtonClick = {
@@ -433,13 +465,37 @@ fun DetailContent(
                             navController.popBackStack()
                         },
                         modifier = modifier.constrainAs(btnDelete) {
-                            top.linkTo(tvOverview.bottom)
+                            top.linkTo(etVoteAverage.bottom, 16.dp)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                         }.fillMaxWidth(),
                     )
                 }
                 Const.TYPE_ONTHEAIR_LOCAL -> {
+                    var textFieldSize by remember { mutableStateOf(Size.Zero) }
+                    val voteAverage = remember { mutableStateOf(TextFieldValue("0")) }
+                    OutlinedTextField(
+                        value = voteAverage.value,
+                        onValueChange = {
+                            voteAverage.value = it
+                            detailViewModel.updateVoteAvarageOnTheAir(id, it.text.toFloat())
+                        },
+                        modifier = modifier
+                            .constrainAs(etVoteAverage) {
+                                top.linkTo(tvOverview.bottom, 32.dp)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                                width = Dimension.fillToConstraints
+                            }
+                            .onGloballyPositioned { textFieldSize = it.size.toSize() },
+                        singleLine = true,
+                        placeholder = {
+                            TextComponent(value = "80")
+                        },
+                        label = { TextComponent(value = "Vote Average") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                    )
+
                     ButtonComponent(
                         title = "Hapus",
                         onButtonClick = {
@@ -448,7 +504,7 @@ fun DetailContent(
                             navController.popBackStack()
                         },
                         modifier = modifier.constrainAs(btnDelete) {
-                            top.linkTo(tvOverview.bottom,16.dp)
+                            top.linkTo(etVoteAverage.bottom,16.dp)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                         }.fillMaxWidth(),
