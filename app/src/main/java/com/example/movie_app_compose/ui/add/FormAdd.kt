@@ -64,6 +64,7 @@ import com.example.movie_app_compose.data.entity.*
 import com.example.movie_app_compose.model.Genre
 import com.example.movie_app_compose.navigation.ParentNavigation
 import com.example.movie_app_compose.ui.components.OutlinedTextFieldCustom
+import com.example.movie_app_compose.ui.components.SimpleCheckBox
 import com.example.movie_app_compose.ui.components.TextComponent
 import com.example.movie_app_compose.ui.detail.DetailViewModel
 import com.example.movie_app_compose.ui.theme.*
@@ -112,8 +113,16 @@ fun FormAdd(
             bitmap.value = source?.let { deco -> ImageDecoder.decodeBitmap(deco) }
         }
         var cursor =
-            it?.let { uri -> LocalContext.current.contentResolver.query(uri, null, null,null, null) }
-        if (cursor == null){
+            it?.let { uri ->
+                LocalContext.current.contentResolver.query(
+                    uri,
+                    null,
+                    null,
+                    null,
+                    null
+                )
+            }
+        if (cursor == null) {
             currentPhotoPath = it?.path.toString()
         } else {
             cursor.moveToFirst()
@@ -317,26 +326,71 @@ fun FormAdd(
                 label = { TextComponent(value = "Language") },
             )
 
-            val genreTfState = remember { mutableStateOf(TextFieldValue()) }
-            OutlinedTextField(
-                value = genreTfState.value,
-                onValueChange = {
-                    genreTfState.value = it
-                },
-                modifier = modifier
-                    .constrainAs(genreTf) {
-                        top.linkTo(languageTf.bottom, 8.dp)
-                        start.linkTo(dateTf.start)
-                        end.linkTo(dateTf.end)
-                        width = Dimension.fillToConstraints
-                    }
-                    .onGloballyPositioned { textFieldSize = it.size.toSize() },
-                singleLine = true,
-                placeholder = {
-                    TextComponent(value = "Action, Romance, etc")
-                },
-                label = { TextComponent(value = "Genre") }
-            )
+//            val genreTfState = remember { mutableStateOf(TextFieldValue()) }
+//            OutlinedTextField(
+//                value = genreTfState.value,
+//                onValueChange = {
+//                    genreTfState.value = it
+//                },
+//                modifier = modifier
+//                    .constrainAs(genreTf) {
+//                        top.linkTo(languageTf.bottom, 8.dp)
+//                        start.linkTo(dateTf.start)
+//                        end.linkTo(dateTf.end)
+//                        width = Dimension.fillToConstraints
+//                    }
+//                    .onGloballyPositioned { textFieldSize = it.size.toSize() },
+//                singleLine = true,
+//                placeholder = {
+//                    TextComponent(value = "Action, Romance, etc")
+//                },
+//                label = { TextComponent(value = "Genre") }
+//            )
+
+
+            val romanceGenre = remember { mutableStateOf("Romance") }
+            val actionGenre = remember { mutableStateOf("Action") }
+            val horrorGenre = remember { mutableStateOf("Horror") }
+            val romanceState = remember { mutableStateOf(false) }
+            val actionState = remember { mutableStateOf(false) }
+            val horrorState = remember { mutableStateOf(false) }
+
+            Row(modifier = modifier
+                .padding(vertical = 16.dp)
+                .constrainAs(genreTf) {
+                    top.linkTo(languageTf.bottom, 8.dp)
+                    start.linkTo(dateTf.start)
+                    end.linkTo(dateTf.end)
+                    width = Dimension.fillToConstraints
+                }) {
+
+                Row(modifier = modifier) {
+                    Checkbox(
+                        checked = romanceState.value,
+                        modifier = Modifier.padding(vertical = 16.dp),
+                        onCheckedChange = { romanceState.value = it },
+                    )
+                    Text(text = romanceGenre.value, modifier = Modifier.padding(4.dp,16.dp,16.dp,4.dp))
+                }
+
+                Row(modifier = modifier) {
+                    Checkbox(
+                        checked = actionState.value,
+                        modifier = Modifier.padding(vertical = 16.dp,),
+                        onCheckedChange = { actionState.value = it },
+                    )
+                    Text(text = actionGenre.value, modifier = Modifier.padding(4.dp,16.dp,16.dp,4.dp))
+                }
+
+                Row(modifier = modifier) {
+                    Checkbox(
+                        checked = horrorState.value,
+                        modifier = Modifier.padding(vertical = 16.dp,),
+                        onCheckedChange = { horrorState.value = it },
+                    )
+                    Text(text = horrorGenre.value, modifier = Modifier.padding(4.dp,16.dp,16.dp,4.dp))
+                }
+            }
 
             val overviewTfState = remember { mutableStateOf(TextFieldValue()) }
             OutlinedTextField(
@@ -346,7 +400,7 @@ fun FormAdd(
                 },
                 modifier = modifier
                     .constrainAs(overviewTf) {
-                        top.linkTo(genreTf.bottom, 8.dp)
+                        top.linkTo(genreTf.bottom)
                         start.linkTo(dateTf.start)
                         end.linkTo(dateTf.end)
                         width = Dimension.fillToConstraints
@@ -413,7 +467,7 @@ fun FormAdd(
                     //Logic save item
                     if (titleTfState.value.text.isNotEmpty() && date.value.isNotEmpty() && popularityTfState.value.text.isNotEmpty() && adultState.value.text.isNotEmpty() && !adultState.value.text.equals(
                             "Pilih Status"
-                        ) && langState.value.text.isNotEmpty() && genreTfState.value.text.isNotEmpty() && overviewTfState.value.text.isNotEmpty() && typeState.value.text.isNotEmpty() && !typeState.value.text.equals(
+                        ) && langState.value.text.isNotEmpty()  && overviewTfState.value.text.isNotEmpty() && typeState.value.text.isNotEmpty() && !typeState.value.text.equals(
                             "Pilih Type Item"
                         )
                     ) {
@@ -425,11 +479,22 @@ fun FormAdd(
                             trending.adult = adultState.value.text.equals("Yes")
                             trending.originalLanguage = langState.value.text
                             var listGenre = ArrayList<Genre>()
-                            genreTfState.value.text.split(",").forEach {
+                            if (romanceState.value){
                                 val genre = Genre()
-                                genre.name = it
+                                genre.name = romanceGenre.value
                                 listGenre.add(genre)
                             }
+                            if (actionState.value){
+                                val genre = Genre()
+                                genre.name = actionGenre.value
+                                listGenre.add(genre)
+                            }
+                            if (horrorState.value){
+                                val genre = Genre()
+                                genre.name = horrorGenre.value
+                                listGenre.add(genre)
+                            }
+
                             trending.backdropPath = currentPhotoPath
                             trending.posterPath = currentPhotoPath
                             trending.mediaType = "movie"
@@ -439,9 +504,19 @@ fun FormAdd(
                             formAddViewModel.insertTrendingMovie(trending)
                         } else if (typeState.value.text.equals("Tv Show")) {
                             var listGenre = ArrayList<Genre>()
-                            genreTfState.value.text.split(",").forEach {
+                            if (romanceState.value){
                                 val genre = Genre()
-                                genre.name = it
+                                genre.name = romanceGenre.value
+                                listGenre.add(genre)
+                            }
+                            if (actionState.value){
+                                val genre = Genre()
+                                genre.name = actionGenre.value
+                                listGenre.add(genre)
+                            }
+                            if (horrorState.value){
+                                val genre = Genre()
+                                genre.name = horrorGenre.value
                                 listGenre.add(genre)
                             }
 
@@ -466,7 +541,6 @@ fun FormAdd(
                         popularityTfState.value = TextFieldValue("0")
                         adultState.value = TextFieldValue("Pilih Status")
                         langState.value = TextFieldValue("")
-                        genreTfState.value = TextFieldValue("")
                         overviewTfState.value = TextFieldValue("")
                         typeState.value = TextFieldValue("Pilih Type Item")
 

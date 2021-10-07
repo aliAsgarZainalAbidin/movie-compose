@@ -87,6 +87,32 @@ fun ButtonComponent(
 }
 
 @Composable
+fun SimpleCheckBox(
+    title : String,
+    modifier: Modifier
+){
+    val checkedState = remember { mutableStateOf(true) }
+    Row(
+        modifier = modifier
+    ) {
+        Checkbox(
+            // below line we are setting
+            // the state of checkbox.
+            checked = checkedState.value,
+            // below line is use to add padding
+            // to our checkbox.
+            modifier = Modifier.padding(vertical = 16.dp),
+            // below line is use to add on check
+            // change to our checkbox.
+            onCheckedChange = { checkedState.value = it },
+        )
+        // below line is use to add text to our check box and we are
+        // adding padding to our text of checkbox
+        Text(text = title, modifier = Modifier.padding(vertical = 16.dp))
+    }
+}
+
+@Composable
 fun TextComponent(
     value: String = "",
     modifier: Modifier = Modifier,
