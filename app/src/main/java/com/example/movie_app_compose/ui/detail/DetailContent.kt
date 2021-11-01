@@ -87,8 +87,9 @@ fun DetailContent(
     typeRepo: String = Const.TYPE_REPO_REMOTE
 ) {
     val restApi by lazy { ApiFactory.create() }
+    var localStatusSave = isSaved
     var progress by remember {
-        mutableStateOf(if (isSaved) 1f else 0f)
+        mutableStateOf(if (localStatusSave) 1f else 0f)
     }
     val detailViewModel: DetailViewModel = viewModel()
     detailViewModel.repository = Repository(restApi, AppDatabase.getDatabase(LocalContext.current))
@@ -228,9 +229,11 @@ fun DetailContent(
                             }
                             .size(24.dp)
                             .clickable {
+                                Log.d(TAG, "DetailContent: $localStatusSave")
                                 when (type) {
                                     Const.TYPE_MOVIE -> {
-                                        if (!isSaved) {
+                                        if (!localStatusSave) {
+                                            localStatusSave = true
                                             detailViewModel.insertToMyMovies(
                                                 MyMovie(
                                                     id = id.toInt(),
@@ -244,18 +247,20 @@ fun DetailContent(
                                                     overview = overview,
                                                     genreIds = listGenre,
                                                     posterPath = posterPath,
-                                                    isSaved = true,
+                                                    isSaved = localStatusSave,
                                                     typeRepo = typeRepo
                                                 )
                                             )
                                             progress = 1f
                                         } else {
+                                            localStatusSave = false
                                             progress = 0f
                                             detailViewModel.deleteMovieById(id)
                                         }
                                     }
                                     Const.TYPE_TV -> {
-                                        if (!isSaved) {
+                                        if (!localStatusSave) {
+                                            localStatusSave = true
                                             detailViewModel.insertToMyTvShow(
                                                 MyTvShow(
                                                     id = id.toInt(),
@@ -268,12 +273,13 @@ fun DetailContent(
                                                     overview = overview,
                                                     posterPath = posterPath,
                                                     genres = listGenre,
-                                                    isSaved = true,
+                                                    isSaved = localStatusSave,
                                                     typeRepo = typeRepo
                                                 )
                                             )
                                             progress = 1f
                                         } else {
+                                            localStatusSave = false
                                             progress = 0f
                                             detailViewModel.deleteTvShowById(id)
                                         }
@@ -464,11 +470,13 @@ fun DetailContent(
                             detailViewModel.deleteMovieById(id)
                             navController.popBackStack()
                         },
-                        modifier = modifier.constrainAs(btnDelete) {
-                            top.linkTo(etVoteAverage.bottom, 16.dp)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        }.fillMaxWidth(),
+                        modifier = modifier
+                            .constrainAs(btnDelete) {
+                                top.linkTo(etVoteAverage.bottom, 16.dp)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                            }
+                            .fillMaxWidth(),
                     )
                 }
                 Const.TYPE_ONTHEAIR_LOCAL -> {
@@ -503,11 +511,13 @@ fun DetailContent(
                             detailViewModel.deleteTvShowById(id)
                             navController.popBackStack()
                         },
-                        modifier = modifier.constrainAs(btnDelete) {
-                            top.linkTo(etVoteAverage.bottom,16.dp)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        }.fillMaxWidth(),
+                        modifier = modifier
+                            .constrainAs(btnDelete) {
+                                top.linkTo(etVoteAverage.bottom, 16.dp)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                            }
+                            .fillMaxWidth(),
                     )
                 }
             }
