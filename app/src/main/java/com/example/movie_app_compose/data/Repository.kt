@@ -615,6 +615,18 @@ class Repository(val apiInterface: ApiInterface, val appDatabase: AppDatabase) {
         }
     }
 
+    fun deleteTrendingById(id: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            appDatabase.TrendingDao().deleteById(id)
+        }
+    }
+
+    fun deleteOnTheAirById(id: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            appDatabase.OnTheAirDao().deleteById(id)
+        }
+    }
+
     fun updateVoteAverageTrending(id: String, voteAverage : Float){
         CoroutineScope(Dispatchers.IO).launch {
             appDatabase.TrendingLocalDao().updateVoteAverage(voteAverage, id)

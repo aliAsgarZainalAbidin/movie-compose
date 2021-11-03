@@ -13,4 +13,7 @@ interface OnTheAirDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(list: List<OnTheAir>)
+
+    @Query("DELETE FROM ONTHEAIR WHERE id=:id")
+    fun deleteById(id: String)
 }

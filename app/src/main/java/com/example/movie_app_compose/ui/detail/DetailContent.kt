@@ -445,7 +445,8 @@ fun DetailContent(
                         value = voteAverage.value,
                         onValueChange = {
                             voteAverage.value = it
-                            detailViewModel.updateVoteAvarageTrending(id, it.text.toFloat())
+                            val valueVoteAverage = if (it.text.isNotEmpty()) it.text.toFloat() else 0f
+                            detailViewModel.updateVoteAvarageTrending(id, valueVoteAverage)
                         },
                         modifier = modifier
                             .constrainAs(etVoteAverage) {
@@ -466,6 +467,7 @@ fun DetailContent(
                     ButtonComponent(
                         title = "Hapus",
                         onButtonClick = {
+                            detailViewModel.deleteTrendingById(id)
                             detailViewModel.deletedLocalTrendingById(id)
                             detailViewModel.deleteMovieById(id)
                             navController.popBackStack()
@@ -507,6 +509,7 @@ fun DetailContent(
                     ButtonComponent(
                         title = "Hapus",
                         onButtonClick = {
+                            detailViewModel.deleteOnTheAirById(id)
                             detailViewModel.deletedLocalOnTheAirById(id)
                             detailViewModel.deleteTvShowById(id)
                             navController.popBackStack()
