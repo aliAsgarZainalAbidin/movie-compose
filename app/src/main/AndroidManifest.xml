@@ -20,22 +20,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MovieAppCompose">
         <activity
-            android:name=".ui.login.Login"
-            android:exported="true"
-            android:label="@string/title_activity_login"
-            android:theme="@style/Theme.MovieAppCompose.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data
-                    android:host="com.example.movie_app_compose"
-                    android:scheme="app" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".ui.splash.SplashScreen"
             android:exported="true"
             android:label="@string/title_activity_splash_screen"

@@ -1,10 +1,15 @@
 package com.example.movie_app_compose.navigation
 
+import android.Manifest
+import android.app.Activity
 import android.os.Handler
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -35,15 +40,25 @@ fun ParentNavigation() {
     ) {
         composable(Navigation.SplashScreen.router) {
             SplashScreenContent()
-            Handler().postDelayed({
-                navControllerMainUI.navigate(Navigation.Activity.router) {
-//                        splashScreenActive = true
-                    popUpTo(Navigation.SplashScreen.router) {
-                        inclusive = true
+            val activity = LocalContext.current as Activity
+            val launcher = rememberLauncherForActivityResult(
+                ActivityResultContracts.RequestPermission()
+            ) { isGranted: Boolean ->
+                if (isGranted) {
+                    // Permission Accepted
+                    navControllerMainUI.navigate(Navigation.Activity.router) {
+                        popUpTo(Navigation.SplashScreen.router) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                        restoreState = false
                     }
-                    launchSingleTop = true
-                    restoreState = false
+                } else {
+//                    activity.finish()
                 }
+            }
+            Handler().postDelayed({
+                launcher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
             }, 1500)
         }
         composable(

@@ -8,7 +8,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.annotation.Nullable
 import androidx.annotation.StringRes
@@ -27,6 +29,7 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -76,83 +79,92 @@ fun MainActivityContent(navControllerMainUI: NavController) {
     var scrollState: ScrollState
 
     if (Build.VERSION.SDK_INT >= 23) {
+
         if (ContextCompat.checkSelfPermission(
                 LocalContext.current,
                 Manifest.permission.READ_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_GRANTED) {
-            Scaffold(bottomBar = {
-                BottomNavigation {
-                    val navBackStackEntry by navController.currentBackStackEntryAsState()
-                    val currentDestination = navBackStackEntry?.destination
-                    items.forEach { screen ->
-                        BottomNavigationItem(icon = {
-                            Icon(
-                                painter = painterResource(id = screen.iconId),
-                                contentDescription = null
-                            )
-                        },
-                            label = { Text(stringResource(id = screen.resId)) },
-                            selected = currentDestination?.hierarchy?.any() { it.route == screen.route } == true,
-                            onClick = {
-                                navController.navigate(screen.route) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = false
-                                }
-                            },
-                            alwaysShowLabel = false
-                        )
-                    }
-                }
-            }) {
-                NavHost(
-                    navController = navController,
-                    startDestination = Screen.Overview.route,
-                    modifier = Modifier.padding(it)
-                ) {
-                    composable(Screen.Overview.route) {
-                        scrollState = rememberScrollState()
-                        OverviewBody(
-                            scrollState = scrollState,
-                            onItemClickListener = { type, id, repo ->
-                                navigateToDetail(navControllerMainUI, type, id, repo)
-                            })
-                    }
-                    composable(Screen.Movie.route) {
-                        scrollState = rememberScrollState()
-                        Movie(
-                            scrollState = scrollState,
-                            onItemClickListener = { type, id ->
-                                navigateToDetail(navControllerMainUI, type, id)
-                            }
-                        )
-                    }
-                    composable(Screen.Add.route) {
-                        scrollState = rememberScrollState()
-                        FormAdd()
-                    }
-                    composable(Screen.Tv.route) {
-                        scrollState = rememberScrollState()
-                        Tv(
-                            scrollState = scrollState,
-                            onItemClickListener = { type, id ->
-                                navigateToDetail(navControllerMainUI, type, id)
-                            }
-                        )
-                    }
-                    composable(Screen.Save.route) {
-                        SaveMenu(navController = navControllerMainUI)
-                    }
-                }
-            }
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            MainContent(navControllerMainUI, navController)
         } else {
             ActivityCompat.requestPermissions(
                 LocalContext.current as Activity,
                 arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
                 101
             )
+
+        }
+    }
+}
+
+@Composable
+fun MainContent(navControllerMainUI: NavController, navController : NavHostController = rememberNavController()){
+    var scrollState: ScrollState
+    Scaffold(bottomBar = {
+        BottomNavigation {
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentDestination = navBackStackEntry?.destination
+            items.forEach { screen ->
+                BottomNavigationItem(icon = {
+                    Icon(
+                        painter = painterResource(id = screen.iconId),
+                        contentDescription = null
+                    )
+                },
+                    label = { Text(stringResource(id = screen.resId)) },
+                    selected = currentDestination?.hierarchy?.any() { it.route == screen.route } == true,
+                    onClick = {
+                        navController.navigate(screen.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = false
+                        }
+                    },
+                    alwaysShowLabel = false
+                )
+            }
+        }
+    }) {
+        NavHost(
+            navController = navController,
+            startDestination = Screen.Overview.route,
+            modifier = Modifier.padding(it)
+        ) {
+            composable(Screen.Overview.route) {
+                scrollState = rememberScrollState()
+                OverviewBody(
+                    scrollState = scrollState,
+                    onItemClickListener = { type, id, repo ->
+                        navigateToDetail(navControllerMainUI, type, id, repo)
+                    })
+            }
+            composable(Screen.Movie.route) {
+                scrollState = rememberScrollState()
+                Movie(
+                    scrollState = scrollState,
+                    onItemClickListener = { type, id ->
+                        navigateToDetail(navControllerMainUI, type, id)
+                    }
+                )
+            }
+            composable(Screen.Add.route) {
+                scrollState = rememberScrollState()
+                FormAdd()
+            }
+            composable(Screen.Tv.route) {
+                scrollState = rememberScrollState()
+                Tv(
+                    scrollState = scrollState,
+                    onItemClickListener = { type, id ->
+                        navigateToDetail(navControllerMainUI, type, id)
+                    }
+                )
+            }
+            composable(Screen.Save.route) {
+                SaveMenu(navController = navControllerMainUI)
+            }
         }
     }
 }
